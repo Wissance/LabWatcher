@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32002.261
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.MossbauerLab.Watcher.Web", "Wissance.MossbauerLab.Watcher\Wissance.MossbauerLab.Watcher.Web.csproj", "{11F80701-895A-4C18-BCD7-9FCDA2775AE2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{11F80701-895A-4C18-BCD7-9FCDA2775AE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11F80701-895A-4C18-BCD7-9FCDA2775AE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11F80701-895A-4C18-BCD7-9FCDA2775AE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11F80701-895A-4C18-BCD7-9FCDA2775AE2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4262EFA8-2262-4B96-9112-6D06D2DF3581}
+	EndGlobalSection
+EndGlobal
