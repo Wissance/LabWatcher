@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Wissance.MossbauerLab.Watcher.Web.Jobs
 {
-    public class SpectrumIndexerJob
+    public class SpectraIndexerJob
     {
     }
 }

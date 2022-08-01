@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32002.261
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.MossbauerLab.Watcher.Web", "Wissance.MossbauerLab.Watcher\Wissance.MossbauerLab.Watcher.Web.csproj", "{11F80701-895A-4C18-BCD7-9FCDA2775AE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wissance.MossbauerLab.Watcher.Web", "Wissance.MossbauerLab.Watcher\Wissance.MossbauerLab.Watcher.Web.csproj", "{11F80701-895A-4C18-BCD7-9FCDA2775AE2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.MossbauerLab.Watcher.Data", "Wissance.MossbauerLab.Watcher.Data\Wissance.MossbauerLab.Watcher.Data.csproj", "{8176CF7C-40E0-4747-846C-4E5A88F7DAD4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{11F80701-895A-4C18-BCD7-9FCDA2775AE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11F80701-895A-4C18-BCD7-9FCDA2775AE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11F80701-895A-4C18-BCD7-9FCDA2775AE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8176CF7C-40E0-4747-846C-4E5A88F7DAD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8176CF7C-40E0-4747-846C-4E5A88F7DAD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8176CF7C-40E0-4747-846C-4E5A88F7DAD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8176CF7C-40E0-4747-846C-4E5A88F7DAD4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
