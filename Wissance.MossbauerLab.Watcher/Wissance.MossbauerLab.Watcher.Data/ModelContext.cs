@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Wissance.MossbauerLab.Watcher.Data.Entities;
+using Wissance.MossbauerLab.Watcher.Data.Mapping;
 
 namespace Wissance.MossbauerLab.Watcher.Data
 {
@@ -41,11 +42,9 @@ namespace Wissance.MossbauerLab.Watcher.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            //modelBuilder.Entity<StationEntity>().Map();
-            //modelBuilder.Entity<MeasurementsEntity>().Map();
+            modelBuilder.Entity<SpectrumEntity>().Map();
         }
         
         public DbSet<SpectrumEntity> Spectra { get; }
-
     }
 }
