@@ -43,8 +43,11 @@ namespace Wissance.MossbauerLab.Watcher.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<SpectrumEntity>().Map();
+            modelBuilder.Entity<EventEntity>().Map();
         }
         
         public DbSet<SpectrumEntity> Spectra { get; }
+
+        public DbSet<EventEntity> Events { get; }
     }
 }

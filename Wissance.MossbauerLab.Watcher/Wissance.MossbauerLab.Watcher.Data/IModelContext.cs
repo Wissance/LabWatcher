@@ -12,5 +12,6 @@ namespace Wissance.MossbauerLab.Watcher.Data
         int SaveChanges();
         Task<int> SaveChangesAsync();
         DbSet<SpectrumEntity> Spectra { get; }
+        DbSet<EventEntity> Events { get; }
     }
 }
