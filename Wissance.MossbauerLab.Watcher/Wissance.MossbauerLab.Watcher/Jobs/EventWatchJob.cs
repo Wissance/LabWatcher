@@ -6,7 +6,7 @@ using Quartz;
 
 namespace Wissance.MossbauerLab.Watcher.Web.Jobs
 {
-    public class SpectraIndexerJob : IJob
+    public class EventWatchJob : IJob
     {
         public Task Execute(IJobExecutionContext context)
         {
