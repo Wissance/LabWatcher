@@ -12,13 +12,13 @@ namespace Wissance.MossbauerLab.Watcher.Web.Config
 
         }
 
-        public ApplicationConfig(JobsConfig defaultJobsSettings, SmbConfig spectraSmbSetting)
+        public ApplicationConfig(JobsConfig defaultJobsSettings, SmbConfig sm2201SmbSettings)
         {
             DefaultJobsSettings = defaultJobsSettings;
-            SpectraSmbSettings = spectraSmbSetting;
+            Sm2201SmbSettings = sm2201SmbSettings;
         }
 
         public JobsConfig DefaultJobsSettings { get; set; }
-        public SmbConfig SpectraSmbSettings { get; set; }
+        public SmbConfig Sm2201SmbSettings { get; set; }
     }
 }

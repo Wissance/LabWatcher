@@ -31,7 +31,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Smb
                 if (isConnected)
                 {
                     bool hasPassword = _config.UserCredentials != null;
-                    NTStatus status = client.Login(String.Empty, hasPassword ? _config.UserCredentials.User : String.Empty,
+                    NTStatus status = client.Login(_config.Domain, hasPassword ? _config.UserCredentials.User : String.Empty,
                                                    hasPassword ? _config.UserCredentials.Password : String.Empty);
                     if (status == NTStatus.STATUS_SUCCESS)
                     {

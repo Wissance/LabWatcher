@@ -28,7 +28,16 @@ namespace Wissance.MossbauerLab.Watcher.Web.Config
         {
         }
 
+        public SmbConfig(string address, string domain, string folder, SmbUserCredentials userCredentials)
+        {
+            Address = address;
+            Domain = domain;
+            Folder = folder;
+            UserCredentials = userCredentials;
+        }
+
         public string Address { get; set; }
+        public string Domain { get; set; }
         public string Folder { get; set; }
         public SmbUserCredentials UserCredentials { get; set; }
     }
