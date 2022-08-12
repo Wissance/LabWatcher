@@ -7,6 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using Wissance.MossbauerLab.Watcher.Web.Config;
+using Wissance.MossbauerLab.Watcher.Web.Smb;
 
 namespace Wissance.MossbauerLab.Watcher.Web
 {
@@ -16,6 +20,7 @@ namespace Wissance.MossbauerLab.Watcher.Web
         {
             Configuration = configuration;
             Environment = env;
+            _config = Configuration.GetSection(ApplicationConfigSectionName).Get<ApplicationConfig>();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -24,6 +29,7 @@ namespace Wissance.MossbauerLab.Watcher.Web
             ConfigureDatabase(services);
             ConfigureLogging(services);
             ConfigureAppServices(services);
+            ConfigureWebApi(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,17 +43,45 @@ namespace Wissance.MossbauerLab.Watcher.Web
 
         }
 
+
         private void ConfigureLogging(IServiceCollection services)
         {
-
+            Log.Logger = new Serilog.LoggerConfiguration().ReadFrom.Configuration(Configuration).CreateLogger();
+            services.AddLogging(loggingBuilder => loggingBuilder.AddConfiguration(Configuration).AddConsole());
+            services.AddLogging(loggingBuilder => loggingBuilder.AddConfiguration(Configuration).AddDebug());
+            services.AddLogging(loggingBuilder => loggingBuilder.AddConfiguration(Configuration).AddSerilog(dispose: true));
         }
 
         private void ConfigureAppServices(IServiceCollection services)
         {
+            ConfigureSmb(services);
+            ConfigureRegularJobs(services);
+        }
+
+        private void ConfigureWebApi(IServiceCollection services)
+        {
 
         }
 
-        public IConfiguration Configuration { get; }
-        public IWebHostEnvironment Environment { get; }
+        private void ConfigureSmb(IServiceCollection services)
+        {
+            services.AddScoped<ISmbService>(x =>
+            {
+                return new Smb1Service(_config.Sm2201SmbSettings, x.GetRequiredService<ILoggerFactory>());
+            });
+        }
+
+        private void ConfigureRegularJobs(IServiceCollection services)
+        {
+
+
+        }
+
+        private IConfiguration Configuration { get; }
+        private IWebHostEnvironment Environment { get; }
+
+        private const string ApplicationConfigSectionName = "Application";
+
+        private readonly ApplicationConfig _config;
     }
 }
