@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SMBLibrary;
 using SMBLibrary.Client;
+using SMBLibrary.SMB1;
 using Wissance.MossbauerLab.Watcher.Web.Config;
 
 namespace Wissance.MossbauerLab.Watcher.Web.Smb
@@ -21,7 +22,8 @@ namespace Wissance.MossbauerLab.Watcher.Web.Smb
             _logger = loggerFactory.CreateLogger<Smb1Service>();
         }
 
-        public async Task<IList<string>> GetChildrenAsync(string parent)
+        //todo (UMV): add task wrap with timeout ...
+        public async Task<IList<string>> GetChildrenAsync(string shareName, string parent)
         {
             try
             {
@@ -35,9 +37,47 @@ namespace Wissance.MossbauerLab.Watcher.Web.Smb
                                                    hasPassword ? _config.UserCredentials.Password : String.Empty);
                     if (status == NTStatus.STATUS_SUCCESS)
                     {
-                        List<string> shares = client.ListShares(out status);
-                        // todo ...
+                        List<string> shares = client.ListShares(out status).Select(s => s.ToLower()).ToList();
+                        // todo (UMV) ...
+                        if (shares.Contains(shareName.ToLower()))
+                        {
+                            // find folder, we assume folder on level 1 ...
+                            // if we have "." as folder we should return all we got from share ....
+                            ISMBFileStore fileStore = client.TreeConnect(shareName, out status);
+                            if (status == NTStatus.STATUS_SUCCESS)
+                            {
+                                object handle;
+                                FileStatus fileStatus;
+                                status = fileStore.CreateFile(out handle, out fileStatus, "\\", AccessMask.GENERIC_READ, 
+                                                              FileAttributes.Directory, ShareAccess.Read | ShareAccess.Write, 
+                                                              CreateDisposition.FILE_OPEN, CreateOptions.FILE_DIRECTORY_FILE, null);
+                                if (status == NTStatus.STATUS_SUCCESS)
+                                {
+                                    List<FindInformation> fileList;
+                                    status = ((SMB1FileStore)fileStore).QueryDirectory(out fileList, "\\*", FindInformationLevel.SMB_FIND_FILE_DIRECTORY_INFO);
+                                    status = fileStore.CloseFile(handle);
+
+                                    foreach (FindInformation info in fileList)
+                                    {
+                                        
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                _logger.LogWarning(NtStatusIsFailure);
+                            }
+                        }
+                        else
+                        {
+                            _logger.LogWarning(ShareNotFoundOnServer, shareName);
+                        }
+
                         client.Logoff();
+                    }
+                    else
+                    {
+                        _logger.LogWarning(NtStatusIsFailure);
                     }
                     client.Disconnect();
                 }
@@ -45,18 +85,17 @@ namespace Wissance.MossbauerLab.Watcher.Web.Smb
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                return null;
             }
-            
-            //client.Connect()
-            throw new NotImplementedException();
         }
 
         public Task<byte[]> ReadAsync()
         {
             throw new NotImplementedException();
         }
+
+        private const string ShareNotFoundOnServer = "Share with name {0} was not found on server!";
+        private const string NtStatusIsFailure = "Smb status is false";
 
         private readonly SmbConfig _config;
         private readonly ILogger<Smb1Service> _logger;

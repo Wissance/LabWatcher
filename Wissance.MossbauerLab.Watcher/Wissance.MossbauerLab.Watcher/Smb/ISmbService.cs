@@ -7,7 +7,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Smb
 {
     public interface ISmbService
     {
-        Task<IList<string>> GetChildrenAsync(string parent);
+        Task<IList<string>> GetChildrenAsync(string shareName, string parent);
         Task<byte[]> ReadAsync();
     }
 }
