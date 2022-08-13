@@ -8,8 +8,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Quartz;
 using Serilog;
 using Wissance.MossbauerLab.Watcher.Web.Config;
+using Wissance.MossbauerLab.Watcher.Web.Jobs;
 using Wissance.MossbauerLab.Watcher.Web.Smb;
 
 namespace Wissance.MossbauerLab.Watcher.Web
@@ -73,8 +75,17 @@ namespace Wissance.MossbauerLab.Watcher.Web
 
         private void ConfigureRegularJobs(IServiceCollection services)
         {
+            services.AddQuartz(quartz =>
+            {
+                quartz.UseMicrosoftDependencyInjectionJobFactory();
 
+                quartz.AddJob<SpectraIndexerJob>(job => job.WithIdentity(nameof(SpectraIndexerJob)));
+                //todo: umv: move in config (every 3 hours)
+                quartz.AddTrigger(trigger => trigger.ForJob(nameof(SpectraIndexerJob))
+                .WithSimpleSchedule(x => x.WithIntervalInSeconds(60)));
+            });
 
+            services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
         }
 
         private IConfiguration Configuration { get; }

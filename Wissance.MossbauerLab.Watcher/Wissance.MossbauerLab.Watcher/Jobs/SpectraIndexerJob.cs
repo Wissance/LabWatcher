@@ -3,14 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Quartz;
+using Wissance.MossbauerLab.Watcher.Web.Smb;
 
 namespace Wissance.MossbauerLab.Watcher.Web.Jobs
 {
     public class SpectraIndexerJob : IJob
     {
-        public Task Execute(IJobExecutionContext context)
+        public SpectraIndexerJob(ISmbService smbService, string spectraShare)
         {
-            throw new NotImplementedException();
+            _smbService = smbService;
+            _spectraShare = spectraShare;
         }
+
+        public async Task Execute(IJobExecutionContext context)
+        {
+            IList<string> children = await _smbService.GetChildrenAsync(_spectraShare, ".");
+            if (children != null && children.Any())
+            {
+                // todoL umv: save to database 
+            }
+        }
+
+        private readonly ISmbService _smbService;
+        private readonly string _spectraShare;
     }
 }
