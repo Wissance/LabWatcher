@@ -9,10 +9,11 @@ namespace Wissance.MossbauerLab.Watcher.Web.Jobs
 {
     public class SpectraIndexerJob : IJob
     {
-        public SpectraIndexerJob(ISmbService smbService, string spectraShare)
+        public SpectraIndexerJob(ISmbService smbService/*, string spectraShare*/)
         {
             _smbService = smbService;
-            _spectraShare = spectraShare;
+            _spectraShare = "Autosaves";
+            //spectraShare;
         }
 
         public async Task Execute(IJobExecutionContext context)

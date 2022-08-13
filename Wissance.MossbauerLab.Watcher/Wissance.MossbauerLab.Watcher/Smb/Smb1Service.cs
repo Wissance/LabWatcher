@@ -29,7 +29,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Smb
             {
                 IList<string> children = new List<string>();
                 SMB1Client client = new SMB1Client();
-                bool isConnected = client.Connect(IPAddress.Parse(_config.Address), SMBTransportType.DirectTCPTransport);
+                bool isConnected = client.Connect(IPAddress.Parse(_config.Address), SMBTransportType.NetBiosOverTCP);
                 if (isConnected)
                 {
                     bool hasPassword = _config.UserCredentials != null;
