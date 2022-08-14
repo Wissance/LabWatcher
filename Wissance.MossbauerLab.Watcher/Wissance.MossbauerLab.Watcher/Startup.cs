@@ -12,7 +12,7 @@ using Quartz;
 using Serilog;
 using Wissance.MossbauerLab.Watcher.Web.Config;
 using Wissance.MossbauerLab.Watcher.Web.Jobs;
-using Wissance.MossbauerLab.Watcher.Web.Smb;
+using Wissance.MossbauerLab.Watcher.Web.Store;
 
 namespace Wissance.MossbauerLab.Watcher.Web
 {
@@ -67,9 +67,9 @@ namespace Wissance.MossbauerLab.Watcher.Web
 
         private void ConfigureSmb(IServiceCollection services)
         {
-            services.AddScoped<ISmbService>(x =>
+            services.AddScoped<IFileStoreService>(x =>
             {
-                return new Smb1Service(_config.Sm2201SmbSettings, x.GetRequiredService<ILoggerFactory>());
+                return new NetworkFileSystemStoreService(_config.Sm2201SpectraStoreSettings, x.GetRequiredService<ILoggerFactory>());
             });
         }
 

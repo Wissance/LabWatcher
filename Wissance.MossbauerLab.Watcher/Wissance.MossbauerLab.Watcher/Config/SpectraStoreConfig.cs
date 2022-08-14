@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 
 namespace Wissance.MossbauerLab.Watcher.Web.Config
 {
-    public class SmbUserCredentials
+    public class UserCredentials
     {
-        public SmbUserCredentials()
+        public UserCredentials()
         {
 
         }
 
-        public SmbUserCredentials(string user, string password)
+        public UserCredentials(string user, string password)
         {
             User = user;
             Password = password;
@@ -22,13 +22,13 @@ namespace Wissance.MossbauerLab.Watcher.Web.Config
         public string Password { get; set; }
     }
 
-    public class SmbConfig
+    public class SpectraStoreConfig
     {
-        public SmbConfig()
+        public SpectraStoreConfig()
         {
         }
 
-        public SmbConfig(string address, string domain, string folder, SmbUserCredentials userCredentials)
+        public SpectraStoreConfig(string address, string domain, string folder, UserCredentials userCredentials)
         {
             Address = address;
             Domain = domain;
@@ -39,6 +39,6 @@ namespace Wissance.MossbauerLab.Watcher.Web.Config
         public string Address { get; set; }
         public string Domain { get; set; }
         public string Folder { get; set; }
-        public SmbUserCredentials UserCredentials { get; set; }
+        public UserCredentials UserCredentials { get; set; }
     }
 }

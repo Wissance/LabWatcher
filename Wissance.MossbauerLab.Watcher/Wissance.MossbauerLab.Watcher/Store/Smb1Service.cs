@@ -9,14 +9,14 @@ using SMBLibrary.Client;
 using SMBLibrary.SMB1;
 using Wissance.MossbauerLab.Watcher.Web.Config;
 
-namespace Wissance.MossbauerLab.Watcher.Web.Smb
+namespace Wissance.MossbauerLab.Watcher.Web.Store
 {
     /// <summary>
     ///    Service that allows to work with Smb V1 (https://github.com/TalAloni/SMBLibrary/blob/master/ClientExamples.md)
     /// </summary>
-    public class Smb1Service : ISmbService
+    public class Smb1Service : IFileStoreService
     {
-        public Smb1Service(SmbConfig config, ILoggerFactory loggerFactory)
+        public Smb1Service(SpectraStoreConfig config, ILoggerFactory loggerFactory)
         {
             _config = config;
             _logger = loggerFactory.CreateLogger<Smb1Service>();
@@ -97,7 +97,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Smb
         private const string ShareNotFoundOnServer = "Share with name {0} was not found on server!";
         private const string NtStatusIsFailure = "Smb status is false";
 
-        private readonly SmbConfig _config;
+        private readonly SpectraStoreConfig _config;
         private readonly ILogger<Smb1Service> _logger;
     }
 }
