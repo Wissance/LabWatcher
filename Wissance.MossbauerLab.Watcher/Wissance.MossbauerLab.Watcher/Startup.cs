@@ -7,10 +7,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Quartz;
 using Serilog;
+using Wissance.MossbauerLab.Watcher.Data;
 using Wissance.MossbauerLab.Watcher.Web.Config;
+using Wissance.MossbauerLab.Watcher.Web.Extensions;
 using Wissance.MossbauerLab.Watcher.Web.Jobs;
 using Wissance.MossbauerLab.Watcher.Web.Store;
 
@@ -42,7 +45,10 @@ namespace Wissance.MossbauerLab.Watcher.Web
 
         private void ConfigureDatabase(IServiceCollection services)
         {
-
+            services.ConfigureSqliteDbContext<ModelContext>(_config.ConnStr);
+            ServiceProvider serviceProvider = services.BuildServiceProvider();
+            ModelContext modelContext = serviceProvider.GetRequiredService<ModelContext>();
+            modelContext.Database.Migrate();
         }
 
 
