@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Principal;
@@ -20,18 +21,24 @@ namespace Wissance.MossbauerLab.Watcher.Web.Store
             _logger = loggerFactory.CreateLogger<NetworkFileSystemStoreService>();
         }
 
-        public async Task<IList<string>> GetChildrenAsync(string shareName, string parent)
+        public async Task<IList<string>> GetChildrenAsync(string shareName, string parent = RootFolder)
         {
             try
             {
-                UserCredentials credentials = GetCredentials();
-                using (SafeAccessTokenHandle userHandle = credentials.LogonUser(LogonType.Interactive))
+                // todo (UMV): think about what would happened if we run app from Linux
+                using (SafeAccessTokenHandle userHandle = WindowsIdentity.GetAnonymous().AccessToken)
                 {
+                    string folder = $@"\\{_config.Address}\{shareName}";
+                    if (!string.Equals(parent, RootFolder))
+                    {
+                        folder = $@"\\{_config.Address}\{shareName}\{parent}";
+                    }
+
                     IList<string> children = await WindowsIdentity.RunImpersonatedAsync(userHandle, async () =>
                     {
-                        return System.IO.Directory.GetFiles($@"\\{_config.Address}\{shareName}").ToList();
+                        return System.IO.Directory.GetFiles(folder).ToList();
                     });
-                    // todo: umv: implement filtering
+
                     return children;
                 }
 
@@ -44,17 +51,30 @@ namespace Wissance.MossbauerLab.Watcher.Web.Store
 
         }
 
-        public Task<byte[]> ReadAsync()
+        public async Task<byte[]> ReadAsync(string fileName)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (SafeAccessTokenHandle userHandle = WindowsIdentity.GetAnonymous().AccessToken)
+                {
+                    return await File.ReadAllBytesAsync(fileName);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"An error occurred during reading file: {fileName}, error: {e.Message}");
+                return null;
+            }
         }
 
         private UserCredentials GetCredentials()
         {
             if (_config.UserCredentials == null)
-                return null;
+                return new UserCredentials("admin", "123");
             return new UserCredentials(_config.UserCredentials.User, _config.UserCredentials.Password, _config.Domain);
         }
+
+        private const string RootFolder = ".";
 
         private readonly SpectraStoreConfig _config;
         private readonly ILogger<NetworkFileSystemStoreService> _logger;

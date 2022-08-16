@@ -89,7 +89,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Store
             }
         }
 
-        public Task<byte[]> ReadAsync()
+        public Task<byte[]> ReadAsync(string fileName)
         {
             throw new NotImplementedException();
         }
