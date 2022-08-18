@@ -36,7 +36,9 @@ namespace Wissance.MossbauerLab.Watcher.Web.Store
 
                     IList<string> children = await WindowsIdentity.RunImpersonatedAsync(userHandle, async () =>
                     {
-                        return System.IO.Directory.GetFiles(folder).ToList();
+                        List<string> entries = Directory.GetDirectories(folder).ToList();
+                        entries.AddRange(Directory.GetFiles(folder));
+                        return entries;
                     });
 
                     return children;
