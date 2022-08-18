@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Quartz;
 using Wissance.MossbauerLab.Watcher.Data;
+using Wissance.MossbauerLab.Watcher.Data.Entities;
 using Wissance.MossbauerLab.Watcher.Web.Store;
 using Wissance.MossbauerLab.Watcher.Web.Utils;
 
@@ -29,16 +30,14 @@ namespace Wissance.MossbauerLab.Watcher.Web.Jobs
                 IList<string> children = await _storeService.GetChildrenAsync(_spectraShare, ".");
                 if (children != null && children.Any())
                 {
-                    // todoL umv: save to database 
-                    /*byte[] content = await _storeService.ReadAsync(children[0]);
-                    if (content != null)
-                    {
+                    DateTime? first = null;
+                    DateTime? last = null;
 
-                    }*/
                     foreach (string child in children)
                     {
                         // 0. Get short name without path
                         string shortName = Path.GetFileName(child);
+                        Sm2201SpectrumNameData nameData = null;
                         // 1. Extract info from directory or file
                         if (child.EndsWith(".spc"))
                         {
@@ -52,8 +51,27 @@ namespace Wissance.MossbauerLab.Watcher.Web.Jobs
                         else
                         {
                             // we working with a set of files ...
-                            Sm2201SpectrumNameData nameData = Sm2201SpectrumNameParser.Parse(shortName);
-                            // todo: list files in directory, if we have any create db record
+                            nameData = Sm2201SpectrumNameParser.Parse(shortName);
+                            // todo: list files in directory, if we have any create db record 
+
+                        }
+                        SpectrumEntity spectrum = _context.Spectra.FirstOrDefault(s => string.Equals(s.Name.ToLower(), shortName.ToLower()));
+                        if (spectrum == null)
+                        {
+                            // creating new one
+                            _context.Spectra.Add(new SpectrumEntity(shortName, string.Format(SpectrumDescriptionTemplate, nameData.OneLetterSpectrumType, nameData.Channel),
+                                                                    child, nameData.MeasureStart, first, last));
+                        }
+                        else
+                        {
+                            // updating existing one
+                            // update ere only last ...
+                        }
+
+                        int result = await _context.SaveChangesAsync();
+                        if (result < 0)
+                        {
+                            _logger.LogError("An error occurred during indexed spectra data save");
                         }
                     }
                 }
@@ -65,6 +83,8 @@ namespace Wissance.MossbauerLab.Watcher.Web.Jobs
 
             _logger.LogInformation("*********** Spectra indexation job finished ***********");
         }
+
+        private const string SpectrumDescriptionTemplate = "Спектр типа: {0} измерен на канале {1} спектрометра";
 
         private readonly string _spectraShare;
         private readonly IFileStoreService _storeService;

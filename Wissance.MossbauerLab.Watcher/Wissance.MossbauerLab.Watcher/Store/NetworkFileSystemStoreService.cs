@@ -41,6 +41,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Store
                         return entries;
                     });
 
+                    _logger.LogDebug($"Shared folder \"{folder}\" on server {_config.Address} contains {children.Count} items");
                     return children;
                 }
 
