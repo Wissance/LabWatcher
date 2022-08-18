@@ -14,6 +14,17 @@ namespace Wissance.MossbauerLab.Watcher.Data.Entities
 
     public class EventEntity : IModelIdentifiable<int>
     {
+        public EventEntity()
+        {
+        }
+
+        public EventEntity(EventType eventType, DateTime start, DateTime? finish)
+        {
+            Type = eventType;
+            Start = start;
+            Finish = finish;
+        }
+
         public int Id { get; }
         public EventType Type { get; set; }
         public DateTime Start { get; set; }
