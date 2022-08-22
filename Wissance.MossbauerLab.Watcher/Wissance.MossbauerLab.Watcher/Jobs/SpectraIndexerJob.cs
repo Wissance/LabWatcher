@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -32,6 +33,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Jobs
                 {
                     DateTime? first = null;
                     DateTime? last = null;
+                    bool nonEmpty = true;
 
                     foreach (string child in children)
                     {
@@ -52,27 +54,42 @@ namespace Wissance.MossbauerLab.Watcher.Web.Jobs
                         {
                             // we working with a set of files ...
                             nameData = Sm2201SpectrumNameParser.Parse(shortName);
-                            // todo: list files in directory, if we have any create db record 
+                            // todo: list files in directory, if we have any create db record
+                            IList<FileInfo> files = await _storeService.GetAllDirectoryFilesInfoAsync(child);
+                            if (files.Any())
+                            {
+                                first = files.First().LastWriteTime;
+                                last = files.Last().LastWriteTime;
+                            }
+                            else
+                            {
+                                nonEmpty = false;
+                            }
 
                         }
                         SpectrumEntity spectrum = _context.Spectra.FirstOrDefault(s => string.Equals(s.Name.ToLower(), shortName.ToLower()));
                         if (spectrum == null)
                         {
                             // creating new one
-                            _context.Spectra.Add(new SpectrumEntity(shortName, string.Format(SpectrumDescriptionTemplate, nameData.OneLetterSpectrumType, nameData.Channel),
-                                                                    child, nameData.MeasureStart, first, last));
+                            if (nonEmpty)
+                                _context.Spectra.Add(new SpectrumEntity(shortName, string.Format(SpectrumDescriptionTemplate, nameData.OneLetterSpectrumType, nameData.Channel),
+                                                                        child, nameData.MeasureStart, first, last));
                         }
                         else
                         {
                             // updating existing one
                             // update ere only last ...
+                            if (spectrum.Last != last)
+                                spectrum.Last = last;
+                            // todo(UMV): think maybe i should update something else ...
+
                         }
 
-                        int result = await _context.SaveChangesAsync();
-                        if (result < 0)
-                        {
-                            _logger.LogError("An error occurred during indexed spectra data save");
-                        }
+                    }
+                    int result = await _context.SaveChangesAsync();
+                    if (result < 0)
+                    {
+                        _logger.LogError("An error occurred during indexed spectra data save");
                     }
                 }
             }

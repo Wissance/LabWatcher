@@ -19,7 +19,7 @@ namespace Wissance.MossbauerLab.Watcher.Data
         {
         }
 
-        public int SaveChanges()
+        public override int SaveChanges()
         {
             try
             {
@@ -46,8 +46,8 @@ namespace Wissance.MossbauerLab.Watcher.Data
             modelBuilder.Entity<EventEntity>().Map();
         }
         
-        public DbSet<SpectrumEntity> Spectra { get; }
+        public DbSet<SpectrumEntity> Spectra { get; set; }
 
-        public DbSet<EventEntity> Events { get; }
+        public DbSet<EventEntity> Events { get; set; }
     }
 }

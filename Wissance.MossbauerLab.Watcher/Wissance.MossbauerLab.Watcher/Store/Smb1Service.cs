@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using SMBLibrary;
 using SMBLibrary.Client;
 using SMBLibrary.SMB1;
 using Wissance.MossbauerLab.Watcher.Web.Config;
+using FileAttributes = SMBLibrary.FileAttributes;
 
 namespace Wissance.MossbauerLab.Watcher.Web.Store
 {
@@ -87,6 +89,16 @@ namespace Wissance.MossbauerLab.Watcher.Web.Store
             {
                 return null;
             }
+        }
+
+        public Task<FileInfo> GetFileInfoAsync(string fileName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<FileInfo>> GetAllDirectoryFilesInfoAsync(string directory)
+        {
+            throw new NotImplementedException();
         }
 
         public Task<byte[]> ReadAsync(string fileName)
