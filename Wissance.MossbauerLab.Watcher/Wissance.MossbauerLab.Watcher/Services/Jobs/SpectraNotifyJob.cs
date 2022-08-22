@@ -1,22 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Quartz;
 using Wissance.MossbauerLab.Watcher.Data;
-using Wissance.MossbauerLab.Watcher.Web.Store;
+using Wissance.MossbauerLab.Watcher.Web.Config;
+using Wissance.MossbauerLab.Watcher.Web.Services.Store;
 
-namespace Wissance.MossbauerLab.Watcher.Web.Jobs
+namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
 {
     public class SpectraNotifyJob : IJob
     {
-        public SpectraNotifyJob(IFileStoreService storeService, ModelContext context, ILoggerFactory loggerFactory)
+        public SpectraNotifyJob(IFileStoreService storeService, ModelContext context, ILoggerFactory loggerFactory, ApplicationConfig config)
         {
             _storeService = storeService;
             _context = context;
-            // todo: umv: pass!
-            _spectraShare = "Autosaves";
+            _config = config;
             _logger = loggerFactory.CreateLogger<SpectraNotifyJob>();
         }
 
@@ -28,7 +26,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Jobs
             throw new NotImplementedException();
         }
 
-        private readonly string _spectraShare;
+        private readonly ApplicationConfig _config;
         private readonly IFileStoreService _storeService;
         private readonly IModelContext _context;
         private readonly ILogger<SpectraNotifyJob> _logger;

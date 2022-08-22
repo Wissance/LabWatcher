@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32.SafeHandles;
-using SimpleImpersonation;
 using Wissance.MossbauerLab.Watcher.Web.Config;
 using UserCredentials = SimpleImpersonation.UserCredentials;
 
-namespace Wissance.MossbauerLab.Watcher.Web.Store
+namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
 {
     /// <summary>
     ///    Class that allows to access shared folder files and dirs Anonymously (we don't use credentials here because we attempt to use it in Linux)

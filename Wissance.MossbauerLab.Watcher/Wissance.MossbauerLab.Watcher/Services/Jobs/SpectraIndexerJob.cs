@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,19 +7,19 @@ using Microsoft.Extensions.Logging;
 using Quartz;
 using Wissance.MossbauerLab.Watcher.Data;
 using Wissance.MossbauerLab.Watcher.Data.Entities;
-using Wissance.MossbauerLab.Watcher.Web.Store;
+using Wissance.MossbauerLab.Watcher.Web.Config;
+using Wissance.MossbauerLab.Watcher.Web.Services.Store;
 using Wissance.MossbauerLab.Watcher.Web.Utils;
 
-namespace Wissance.MossbauerLab.Watcher.Web.Jobs
+namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
 {
     public class SpectraIndexerJob : IJob
     {
-        public SpectraIndexerJob(IFileStoreService storeService, ModelContext context, ILoggerFactory loggerFactory/*, string spectraShare*/)
+        public SpectraIndexerJob(IFileStoreService storeService, ModelContext context, ILoggerFactory loggerFactory, ApplicationConfig config)
         {
             _storeService = storeService;
             _context = context;
-            // todo: umv: pass!
-            _spectraShare = "Autosaves";
+            _config = config;
             _logger = loggerFactory.CreateLogger<SpectraIndexerJob>();
         }
 
@@ -29,7 +28,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Jobs
             _logger.LogInformation("*********** Spectra indexation job started ***********");
             try
             {
-                IList<string> children = await _storeService.GetChildrenAsync(_spectraShare, ".");
+                IList<string> children = await _storeService.GetChildrenAsync(_config.Sm2201SpectraStoreSettings.Folder, ".");
                 if (children != null && children.Any())
                 {
                     DateTime? first = null;
@@ -105,7 +104,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Jobs
 
         private const string SpectrumDescriptionTemplate = "Спектр типа: {0} измерен на канале {1} спектрометра";
 
-        private readonly string _spectraShare;
+        private readonly ApplicationConfig _config;
         private readonly IFileStoreService _storeService;
         private readonly IModelContext _context;
         private readonly ILogger<SpectraIndexerJob> _logger;

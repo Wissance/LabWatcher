@@ -25,8 +25,8 @@ namespace Wissance.MossbauerLab.Watcher.Web
             _environment = webHostBuilder.GetSetting("environment");
             // todo: umv: read configuration here
             IConfiguration configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .AddJsonFile($"appsettings.{_environment}.json")
+                .AddJsonFile("appsettings.json", false, true)
+                .AddJsonFile($"appsettings.{_environment}.json", false, true)
                 .Build();
             webHostBuilder.UseStartup<Startup>()
                 .UseConfiguration(configuration);

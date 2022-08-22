@@ -11,7 +11,7 @@ using SMBLibrary.SMB1;
 using Wissance.MossbauerLab.Watcher.Web.Config;
 using FileAttributes = SMBLibrary.FileAttributes;
 
-namespace Wissance.MossbauerLab.Watcher.Web.Store
+namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
 {
     /// <summary>
     ///    Service that allows to work with Smb V1 (https://github.com/TalAloni/SMBLibrary/blob/master/ClientExamples.md)

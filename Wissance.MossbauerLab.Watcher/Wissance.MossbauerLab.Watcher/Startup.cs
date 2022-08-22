@@ -14,8 +14,8 @@ using Serilog;
 using Wissance.MossbauerLab.Watcher.Data;
 using Wissance.MossbauerLab.Watcher.Web.Config;
 using Wissance.MossbauerLab.Watcher.Web.Extensions;
-using Wissance.MossbauerLab.Watcher.Web.Jobs;
-using Wissance.MossbauerLab.Watcher.Web.Store;
+using Wissance.MossbauerLab.Watcher.Web.Services.Jobs;
+using Wissance.MossbauerLab.Watcher.Web.Services.Store;
 
 namespace Wissance.MossbauerLab.Watcher.Web
 {
@@ -62,7 +62,11 @@ namespace Wissance.MossbauerLab.Watcher.Web
 
         private void ConfigureAppServices(IServiceCollection services)
         {
-            ConfigureSmb(services);
+            // config 
+            services.AddSingleton<ApplicationConfig>(x => Configuration.GetSection(ApplicationConfigSectionName).Get<ApplicationConfig>());
+            // Access to shared folder
+            ConfigureSharedFolderAccess(services);
+            // regular jobs (watch)
             ConfigureRegularJobs(services);
         }
 
@@ -71,7 +75,7 @@ namespace Wissance.MossbauerLab.Watcher.Web
 
         }
 
-        private void ConfigureSmb(IServiceCollection services)
+        private void ConfigureSharedFolderAccess(IServiceCollection services)
         {
             services.AddScoped<IFileStoreService>(x =>
             {
@@ -88,7 +92,10 @@ namespace Wissance.MossbauerLab.Watcher.Web
                 quartz.AddJob<SpectraIndexerJob>(job => job.WithIdentity(nameof(SpectraIndexerJob)));
                 //todo: umv: move in config (every 3 hours)
                 quartz.AddTrigger(trigger => trigger.ForJob(nameof(SpectraIndexerJob))
-                .WithSimpleSchedule(x => x.WithIntervalInSeconds(60)));
+                    .WithSimpleSchedule(x => x
+                        .WithIntervalInMinutes(1)
+                        .RepeatForever()));
+                //.WithCronSchedule(_config.DefaultJobsSettings.DefaultSpectraIndexerSchedule));
             });
 
             services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Quartz;
 
-namespace Wissance.MossbauerLab.Watcher.Web.Jobs
+namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
 {
     public class EventWatchJob : IJob
     {

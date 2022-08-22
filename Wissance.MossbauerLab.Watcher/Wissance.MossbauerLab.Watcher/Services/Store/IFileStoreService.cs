@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace Wissance.MossbauerLab.Watcher.Web.Store
+namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
 {
     public interface IFileStoreService
     {
