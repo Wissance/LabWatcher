@@ -19,6 +19,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Jobs
         {
             _storeService = storeService;
             _context = context;
+            // todo: umv: pass!
             _spectraShare = "Autosaves";
             _logger = loggerFactory.CreateLogger<SpectraIndexerJob>();
         }
