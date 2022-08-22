@@ -32,8 +32,4 @@
     <ProjectReference Include="..\Wissance.MossbauerLab.Watcher.Data\Wissance.MossbauerLab.Watcher.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\Notification\" />
-  </ItemGroup>
-
 </Project>
