@@ -45,10 +45,11 @@ namespace Wissance.MossbauerLab.Watcher.Web.Jobs
                         {
                             // we working with single file
                             // 2. get from spectrum additional info
-                            // 2.1 channel number i.e. 1n220311.spc, 1 means - 1 channel
-                            // 2.2 analyze letter to understand what spectrum type is f - a-Fe, n - SNP
-                            // 2.3 get date of measure start
-                            // 2.4 get date of measure end (by last modified date)
+                            FileInfo info = await _storeService.GetFileInfoAsync(child);
+                            // 2.1 channel number i.e. 1n220311.spc, 1 means - 1 channel (in future analyze letter to understand what spectrum type is f - a-Fe, n - SNP)
+                            nameData = Sm2201SpectrumNameParser.Parse(shortName);
+                            // 2.2 get date of measure end (by last modified date)
+                            last = info.LastWriteTime;
                         }
                         else
                         {
