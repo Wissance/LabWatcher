@@ -15,6 +15,7 @@ using Wissance.MossbauerLab.Watcher.Data;
 using Wissance.MossbauerLab.Watcher.Web.Config;
 using Wissance.MossbauerLab.Watcher.Web.Extensions;
 using Wissance.MossbauerLab.Watcher.Web.Services.Jobs;
+using Wissance.MossbauerLab.Watcher.Web.Services.Notification;
 using Wissance.MossbauerLab.Watcher.Web.Services.Store;
 
 namespace Wissance.MossbauerLab.Watcher.Web
@@ -68,11 +69,18 @@ namespace Wissance.MossbauerLab.Watcher.Web
             ConfigureSharedFolderAccess(services);
             // regular jobs (watch)
             ConfigureRegularJobs(services);
+            // notifications
+            ConfigureNotificationServices(services);
         }
 
         private void ConfigureWebApi(IServiceCollection services)
         {
 
+        }
+
+        private void ConfigureNotificationServices(IServiceCollection services)
+        {
+            services.AddScoped<EmailNotifier>();
         }
 
         private void ConfigureSharedFolderAccess(IServiceCollection services)
@@ -96,6 +104,13 @@ namespace Wissance.MossbauerLab.Watcher.Web
                         .WithIntervalInMinutes(1)
                         .RepeatForever()));
                 //.WithCronSchedule(_config.DefaultJobsSettings.DefaultSpectraIndexerSchedule));
+
+                quartz.AddJob<SpectraNotifyJob>(job => job.WithIdentity(nameof(SpectraNotifyJob)));
+                //todo: umv: move in config (every 3 hours)
+                quartz.AddTrigger(trigger => trigger.ForJob(nameof(SpectraNotifyJob))
+                    .WithSimpleSchedule(x => x
+                        .WithIntervalInMinutes(10)
+                        .RepeatForever()));
             });
 
             services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
