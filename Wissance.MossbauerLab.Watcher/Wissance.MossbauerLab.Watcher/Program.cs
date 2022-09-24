@@ -29,8 +29,8 @@ namespace Wissance.MossbauerLab.Watcher.Web
                 .AddJsonFile($"appsettings.{_environment}.json", false, true)
                 .Build();
             webHostBuilder.UseStartup<Startup>()
-                .UseConfiguration(configuration);
-                //.UseKestrel();
+                .UseConfiguration(configuration)
+                .UseKestrel();
             return webHostBuilder;
         }
 

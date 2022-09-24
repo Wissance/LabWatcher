@@ -97,23 +97,31 @@ namespace Wissance.MossbauerLab.Watcher.Web
             {
                 quartz.UseMicrosoftDependencyInjectionJobFactory();
 
+                Guid id = Guid.NewGuid();
+                quartz.SchedulerId = id.ToString();
+                quartz.SchedulerName = $"Wissance.MossbauerLab.Watcher.{id}";
+
                 quartz.AddJob<SpectraIndexerJob>(job => job.WithIdentity(nameof(SpectraIndexerJob)));
                 //todo: umv: move in config (every 3 hours)
-                quartz.AddTrigger(trigger => trigger.ForJob(nameof(SpectraIndexerJob))
-                    .WithSimpleSchedule(x => x
+                quartz.AddTrigger(trigger => trigger.ForJob(nameof(SpectraIndexerJob)).StartNow()
+                    /*.WithSimpleSchedule(x => x
                         .WithIntervalInMinutes(1)
-                        .RepeatForever()));
-                //.WithCronSchedule(_config.DefaultJobsSettings.DefaultSpectraIndexerSchedule));
+                        .RepeatForever()));*/
+                      .WithCronSchedule(_config.DefaultJobsSettings.DefaultSpectraIndexerSchedule).StartNow());
 
-                quartz.AddJob<SpectraNotifyJob>(job => job.WithIdentity(nameof(SpectraNotifyJob)));
+                /*quartz.AddJob<SpectraNotifyJob>(job => job.WithIdentity(nameof(SpectraNotifyJob)));
                 //todo: umv: move in config (every 3 hours)
                 quartz.AddTrigger(trigger => trigger.ForJob(nameof(SpectraNotifyJob))
                     .WithSimpleSchedule(x => x
                         .WithIntervalInMinutes(10)
-                        .RepeatForever()));
+                        .RepeatForever()));*/
             });
 
-            services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
+            services.AddQuartzHostedService(options =>
+            {
+                options.WaitForJobsToComplete = true;
+                options.AwaitApplicationStarted = true;
+            });
         }
 
         private IConfiguration Configuration { get; }

@@ -21,16 +21,30 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Notification
 
         public async Task<bool> NotifySpectrumSavedAsync(IList<SpectrumReadyData> spectra)
         {
-            string from = "watcher@mossblab.com";
-            string to = "um.nix.user@gmail.com";
-            MailMessage msg = new MailMessage(from, to);
-            msg.Subject = "Testing mail delivery";
-            msg.Body = "Finally we send here mail on 2 channels";
-            //msg.Attachments.Add(new Attachment("D:\\myfile.txt"));
-            _smtpClient.Send(msg);
-            return true;
+            try
+            {
+                MailMessage msg = new MailMessage(_config.MailSettings.SenderMail, _config.MailSettings.SenderMail);
+                // todo: load from template
+                msg.Subject = "Testing mail delivery";
+                msg.Body = "Finally we send here mail on 2 channels";
+
+                await Task.WhenAny(new Task[] 
+                {
+                    new Task(() => _smtpClient.Send(msg)),
+                    Task.Delay(MaxAllowedTimeout)
+                });
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"An error occurred during sending e-mail: {e.Message}");
+                return false;
+            }
+
         }
 
+        private const int MaxAllowedTimeout = 5000;
 
         private readonly ApplicationConfig _config;
         private readonly ILogger<EmailNotifier> _logger;
