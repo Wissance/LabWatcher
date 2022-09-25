@@ -12,17 +12,17 @@ namespace Wissance.MossbauerLab.Watcher.Web.Config
 
         }
 
-        public ApplicationConfig(JobsConfig defaultJobsSettings, SpectraStoreConfig sm2201SpectraStoreSettings, MailConfig mailSettings, string connStr)
+        public ApplicationConfig(JobsConfig defaultJobsSettings, SpectraStoreConfig sm2201SpectraStoreSettings, NotificationConfig notificationSettings, string connStr)
         {
             DefaultJobsSettings = defaultJobsSettings;
             Sm2201SpectraStoreSettings = sm2201SpectraStoreSettings;
-            MailSettings = mailSettings;
+            NotificationSettings = notificationSettings;
             ConnStr = connStr;
         }
 
         public JobsConfig DefaultJobsSettings { get; set; }
         public SpectraStoreConfig Sm2201SpectraStoreSettings { get; set; }
-        public MailConfig MailSettings { get; set; }
+        public NotificationConfig NotificationSettings { get; set; }
         public string ConnStr { get; set; }
     }
 }

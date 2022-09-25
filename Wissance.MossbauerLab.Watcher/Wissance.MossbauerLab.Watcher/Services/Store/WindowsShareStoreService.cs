@@ -101,6 +101,19 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
             }
         }
 
+        /*public Task<FileInfo> GetLastWrittenFileInfoAsync(string directory)
+        {
+            try
+            {
+                return null;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"An error occurred during getting last written file in shared folder: {e.Message}");
+                return null;
+            }
+        }*/
+
         public async Task<byte[]> ReadAsync(string fileName)
         {
             try

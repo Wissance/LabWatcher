@@ -8,6 +8,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
     {
         Task<IList<string>> GetChildrenAsync(string shareName, string parent);
         Task<FileInfo> GetFileInfoAsync(string fileName);
+        //Task<FileInfo> GetLastWrittenFileInfoAsync(string directory);
         Task<IList<FileInfo>> GetAllDirectoryFilesInfoAsync(string directory);
         Task<byte[]> ReadAsync(string fileName);
     }

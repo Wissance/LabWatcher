@@ -16,14 +16,14 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Notification
         {
             _config = config;
             _logger = loggerFactory.CreateLogger<EmailNotifier>();
-            _smtpClient = new SmtpClient(_config.MailSettings.Host, _config.MailSettings.Port);
+            _smtpClient = new SmtpClient(_config.NotificationSettings.MailSettings.Host, _config.NotificationSettings.MailSettings.Port);
         }
 
         public async Task<bool> NotifySpectrumSavedAsync(IList<SpectrumReadyData> spectra)
         {
             try
             {
-                MailMessage msg = new MailMessage(_config.MailSettings.SenderMail, _config.MailSettings.SenderMail);
+                MailMessage msg = new MailMessage(_config.NotificationSettings.MailSettings.SenderEMail, _config.NotificationSettings.MailSettings.SenderEMail);
                 // todo: load from template
                 msg.Subject = "Testing mail delivery";
                 msg.Body = "Finally we send here mail on 2 channels";
