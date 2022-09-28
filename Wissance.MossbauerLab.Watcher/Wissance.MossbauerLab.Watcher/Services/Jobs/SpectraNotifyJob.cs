@@ -8,6 +8,7 @@ using Quartz;
 using Wissance.MossbauerLab.Watcher.Data;
 using Wissance.MossbauerLab.Watcher.Data.Entities;
 using Wissance.MossbauerLab.Watcher.Web.Config;
+using Wissance.MossbauerLab.Watcher.Web.Data;
 using Wissance.MossbauerLab.Watcher.Web.Services.Notification;
 using Wissance.MossbauerLab.Watcher.Web.Services.Store;
 
@@ -31,14 +32,23 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
             // 2. If Now - Last < threshold (2-3 hours, then send)
             IList<SpectrumEntity> lastSavedSpectra = actualSpectra.Where(s => DateTime.Now <= s.Last.Value.AddHours(_config.NotificationSettings.Threshold)).ToList();
             // 3. Get last saved spectra
+            IList<SpectrumReadyData> dataToSend = new List<SpectrumReadyData>();
             foreach (SpectrumEntity spectrum in lastSavedSpectra)
             {
                 //IList<string> savedSamples = await _storeService.GetChildrenAsync(spectrum.Name);
+                dataToSend.Add(new SpectrumReadyData(spectrum.Name, GetSpectrumChannel(spectrum.Name), spectrum.Last.Value, null));
             }
             
             // _storeService.ReadAsync()
             // 3.. Activate send
-            bool result = await _mailNotifier.NotifySpectrumSavedAsync(null);
+            bool result = await _mailNotifier.NotifySpectrumSavedAsync(dataToSend);
+        }
+
+        private int GetSpectrumChannel(string spectrumChannel)
+        {
+            string spectrumChannelStr = spectrumChannel.Substring(0, 1);
+            int channel = int.Parse(spectrumChannelStr);
+            return channel;
         }
 
         private readonly ApplicationConfig _config;
