@@ -36,6 +36,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
             foreach (SpectrumEntity spectrum in lastSavedSpectra)
             {
                 //IList<string> savedSamples = await _storeService.GetChildrenAsync(spectrum.Name);
+                //IList<s>
                 dataToSend.Add(new SpectrumReadyData(spectrum.Name, GetSpectrumChannel(spectrum.Name), spectrum.Last.Value, null));
             }
             

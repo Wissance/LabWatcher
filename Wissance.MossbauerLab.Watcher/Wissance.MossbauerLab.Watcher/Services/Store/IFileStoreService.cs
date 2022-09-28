@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -10,6 +11,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
         Task<FileInfo> GetFileInfoAsync(string fileName);
         //Task<FileInfo> GetLastWrittenFileInfoAsync(string directory);
         Task<IList<FileInfo>> GetAllDirectoryFilesInfoAsync(string directory);
+        Task<Tuple<FileInfo, byte[]>> GetLastChangedFileAsync(string directory);
         Task<byte[]> ReadAsync(string fileName);
     }
 }

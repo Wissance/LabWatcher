@@ -101,18 +101,21 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
             }
         }
 
-        /*public Task<FileInfo> GetLastWrittenFileInfoAsync(string directory)
+        public async Task<Tuple<FileInfo, byte[]>> GetLastChangedFileAsync(string directory)
         {
             try
             {
-                return null;
+                IList<FileInfo> children = await GetAllDirectoryFilesInfoAsync(directory);
+                FileInfo info = children.Last();
+                byte[] spectrum = await ReadAsync(info.FullName);
+                return new Tuple<FileInfo, byte[]>(info, spectrum);
             }
             catch (Exception e)
             {
                 _logger.LogError($"An error occurred during getting last written file in shared folder: {e.Message}");
                 return null;
             }
-        }*/
+        }
 
         public async Task<byte[]> ReadAsync(string fileName)
         {
