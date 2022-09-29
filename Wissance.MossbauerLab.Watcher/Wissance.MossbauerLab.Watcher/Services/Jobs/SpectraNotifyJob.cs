@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -35,9 +36,9 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
             IList<SpectrumReadyData> dataToSend = new List<SpectrumReadyData>();
             foreach (SpectrumEntity spectrum in lastSavedSpectra)
             {
-                //IList<string> savedSamples = await _storeService.GetChildrenAsync(spectrum.Name);
-                //IList<s>
-                dataToSend.Add(new SpectrumReadyData(spectrum.Name, GetSpectrumChannel(spectrum.Name), spectrum.Last.Value, null));
+                string relativeDir = string.Format("{0}\\{1}", _config.Sm2201SpectraStoreSettings.Folder, spectrum.Name);
+                Tuple<FileInfo, byte[]> lastSavedSpec = await _storeService.GetLastChangedFileAsync(relativeDir);
+                dataToSend.Add(new SpectrumReadyData(spectrum.Name, GetSpectrumChannel(spectrum.Name), spectrum.Last.Value, lastSavedSpec.Item2, lastSavedSpec.Item1));
             }
             
             // _storeService.ReadAsync()

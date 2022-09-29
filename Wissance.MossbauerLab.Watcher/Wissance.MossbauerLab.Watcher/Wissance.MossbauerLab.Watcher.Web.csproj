@@ -31,5 +31,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Wissance.MossbauerLab.Watcher.Data\Wissance.MossbauerLab.Watcher.Data.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Templates\**" CopyToOutputDirectory="Always" LinkBase="Templates\" />
+  </ItemGroup>
 
 </Project>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
@@ -23,10 +24,14 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Notification
         {
             try
             {
+                // comnine recipients ...
                 MailMessage msg = new MailMessage(_config.NotificationSettings.MailSettings.SenderEMail, _config.NotificationSettings.MailSettings.SenderEMail);
+                msg.IsBodyHtml = true;
                 // todo: load from template
-                msg.Subject = "Testing mail delivery";
-                msg.Body = "Finally we send here mail on 2 channels";
+                msg.Subject = SpectrumAutoSaveMailSubject;
+                string mailTemplate = await File.ReadAllTextAsync(Path.GetFullPath(SpectrumAutoSaveMailTemplate));
+                // prepare 
+                msg.Body = FormatMailMessage(mailTemplate, spectra);
 
                 await Task.WhenAny(new Task[] 
                 {
@@ -44,7 +49,14 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Notification
 
         }
 
+        public string FormatMailMessage(string template, IList<SpectrumReadyData> spectra)
+        {
+            return null;
+        }
+
         private const int MaxAllowedTimeout = 5000;
+        private const string SpectrumAutoSaveMailSubject = "Автоматически сохраненные спектры";
+        private const string SpectrumAutoSaveMailTemplate = @"Templates/autosaveNotifications.html";
 
         private readonly ApplicationConfig _config;
         private readonly ILogger<EmailNotifier> _logger;

@@ -101,6 +101,11 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
             throw new NotImplementedException();
         }
 
+        public Task<Tuple<FileInfo, byte[]>> GetLastChangedFileAsync(string directory)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<byte[]> ReadAsync(string fileName)
         {
             throw new NotImplementedException();
