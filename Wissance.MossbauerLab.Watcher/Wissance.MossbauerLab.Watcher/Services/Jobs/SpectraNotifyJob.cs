@@ -28,23 +28,36 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
-            // 1. Get spectra that we updated today last.Date() == Now.Date()
-            IList<SpectrumEntity> allSpectra = _context.Spectra.ToList();
-            IList <SpectrumEntity> actualSpectra = await _context.Spectra.Where(s => s.Last != null && s.Last.Value.Date == DateTime.Now.Date).ToListAsync();
-            // 2. If Now - Last < threshold (2-3 hours, then send)
-            IList<SpectrumEntity> lastSavedSpectra = actualSpectra.Where(s => DateTime.Now <= s.Last.Value.AddHours(_config.NotificationSettings.Threshold)).ToList();
-            // 3. Get last saved spectra
-            IList<SpectrumReadyData> dataToSend = new List<SpectrumReadyData>();
-            foreach (SpectrumEntity spectrum in lastSavedSpectra)
+            try
             {
-                string relativeDir = $@"\\{_config.Sm2201SpectraStoreSettings.Address}\{_config.Sm2201SpectraStoreSettings.Folder}\{spectrum.Name}";
-                Tuple<FileInfo, byte[]> lastSavedSpec = await _storeService.GetLastChangedFileAsync(relativeDir);
-                dataToSend.Add(new SpectrumReadyData(spectrum.Name, GetSpectrumChannel(spectrum.Name), spectrum.Last.Value, lastSavedSpec.Item2, lastSavedSpec.Item1));
+                // 1. Get spectra that we updated today last.Date() == Now.Date()
+                // IList<SpectrumEntity> allSpectra = _context.Spectra.ToList();
+                IList<SpectrumEntity> actualSpectra = await _context.Spectra.Where(s => s.Last != null && s.Last.Value.Date == DateTime.Now.Date).ToListAsync();
+                // 2. If Now - Last < threshold (2-3 hours, then send)
+                IList<SpectrumEntity> lastSavedSpectra = actualSpectra.Where(s => DateTime.Now <= s.Last.Value.AddHours(_config.NotificationSettings.Threshold)).ToList();
+                // 3. Get last saved spectra
+                IList<SpectrumReadyData> dataToSend = new List<SpectrumReadyData>();
+                foreach (SpectrumEntity spectrum in lastSavedSpectra)
+                {
+                    _logger.LogDebug("Getting last saved file (prepare data to send) for spectrum {0}", spectrum.Name);
+                    string relativeDir = $@"\\{_config.Sm2201SpectraStoreSettings.Address}\{_config.Sm2201SpectraStoreSettings.Folder}\{spectrum.Name}";
+                    Tuple<FileInfo, byte[]> lastSavedSpec = await _storeService.GetLastChangedFileAsync(relativeDir);
+                    dataToSend.Add(new SpectrumReadyData(spectrum.Name, GetSpectrumChannel(spectrum.Name), spectrum.Last.Value, lastSavedSpec.Item2, lastSavedSpec.Item1));
+                }
+
+                // 3. Activate send
+                bool result = await _mailNotifier.NotifySpectrumSavedAsync(dataToSend);
+                if (!result)
+                {
+                    _logger.LogWarning("Unsuccessful spectra autosave e-mail notification send");
+                }
+                // todo(UMV): add Telegram bot to data send
             }
-            
-            // _storeService.ReadAsync()
-            // 3.. Activate send
-            bool result = await _mailNotifier.NotifySpectrumSavedAsync(dataToSend);
+            catch (Exception e)
+            {
+                _logger.LogError("An error occurred during execution of spectra notify job: {0}", e.Message);
+            }
+
         }
 
         private int GetSpectrumChannel(string spectrumChannel)
