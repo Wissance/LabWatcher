@@ -24,7 +24,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Notification
         {
             try
             {
-                string recipients = String.Join(";", _config.NotificationSettings.MailSettings.RecipientsEMails);
+                string recipients = String.Join(",", _config.NotificationSettings.MailSettings.RecipientsEMails);
                 MailMessage msg = new MailMessage(_config.NotificationSettings.MailSettings.SenderEMail, recipients);
                 msg.IsBodyHtml = true;
                 // todo: load from template

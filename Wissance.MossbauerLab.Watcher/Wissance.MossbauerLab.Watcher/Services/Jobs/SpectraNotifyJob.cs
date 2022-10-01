@@ -29,7 +29,8 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
         public async Task Execute(IJobExecutionContext context)
         {
             // 1. Get spectra that we updated today last.Date() == Now.Date()
-            IList<SpectrumEntity> actualSpectra = await _context.Spectra.Where(s => s.Last != null && s.Last.Value.Date == DateTime.Now.Date).ToListAsync();
+            IList<SpectrumEntity> allSpectra = _context.Spectra.ToList();
+            IList <SpectrumEntity> actualSpectra = await _context.Spectra.Where(s => s.Last != null && s.Last.Value.Date == DateTime.Now.Date).ToListAsync();
             // 2. If Now - Last < threshold (2-3 hours, then send)
             IList<SpectrumEntity> lastSavedSpectra = actualSpectra.Where(s => DateTime.Now <= s.Last.Value.AddHours(_config.NotificationSettings.Threshold)).ToList();
             // 3. Get last saved spectra

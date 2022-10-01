@@ -32,12 +32,13 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
                 IList<string> children = await _storeService.GetChildrenAsync(_config.Sm2201SpectraStoreSettings.Folder, ".");
                 if (children != null && children.Any())
                 {
-                    DateTime? first = null;
-                    DateTime? last = null;
-                    bool nonEmpty = true;
 
                     foreach (string child in children)
                     {
+                        DateTime? first = null;
+                        DateTime? last = null;
+                        bool nonEmpty = true;    // means directory contains spectra files
+
                         // 0. Get short name without path
                         string shortName = Path.GetFileName(child);
                         Sm2201SpectrumNameData nameData = null;
