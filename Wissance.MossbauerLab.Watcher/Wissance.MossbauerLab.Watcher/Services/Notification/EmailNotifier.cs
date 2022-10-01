@@ -24,8 +24,8 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Notification
         {
             try
             {
-                // comnine recipients ...
-                MailMessage msg = new MailMessage(_config.NotificationSettings.MailSettings.SenderEMail, _config.NotificationSettings.MailSettings.SenderEMail);
+                string recipients = String.Join(";", _config.NotificationSettings.MailSettings.RecipientsEMails);
+                MailMessage msg = new MailMessage(_config.NotificationSettings.MailSettings.SenderEMail, recipients);
                 msg.IsBodyHtml = true;
                 // todo: load from template
                 msg.Subject = SpectrumAutoSaveMailSubject;
@@ -57,6 +57,8 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Notification
         private const int MaxAllowedTimeout = 5000;
         private const string SpectrumAutoSaveMailSubject = "Автоматически сохраненные спектры";
         private const string SpectrumAutoSaveMailTemplate = @"Templates/autosaveNotifications.html";
+
+        private const string CurrentSatePlaceholder = "{currDate}";
 
         private readonly ApplicationConfig _config;
         private readonly ILogger<EmailNotifier> _logger;
