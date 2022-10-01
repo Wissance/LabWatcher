@@ -51,7 +51,8 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Notification
 
         public string FormatMailMessage(string template, IList<SpectrumReadyData> spectra)
         {
-            return null;
+            string mailMessage = template.Replace(CurrentSatePlaceholder, DateTime.Now.ToString("F"));
+            return mailMessage;
         }
 
         private const int MaxAllowedTimeout = 5000;
