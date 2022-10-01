@@ -27,11 +27,16 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Notification
                 string recipients = String.Join(",", _config.NotificationSettings.MailSettings.RecipientsEMails);
                 MailMessage msg = new MailMessage(_config.NotificationSettings.MailSettings.SenderEMail, recipients);
                 msg.IsBodyHtml = true;
-                // todo: load from template
                 msg.Subject = SpectrumAutoSaveMailSubject;
                 string mailTemplate = await File.ReadAllTextAsync(Path.GetFullPath(SpectrumAutoSaveMailTemplate));
                 // prepare 
                 msg.Body = FormatMailMessage(mailTemplate, spectra);
+                foreach (SpectrumReadyData spec in spectra)
+                {
+                    Stream stream = new MemoryStream(spec.Spectrum);
+                    msg.Attachments.Add(new Attachment(stream , spec.Name));
+                }
+                
 
                 await Task.WhenAny(new Task[] 
                 {
@@ -52,6 +57,10 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Notification
         public string FormatMailMessage(string template, IList<SpectrumReadyData> spectra)
         {
             string mailMessage = template.Replace(CurrentSatePlaceholder, DateTime.Now.ToString("F"));
+            IList<string> lines = spectra.Select(s => string.Format(SavedSpectrumDescriptionTemplate, s.Name, s.Channel, s.RawInfo.LastWriteTime)).ToList();
+            string linesStr = string.Join(Environment.NewLine, lines);
+            mailMessage = mailMessage.Replace(AutosavedSpectraPlaceholder, linesStr);
+
             return mailMessage;
         }
 
@@ -60,6 +69,9 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Notification
         private const string SpectrumAutoSaveMailTemplate = @"Templates/autosaveNotifications.html";
 
         private const string CurrentSatePlaceholder = "{currDate}";
+        private const string AutosavedSpectraPlaceholder = "{savedSpectra}";
+        // <!--<li>Спектр {msSpName} по каналу {msChNumber} сохранен {msSaveDate}</li>-->
+        private const string SavedSpectrumDescriptionTemplate = "<li>Спектр {0} по каналу {1} сохранен {2}</li>";
 
         private readonly ApplicationConfig _config;
         private readonly ILogger<EmailNotifier> _logger;
