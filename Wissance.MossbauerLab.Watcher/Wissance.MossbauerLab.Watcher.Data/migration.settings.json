@@ -1,0 +1,5 @@
+{
+  "Db": {
+    "ConnStr": "Data Source=Wissance.MossbauerLab.Watcher.Migrations.db;"
+  }
+}
