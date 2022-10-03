@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -17,15 +18,21 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Notification
         {
             _config = config;
             _logger = loggerFactory.CreateLogger<EmailNotifier>();
-            _smtpClient = new SmtpClient(_config.NotificationSettings.MailSettings.Host, _config.NotificationSettings.MailSettings.Port);
+            _smtpClient = new SmtpClient(_config.NotificationSettings.MailSettings.Host, _config.NotificationSettings.MailSettings.Port)
+            {
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(_config.NotificationSettings.MailSettings.Sender, _config.NotificationSettings.MailSettings.Password)
+            };
         }
 
         public async Task<bool> NotifySpectrumSavedAsync(IList<SpectrumReadyData> spectra)
         {
             try
             {
-                string recipients = String.Join(",", _config.NotificationSettings.MailSettings.RecipientsEMails);
-                MailMessage msg = new MailMessage(_config.NotificationSettings.MailSettings.SenderEMail, recipients);
+                string recipients = String.Join(",", _config.NotificationSettings.MailSettings.Recipients);
+                MailMessage msg = new MailMessage(_config.NotificationSettings.MailSettings.Sender, recipients);
                 msg.IsBodyHtml = true;
                 msg.Subject = SpectrumAutoSaveMailSubject;
                 string mailTemplate = await File.ReadAllTextAsync(Path.GetFullPath(SpectrumAutoSaveMailTemplate));
@@ -36,9 +43,10 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Notification
                     Stream stream = new MemoryStream(spec.Spectrum);
                     msg.Attachments.Add(new Attachment(stream , spec.Name));
                 }
-                
+                _smtpClient.Send(msg);
 
-                await Task.WhenAny(new Task[] 
+
+                await Task.WhenAny(new Task[]
                 {
                     new Task(() => _smtpClient.Send(msg)),
                     Task.Delay(MaxAllowedTimeout)
@@ -64,7 +72,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Notification
             return mailMessage;
         }
 
-        private const int MaxAllowedTimeout = 5000;
+        private const int MaxAllowedTimeout = 10000;
         private const string SpectrumAutoSaveMailSubject = "Автоматически сохраненные спектры";
         private const string SpectrumAutoSaveMailTemplate = @"Templates/autosaveNotifications.html";
 

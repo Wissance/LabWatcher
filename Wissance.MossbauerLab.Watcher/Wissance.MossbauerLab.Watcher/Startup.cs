@@ -109,7 +109,8 @@ namespace Wissance.MossbauerLab.Watcher.Web
                 quartz.AddJob<SpectraNotifyJob>(job => job.WithIdentity(nameof(SpectraNotifyJob)));
                 //todo(umv): move in config (every 3 hours)
                 quartz.AddTrigger(trigger => trigger.ForJob(nameof(SpectraNotifyJob))
-                      .WithCronSchedule(_config.DefaultJobsSettings.DefaultSpectraNotifySchedule));
+                      .WithSimpleSchedule(SimpleScheduleBuilder.RepeatMinutelyForever()));
+                 //.WithCronSchedule(_config.DefaultJobsSettings.DefaultSpectraNotifySchedule));
             });
 
             services.AddQuartzHostedService(options =>

@@ -13,17 +13,19 @@ namespace Wissance.MossbauerLab.Watcher.Web.Config
 
         }
 
-        public MailConfig(string host, int port, string senderEMail, string[] recipientsEMails)
+        public MailConfig(string host, int port, string sender, string password, string[] recipients)
         {
             Host = host;
             Port = port;
-            SenderEMail = senderEMail;
-            RecipientsEMails = recipientsEMails;
+            Sender = sender;
+            Recipients = recipients;
+            Password = password;
         }
 
         public string Host { get; set; }
         public int Port { get; set; }
-        public string SenderEMail { get; set; }
-        public string[] RecipientsEMails { get; set; }
+        public string Sender { get; set; }
+        public string Password { get; set; }
+        public string[] Recipients { get; set; }
     }
 }

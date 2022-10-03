@@ -28,6 +28,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
+            _logger.LogInformation("*********** Spectra notification job started ***********");
             try
             {
                 // 1. Get spectra that we updated today last.Date() == Now.Date()
@@ -57,6 +58,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
             {
                 _logger.LogError("An error occurred during execution of spectra notify job: {0}", e.Message);
             }
+            _logger.LogInformation("*********** Spectra notification job finished ***********");
 
         }
 
