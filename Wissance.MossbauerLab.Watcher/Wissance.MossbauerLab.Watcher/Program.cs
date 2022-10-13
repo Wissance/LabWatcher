@@ -22,7 +22,8 @@ namespace Wissance.MossbauerLab.Watcher.Web
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
             IWebHostBuilder webHostBuilder = Microsoft.AspNetCore.WebHost.CreateDefaultBuilder();
-            _environment = webHostBuilder.GetSetting("environment");
+            _environment = GetEnvironment(args);
+                //webHostBuilder.GetSetting("environment");
             // todo: umv: read configuration here
             IConfiguration configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", false, true)
@@ -33,6 +34,24 @@ namespace Wissance.MossbauerLab.Watcher.Web
                 .UseKestrel();
             return webHostBuilder;
         }
+
+        private static string GetEnvironment(string[] args)
+        {
+            string value = args.FirstOrDefault(a => EnvironmentKeys.Contains(a.ToLower().Trim()));
+            if (value == null)
+                return DefaultEnvironment;
+            string[] parts = value.Split('=');
+            if (parts.Length == 2)
+                return parts[1];
+            return DefaultEnvironment;
+        }
+
+        private const string DefaultEnvironment = "Development";
+        private static readonly string[] EnvironmentKeys =
+        {
+            "--environment",
+            "--env"
+        };
 
         private static string _environment;
     }
