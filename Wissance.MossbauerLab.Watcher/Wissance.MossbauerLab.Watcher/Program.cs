@@ -37,21 +37,24 @@ namespace Wissance.MossbauerLab.Watcher.Web
 
         private static string GetEnvironment(string[] args)
         {
-            string value = args.FirstOrDefault(a => EnvironmentKeys.Contains(a.ToLower().Trim()));
-            if (value == null)
+            if (args.Length < 1)
                 return DefaultEnvironment;
-            string[] parts = value.Split('=');
+            string argument = args.FirstOrDefault(a => a.ToLower().Contains(EnvironmentKey));
+            if (argument == null)
+                return DefaultEnvironment;
+            string[] parts = argument.Split('=');
             if (parts.Length == 2)
                 return parts[1];
             return DefaultEnvironment;
         }
 
         private const string DefaultEnvironment = "Development";
-        private static readonly string[] EnvironmentKeys =
+        private const string EnvironmentKey = "environment";
+        /*private static readonly string[] EnvironmentKeys =
         {
             "--environment",
             "--env"
-        };
+        };*/
 
         private static string _environment;
     }
