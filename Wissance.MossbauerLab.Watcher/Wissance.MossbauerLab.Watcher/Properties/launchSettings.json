@@ -10,6 +10,7 @@
   "profiles": {
     "IIS Express": {
       "commandName": "Project",
+      "commandLineArgs": "--environment=Development",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
