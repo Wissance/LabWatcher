@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32.SafeHandles;
 using Wissance.MossbauerLab.Watcher.Web.Config;
-using UserCredentials = SimpleImpersonation.UserCredentials;
+//using UserCredentials = SimpleImpersonation.UserCredentials;
 
 namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
 {
@@ -26,25 +26,17 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
         {
             try
             {
-                // todo (UMV): think about what would happened if we run app from Linux
-                using (SafeAccessTokenHandle userHandle = GetAccessToken())
+                string folder = $@"\\{_config.Address}\{shareName}";
+                if (!string.Equals(parent, RootFolder))
                 {
-                    string folder = $@"\\{_config.Address}\{shareName}";
-                    if (!string.Equals(parent, RootFolder))
-                    {
-                        folder = $@"\\{_config.Address}\{shareName}\{parent}";
-                    }
-
-                    IList<string> children = await WindowsIdentity.RunImpersonatedAsync(userHandle, async () =>
-                    {
-                        List<string> entries = Directory.GetDirectories(folder).ToList();
-                        entries.AddRange(Directory.GetFiles(folder));
-                        return entries;
-                    });
-
-                    _logger.LogDebug($"Shared folder \"{folder}\" on server {_config.Address} contains {children.Count} items");
-                    return children;
+                    folder = $@"\\{_config.Address}\{shareName}\{parent}";
                 }
+
+
+                List<string> children = Directory.GetDirectories(folder).ToList();
+                children.AddRange(Directory.GetFiles(folder));
+                _logger.LogDebug($"Shared folder \"{folder}\" on server {_config.Address} contains {children.Count} items");
+                return children;
 
             }
             catch (Exception e)
@@ -59,15 +51,13 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
         {
             try
             {
-                using (SafeAccessTokenHandle userHandle = GetAccessToken())
-                {
-                    FileInfo currFile = new FileInfo(fileName);
-                    return currFile;
-                }
+                FileInfo currFile = new FileInfo(fileName);
+                return currFile;
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occurred during getting fileInfo of file: \"{fileName}\", error: {e.Message}");
+                _logger.LogError(
+                    $"An error occurred during getting fileInfo of file: \"{fileName}\", error: {e.Message}");
                 return null;
             }
         }
@@ -77,20 +67,11 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
             IList<FileInfo> filesData = new List<FileInfo>();
             try
             {
-                // todo (UMV): think about what would happened if we run app from Linux
-                using (SafeAccessTokenHandle userHandle = GetAccessToken())
-                {
+                IList<string> children = Directory.GetFiles(directory).ToList();
 
-                    IList<string> children = await WindowsIdentity.RunImpersonatedAsync(userHandle, async () =>
-                    {
-                        return Directory.GetFiles(directory).ToList();
-                    });
+                filesData = children.Select(c => new FileInfo(c)).OrderBy(c => c.LastWriteTime).ToList();
 
-                    filesData = children.Select(c => new FileInfo(c)).OrderBy(c => c.LastWriteTime).ToList();
-
-                    _logger.LogDebug($"Directory \"{directory}\" on server {_config.Address} contains {children.Count} items");
-                }
-                
+                _logger.LogDebug($"Directory \"{directory}\" on server {_config.Address} contains {children.Count} items");
                 return filesData;
 
             }
@@ -121,10 +102,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
         {
             try
             {
-                using (SafeAccessTokenHandle userHandle = WindowsIdentity.GetAnonymous().AccessToken)
-                {
-                    return await File.ReadAllBytesAsync(fileName);
-                }
+                return await File.ReadAllBytesAsync(fileName);
             }
             catch (Exception e)
             {
@@ -133,11 +111,6 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
             }
         }
 
-        private SafeAccessTokenHandle GetAccessToken()
-        { 
-            SafeAccessTokenHandle userHandle = WindowsIdentity.GetAnonymous().AccessToken;
-            return userHandle;
-        }
 
         private const string RootFolder = ".";
 

@@ -50,11 +50,6 @@ namespace Wissance.MossbauerLab.Watcher.Web
 
         private const string DefaultEnvironment = "Development";
         private const string EnvironmentKey = "environment";
-        /*private static readonly string[] EnvironmentKeys =
-        {
-            "--environment",
-            "--env"
-        };*/
 
         private static string _environment;
     }
