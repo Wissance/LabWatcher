@@ -86,12 +86,15 @@ Description=Wissance.MossbauerLab.Watcher service
 After=syslog.target network.target
 Before=httpd.service
 [Service]
+WorkingDirectory=/usr/local/sbin/labwatcher/app
 User=labwatcher
 Group=mossbauer
 LimitNOFILE=102642
 PIDFile=/var/run/mossbauer/labwatcher.pid
 ExecStart=dotnet /usr/local/sbin/labwatcher/app/Wissance.MossbauerLab.Watcher.Web.dll --environment=Production
-StandardOutput=null
+StandardOutput=syslog
+StandardError=syslog
+
 [Install]
 WantedBy=multi-user.target
 
