@@ -67,6 +67,37 @@ Solution could be run either on `Windows` or `Linux`
 
 ## 3. How to run
 
+### 3.1 Run once
 1. Configure `appsettings.Production.json` before run and set `Address` to "" and set `Folder` to mount point if you are running 
    solution on `Raspberry Pi`
 2. Run solution `dotnet Wissance.MossbauerLab.Watcher.Web.dll --environment=Production`
+
+### 3.2 Run as a service
+
+To run `Wissance.MossbauerLab.Watcher.Web` as a service it should be configured as `systemd` service:
+
+1. Create group - `sudo groupadd mossbauer`
+2. Create user - `labwatcher - sudo useradd -r -g mossbauer -d /usr/local/sbin/labwatcher -s /sbin/nologin labwatcher`
+3. Create labwatcher.service file with following content:
+```
+
+[Unit]
+Description=Wissance.MossbauerLab.Watcher service
+After=syslog.target network.target
+Before=httpd.service
+[Service]
+User=labwatcher
+Group=mossbauer
+LimitNOFILE=102642
+PIDFile=/var/run/mossbauer/labwatcher.pid
+ExecStart=dotnet /usr/local/sbin/labwatcher/app/Wissance.MossbauerLab.Watcher.dll --environment=Production
+StandardOutput=null
+[Install]
+WantedBy=multi-user.target
+
+```
+4. Change directory owner to `mossbauer:labwatcher` - `sudo chown -R labwatcher:mossbauer /usr/local/sbin/labwatcher`
+5. Copy `labwatcher.service` file to `/etc/systemd/system`
+6. Execute `sudo systemctl daemon-reload`
+7. Execute `sudo systemctl enable labwatcher`
+8. Execute `sudo systemctl start labwatcher`
