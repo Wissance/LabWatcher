@@ -90,7 +90,7 @@ User=labwatcher
 Group=mossbauer
 LimitNOFILE=102642
 PIDFile=/var/run/mossbauer/labwatcher.pid
-ExecStart=dotnet /usr/local/sbin/labwatcher/app/Wissance.MossbauerLab.Watcher.dll --environment=Production
+ExecStart=dotnet /usr/local/sbin/labwatcher/app/Wissance.MossbauerLab.Watcher.Web.dll --environment=Production
 StandardOutput=null
 [Install]
 WantedBy=multi-user.target
