@@ -16,3 +16,7 @@ Mossbauer laboratory watcher and notifier
    * `MICHAEL` - computer name
    * `MOSSBAUERLAB` - workgroup name
    * `AUTOSAVES` - name of shared folder
+   
+## How to run
+
+dotnet Wissance.MossbauerLab.Watcher.Web.dll --environment=Production
