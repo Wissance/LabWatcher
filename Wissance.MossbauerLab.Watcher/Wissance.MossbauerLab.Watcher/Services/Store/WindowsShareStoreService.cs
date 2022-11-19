@@ -24,14 +24,22 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
 
         public async Task<IList<string>> GetChildrenAsync(string shareName, string parent = RootFolder)
         {
+            string folder = shareName;
+            if (!string.IsNullOrEmpty(_config.Address))
+               folder = Path.Combine($@"\\{_config.Address}", shareName);
+
             try
             {
-                string folder = $@"\\{_config.Address}\{shareName}";
+                
                 if (!string.Equals(parent, RootFolder))
                 {
-                    folder = $@"\\{_config.Address}\{shareName}\{parent}";
+                    if (!string.IsNullOrEmpty(_config.Address))
+                        folder = Path.Combine($@"\\{_config.Address}", shareName, parent);
+                    else
+                    {
+                        folder = Path.Combine(shareName, parent);
+                    }
                 }
-
 
                 List<string> children = Directory.GetDirectories(folder).ToList();
                 children.AddRange(Directory.GetFiles(folder));
@@ -41,7 +49,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occurred during getting children items of shared folder: {e.Message}");
+                _logger.LogError($"An error occurred during getting children items of shared folder: {e.Message} using path {folder}");
                 return null;
             }
 
@@ -77,7 +85,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occurred during getting children items of shared folder: {e.Message}");
+                _logger.LogError($"An error occurred during getting all shared folder files: {e.Message}");
                 return null;
             }
         }

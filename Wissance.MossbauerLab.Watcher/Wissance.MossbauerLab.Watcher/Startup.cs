@@ -88,6 +88,7 @@ namespace Wissance.MossbauerLab.Watcher.Web
             services.AddScoped<IFileStoreService>(x =>
             {
                 return new WindowsShareStoreService(_config.Sm2201SpectraStoreSettings, x.GetRequiredService<ILoggerFactory>());
+                //return new Smb1Service(_config.Sm2201SpectraStoreSettings, x.GetRequiredService<ILoggerFactory>());
             });
         }
 

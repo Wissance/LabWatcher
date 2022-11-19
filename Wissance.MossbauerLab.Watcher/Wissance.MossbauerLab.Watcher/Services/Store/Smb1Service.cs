@@ -31,7 +31,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
             {
                 IList<string> children = new List<string>();
                 SMB1Client client = new SMB1Client();
-                bool isConnected = client.Connect(IPAddress.Parse(_config.Address), SMBTransportType.NetBiosOverTCP);
+                bool isConnected = client.Connect(IPAddress.Parse(_config.Address), SMBTransportType.DirectTCPTransport);
                 if (isConnected)
                 {
                     bool hasPassword = _config.UserCredentials != null;
@@ -40,7 +40,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
                     if (status == NTStatus.STATUS_SUCCESS)
                     {
                         List<string> shares = client.ListShares(out status).Select(s => s.ToLower()).ToList();
-                        // todo (UMV) ...
+                        // 1. Select proper share
                         if (shares.Contains(shareName.ToLower()))
                         {
                             // find folder, we assume folder on level 1 ...
@@ -48,22 +48,27 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
                             ISMBFileStore fileStore = client.TreeConnect(shareName, out status);
                             if (status == NTStatus.STATUS_SUCCESS)
                             {
-                                object handle;
+                                object handle = null;
                                 FileStatus fileStatus;
                                 status = fileStore.CreateFile(out handle, out fileStatus, "\\", AccessMask.GENERIC_READ, 
                                                               FileAttributes.Directory, ShareAccess.Read | ShareAccess.Write, 
                                                               CreateDisposition.FILE_OPEN, CreateOptions.FILE_DIRECTORY_FILE, null);
                                 if (status == NTStatus.STATUS_SUCCESS)
                                 {
-                                    List<FindInformation> fileList;
+                                    /*List<FindInformation> fileList;
                                     status = ((SMB1FileStore)fileStore).QueryDirectory(out fileList, "\\*", FindInformationLevel.SMB_FIND_FILE_DIRECTORY_INFO);
                                     status = fileStore.CloseFile(handle);
 
                                     foreach (FindInformation info in fileList)
                                     {
-                                        
-                                    }
+                                    }*/
+
+                                    List<QueryDirectoryFileInformation> fileList = null;
+                                    status = fileStore.QueryDirectory(out fileList, handle, "*", FileInformationClass.FileDirectoryInformation);
+                                    status = fileStore.CloseFile(handle);
                                 }
+
+
                             }
                             else
                             {
