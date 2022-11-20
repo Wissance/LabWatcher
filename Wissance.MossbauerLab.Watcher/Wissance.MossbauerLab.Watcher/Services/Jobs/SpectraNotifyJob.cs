@@ -41,7 +41,15 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
                 foreach (SpectrumEntity spectrum in lastSavedSpectra)
                 {
                     _logger.LogDebug("Getting last saved file (prepare data to send) for spectrum {0}", spectrum.Name);
-                    string relativeDir = $@"\\{_config.Sm2201SpectraStoreSettings.Address}\{_config.Sm2201SpectraStoreSettings.Folder}\{spectrum.Name}";
+                    string relativeDir = "";
+                    if (!string.IsNullOrEmpty(_config.Sm2201SpectraStoreSettings.Address))
+                    {
+                        relativeDir = $@"\\{_config.Sm2201SpectraStoreSettings.Address}\{_config.Sm2201SpectraStoreSettings.Folder}\{spectrum.Name}";
+                    }
+                    else
+                    {
+                        relativeDir = Path.Combine(_config.Sm2201SpectraStoreSettings.Folder, spectrum.Name);
+                    }
                     Tuple<FileInfo, byte[]> lastSavedSpec = await _storeService.GetLastChangedFileAsync(relativeDir);
                     dataToSend.Add(new SpectrumReadyData(spectrum.Name, GetSpectrumChannel(spectrum.Name), spectrum.Last.Value, lastSavedSpec.Item2, lastSavedSpec.Item1));
                 }
