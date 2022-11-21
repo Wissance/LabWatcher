@@ -1,4 +1,13 @@
 # Wissance.MossbauerLab.Watcher
+A set of tools that helps to build strings from templates and process text that faster than fmt!!!.
+
+
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/wissance/LabWatcher?style=plastic) 
+![GitHub issues](https://img.shields.io/github/issues/wissance/LabWatcher?style=plastic)
+![GitHub Release Date](https://img.shields.io/github/release-date/wissance/LabWatcher) 
+![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/LabWatcher/v0.9.2/total?style=plastic)
+
+![String Fomatter: a convenient string formatting tool](/docs/img/labwatcher.png)
 
 Mossbauer laboratory event watcher and notifier, used for add some specific controls (custom) over Mossbauer spectrometric devices.
 
