@@ -7,7 +7,7 @@ A set of tools that helps to build strings from templates and process text that 
 ![GitHub Release Date](https://img.shields.io/github/release-date/wissance/LabWatcher) 
 ![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/LabWatcher/v0.9.2/total?style=plastic)
 
-![LabWatcher: is automated Mossbauer laboratory control toolset](/docs/img/labwatcher.png)
+![LabWatcher: is automated Mossbauer laboratory control toolset](/docs/img/labwatcher.jpg)
 
 Mossbauer laboratory event watcher and notifier, used for add some specific controls (custom) over Mossbauer spectrometric devices.
 
