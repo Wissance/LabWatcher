@@ -113,3 +113,12 @@ WantedBy=multi-user.target
 6. Execute `sudo systemctl daemon-reload`
 7. Execute `sudo systemctl enable labwatcher`
 8. Execute `sudo systemctl start labwatcher`
+
+### 4. Troubleshooting
+
+1. If we are mount automatically and got error like:
+```
+Jan 08 18:14:32 LabControl mount.sh[495]: mount error(101): Network is unreachable
+Jan 08 18:14:32 LabControl mount.sh[495]: Refer to the mount.cifs(8) manual page (e.g. man mount.cifs) ...
+```
+there are many solutions but for me helpful was adding `sleep 20s` in `.sh` script prior to `mount`
