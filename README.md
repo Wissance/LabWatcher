@@ -56,7 +56,7 @@ Solution could be run either on `Windows` or `Linux`
 ### 2.1 Running solution on Raspberry Pi
 1. Configure SMB (/etc/samba/smb.conf) as follows, add to `global` section:
    * `client min protocol = NT1`
-   * `client lanman auth = yes'
+   * `client lanman auth = yes`
    * `client ntlmv2 auth = no`
    To check is there access to shared folder using `smbclient` use following command
    ```bash
