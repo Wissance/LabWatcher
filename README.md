@@ -1,6 +1,5 @@
 # Wissance.MossbauerLab.Watcher
-A set of tools that helps to build strings from templates and process text that faster than fmt!!!.
-
+A set of tools that helps to analyze state of spectrometry devices and notify about important events.
 
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/wissance/LabWatcher?style=plastic) 
 ![GitHub issues](https://img.shields.io/github/issues/wissance/LabWatcher?style=plastic)
