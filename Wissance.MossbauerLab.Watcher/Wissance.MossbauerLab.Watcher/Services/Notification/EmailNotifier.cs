@@ -7,7 +7,6 @@ using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Wissance.MossbauerLab.Watcher.Web.Config;
-using Microsoft.Extensions.Logging;
 using Wissance.MossbauerLab.Watcher.Web.Data;
 
 namespace Wissance.MossbauerLab.Watcher.Web.Services.Notification
@@ -41,7 +40,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Notification
                 foreach (SpectrumReadyData spec in spectra)
                 {
                     Stream stream = new MemoryStream(spec.Spectrum);
-                    msg.Attachments.Add(new Attachment(stream , spec.Name));
+                    msg.Attachments.Add(new Attachment(stream, $"{spec.Name}.spc"));
                 }
                 _smtpClient.Send(msg);
 
@@ -64,7 +63,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Notification
 
         public string FormatMailMessage(string template, IList<SpectrumReadyData> spectra)
         {
-            string mailMessage = template.Replace(CurrentSatePlaceholder, DateTime.Now.ToString("F"));
+            string mailMessage = template.Replace(CurrentSatePlaceholder, DateTime.Now.ToString("yyyy-MM-dd:HH-mm-ss"));
             IList<string> lines = spectra.Select(s => string.Format(SavedSpectrumDescriptionTemplate, s.Name, s.Channel, s.RawInfo.LastWriteTime)).ToList();
             string linesStr = string.Join(Environment.NewLine, lines);
             mailMessage = mailMessage.Replace(AutosavedSpectraPlaceholder, linesStr);
