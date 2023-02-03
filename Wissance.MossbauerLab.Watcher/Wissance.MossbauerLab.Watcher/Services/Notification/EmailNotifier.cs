@@ -64,7 +64,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Notification
         public string FormatMailMessage(string template, IList<SpectrumReadyData> spectra)
         {
             string mailMessage = template.Replace(CurrentSatePlaceholder, DateTime.Now.ToString("yyyy-MM-dd:HH-mm-ss"));
-            IList<string> lines = spectra.Select(s => string.Format(SavedSpectrumDescriptionTemplate, s.Name, s.Channel, s.RawInfo.LastWriteTime)).ToList();
+            IList<string> lines = spectra.Select(s => string.Format(SavedSpectrumDescriptionTemplate, s.Name, s.Channel, s.RawInfo.LastWriteTime.ToString("yyyy-MM-dd:HH-mm-ss"))).ToList();
             string linesStr = string.Join(Environment.NewLine, lines);
             mailMessage = mailMessage.Replace(AutosavedSpectraPlaceholder, linesStr);
 
