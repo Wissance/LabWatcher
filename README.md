@@ -1,5 +1,5 @@
 # Wissance.MossbauerLab.Watcher
-A set of tools that helps to analyze state of spectrometry devices and notify about important events in scientific lab.
+A set of tools that helps to analyze **state of spectrometry devices** and notify about important events in **scientific lab**.
 
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/wissance/LabWatcher?style=plastic) 
 ![GitHub issues](https://img.shields.io/github/issues/wissance/LabWatcher?style=plastic)
