@@ -121,3 +121,9 @@ Jan 08 18:14:32 LabControl mount.sh[495]: mount error(101): Network is unreachab
 Jan 08 18:14:32 LabControl mount.sh[495]: Refer to the mount.cifs(8) manual page (e.g. man mount.cifs) ...
 ```
 there are many solutions but for me helpful was adding `sleep 20s` in `.sh` script prior to `mount`
+
+## Contributors
+
+<a href="https://github.com/Wissance/LabWatcher/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Wissance/LabWatcher" />
+</a>
