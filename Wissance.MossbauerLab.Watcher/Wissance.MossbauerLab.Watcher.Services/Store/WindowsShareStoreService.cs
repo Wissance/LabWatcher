@@ -4,12 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32.SafeHandles;
-using Wissance.MossbauerLab.Watcher.Web.Config;
+
+using Wissance.MossbauerLab.Watcher.Services.Config;
 //using UserCredentials = SimpleImpersonation.UserCredentials;
 
-namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
+namespace Wissance.MossbauerLab.Watcher.Services.Store
 {
     /// <summary>
     ///    Class that allows to access shared folder files and dirs Anonymously (we don't use credentials here because we attempt to use it in Linux)
@@ -26,11 +28,11 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
         {
             string folder = shareName;
             if (!string.IsNullOrEmpty(_config.Address))
-               folder = Path.Combine($@"\\{_config.Address}", shareName);
+                folder = Path.Combine($@"\\{_config.Address}", shareName);
 
             try
             {
-                
+
                 if (!string.Equals(parent, RootFolder))
                 {
                     if (!string.IsNullOrEmpty(_config.Address))

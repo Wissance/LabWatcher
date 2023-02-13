@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
+namespace Wissance.MossbauerLab.Watcher.Services.Store
 {
     public interface IFileStoreService
     {

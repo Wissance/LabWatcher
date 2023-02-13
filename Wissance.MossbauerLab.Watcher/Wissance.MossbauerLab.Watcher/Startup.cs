@@ -12,11 +12,11 @@ using Microsoft.Extensions.Logging;
 using Quartz;
 using Serilog;
 using Wissance.MossbauerLab.Watcher.Data;
-using Wissance.MossbauerLab.Watcher.Web.Config;
-using Wissance.MossbauerLab.Watcher.Web.Extensions;
-using Wissance.MossbauerLab.Watcher.Web.Services.Jobs;
-using Wissance.MossbauerLab.Watcher.Web.Services.Notification;
-using Wissance.MossbauerLab.Watcher.Web.Services.Store;
+using Wissance.MossbauerLab.Watcher.Common.Extensions;
+using Wissance.MossbauerLab.Watcher.Services.Notification;
+using Wissance.MossbauerLab.Watcher.Services.Store;
+using Wissance.MossbauerLab.Watcher.Services.Jobs;
+using Wissance.MossbauerLab.Watcher.Services.Config;
 
 namespace Wissance.MossbauerLab.Watcher.Web
 {

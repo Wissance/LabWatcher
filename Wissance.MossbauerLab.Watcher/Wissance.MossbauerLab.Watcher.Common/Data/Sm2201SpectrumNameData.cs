@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Wissance.MossbauerLab.Watcher.Web.Data
+namespace Wissance.MossbauerLab.Watcher.Common.Data
 {
     public class Sm2201SpectrumNameData
     {

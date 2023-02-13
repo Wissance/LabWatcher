@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Wissance.MossbauerLab.Watcher.Web.Data;
 
-namespace Wissance.MossbauerLab.Watcher.Web.Utils
+using Wissance.MossbauerLab.Watcher.Common.Data;
+
+namespace Wissance.MossbauerLab.Watcher.Common.Utils
 {
     public static class Sm2201SpectrumNameParser
     {

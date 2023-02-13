@@ -29,10 +29,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Wissance.MossbauerLab.Watcher.Common\Wissance.MossbauerLab.Watcher.Common.csproj" />
     <ProjectReference Include="..\Wissance.MossbauerLab.Watcher.Data\Wissance.MossbauerLab.Watcher.Data.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Templates\**" CopyToOutputDirectory="Always" LinkBase="Templates\" />
+    <ProjectReference Include="..\Wissance.MossbauerLab.Watcher.Services\Wissance.MossbauerLab.Watcher.Services.csproj" />
   </ItemGroup>
 
 </Project>

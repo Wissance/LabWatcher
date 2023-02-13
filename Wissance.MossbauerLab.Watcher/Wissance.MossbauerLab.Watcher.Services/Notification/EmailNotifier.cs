@@ -5,11 +5,13 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Wissance.MossbauerLab.Watcher.Web.Config;
-using Wissance.MossbauerLab.Watcher.Web.Data;
 
-namespace Wissance.MossbauerLab.Watcher.Web.Services.Notification
+using Microsoft.Extensions.Logging;
+
+using Wissance.MossbauerLab.Watcher.Common.Data;
+using Wissance.MossbauerLab.Watcher.Services.Config;
+
+namespace Wissance.MossbauerLab.Watcher.Services.Notification
 {
     public class EmailNotifier : ISpectrumReadyNotifier
     {
@@ -30,7 +32,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Notification
         {
             try
             {
-                string recipients = String.Join(",", _config.NotificationSettings.MailSettings.Recipients);
+                string recipients = string.Join(",", _config.NotificationSettings.MailSettings.Recipients);
                 MailMessage msg = new MailMessage(_config.NotificationSettings.MailSettings.Sender, recipients);
                 msg.IsBodyHtml = true;
                 msg.Subject = SpectrumAutoSaveMailSubject;
