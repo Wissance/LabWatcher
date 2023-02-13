@@ -4,14 +4,18 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+
 using Microsoft.Extensions.Logging;
+
 using SMBLibrary;
 using SMBLibrary.Client;
 using SMBLibrary.SMB1;
-using Wissance.MossbauerLab.Watcher.Web.Config;
+
+using Wissance.MossbauerLab.Watcher.Services.Config;
+
 using FileAttributes = SMBLibrary.FileAttributes;
 
-namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
+namespace Wissance.MossbauerLab.Watcher.Services.Store
 {
     /// <summary>
     ///    Service that allows to work with Smb V1 (https://github.com/TalAloni/SMBLibrary/blob/master/ClientExamples.md)
@@ -35,8 +39,8 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
                 if (isConnected)
                 {
                     bool hasPassword = _config.UserCredentials != null;
-                    NTStatus status = client.Login(_config.Domain, hasPassword ? _config.UserCredentials.User : String.Empty,
-                                                   hasPassword ? _config.UserCredentials.Password : String.Empty);
+                    NTStatus status = client.Login(_config.Domain, hasPassword ? _config.UserCredentials.User : string.Empty,
+                                                   hasPassword ? _config.UserCredentials.Password : string.Empty);
                     if (status == NTStatus.STATUS_SUCCESS)
                     {
                         List<string> shares = client.ListShares(out status).Select(s => s.ToLower()).ToList();
@@ -50,8 +54,8 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
                             {
                                 object handle = null;
                                 FileStatus fileStatus;
-                                status = fileStore.CreateFile(out handle, out fileStatus, "\\", AccessMask.GENERIC_READ, 
-                                                              FileAttributes.Directory, ShareAccess.Read | ShareAccess.Write, 
+                                status = fileStore.CreateFile(out handle, out fileStatus, "\\", AccessMask.GENERIC_READ,
+                                                              FileAttributes.Directory, ShareAccess.Read | ShareAccess.Write,
                                                               CreateDisposition.FILE_OPEN, CreateOptions.FILE_DIRECTORY_FILE, null);
                                 if (status == NTStatus.STATUS_SUCCESS)
                                 {

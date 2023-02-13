@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Wissance.MossbauerLab.Watcher.Web.Extensions
+namespace Wissance.MossbauerLab.Watcher.Common.Extensions
 {
     public static class ServiceCollectionExtension
     {

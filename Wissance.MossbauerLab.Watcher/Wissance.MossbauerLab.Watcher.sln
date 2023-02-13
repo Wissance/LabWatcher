@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32002.261
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wissance.MossbauerLab.Watcher.Web", "Wissance.MossbauerLab.Watcher\Wissance.MossbauerLab.Watcher.Web.csproj", "{11F80701-895A-4C18-BCD7-9FCDA2775AE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.MossbauerLab.Watcher.Data", "Wissance.MossbauerLab.Watcher.Data\Wissance.MossbauerLab.Watcher.Data.csproj", "{8176CF7C-40E0-4747-846C-4E5A88F7DAD4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wissance.MossbauerLab.Watcher.Data", "Wissance.MossbauerLab.Watcher.Data\Wissance.MossbauerLab.Watcher.Data.csproj", "{8176CF7C-40E0-4747-846C-4E5A88F7DAD4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.MossbauerLab.Watcher.Services", "Wissance.MossbauerLab.Watcher.Services\Wissance.MossbauerLab.Watcher.Services.csproj", "{AA06BF98-F994-4F08-B2BC-3BA9D8995246}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.MossbauerLab.Watcher.Common", "Wissance.MossbauerLab.Watcher.Common\Wissance.MossbauerLab.Watcher.Common.csproj", "{94124351-8907-45B4-B22B-D2537C656798}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{8176CF7C-40E0-4747-846C-4E5A88F7DAD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8176CF7C-40E0-4747-846C-4E5A88F7DAD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8176CF7C-40E0-4747-846C-4E5A88F7DAD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA06BF98-F994-4F08-B2BC-3BA9D8995246}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA06BF98-F994-4F08-B2BC-3BA9D8995246}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA06BF98-F994-4F08-B2BC-3BA9D8995246}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA06BF98-F994-4F08-B2BC-3BA9D8995246}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94124351-8907-45B4-B22B-D2537C656798}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94124351-8907-45B4-B22B-D2537C656798}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94124351-8907-45B4-B22B-D2537C656798}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94124351-8907-45B4-B22B-D2537C656798}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

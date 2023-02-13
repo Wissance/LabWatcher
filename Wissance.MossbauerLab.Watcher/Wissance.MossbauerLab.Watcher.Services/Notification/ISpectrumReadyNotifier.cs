@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Wissance.MossbauerLab.Watcher.Web.Data;
 
-namespace Wissance.MossbauerLab.Watcher.Web.Services.Notification
+using Wissance.MossbauerLab.Watcher.Common.Data;
+
+namespace Wissance.MossbauerLab.Watcher.Services.Notification
 {
     public interface ISpectrumReadyNotifier
     {

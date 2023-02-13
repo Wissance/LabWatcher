@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.Extensions.Logging;
+
 using Quartz;
+
+using Wissance.MossbauerLab.Watcher.Common.Data;
+using Wissance.MossbauerLab.Watcher.Common.Utils;
 using Wissance.MossbauerLab.Watcher.Data;
 using Wissance.MossbauerLab.Watcher.Data.Entities;
-using Wissance.MossbauerLab.Watcher.Web.Config;
-using Wissance.MossbauerLab.Watcher.Web.Data;
-using Wissance.MossbauerLab.Watcher.Web.Services.Store;
-using Wissance.MossbauerLab.Watcher.Web.Utils;
+using Wissance.MossbauerLab.Watcher.Services.Config;
+using Wissance.MossbauerLab.Watcher.Services.Store;
 
-namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
+namespace Wissance.MossbauerLab.Watcher.Services.Jobs
 {
     public class SpectraIndexerJob : IJob
     {
