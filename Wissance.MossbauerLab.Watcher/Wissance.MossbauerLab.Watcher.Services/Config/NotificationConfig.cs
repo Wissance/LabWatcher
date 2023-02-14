@@ -12,13 +12,15 @@ namespace Wissance.MossbauerLab.Watcher.Services.Config
 
         }
 
-        public NotificationConfig(MailConfig mailSettings, int threshold)
+        public NotificationConfig(MailConfig mailSettings, int threshold, TelegramConfig telegramSettings)
         {
             MailSettings = mailSettings;
             Threshold = threshold;
+            TelegramSettings = telegramSettings;
         }
 
         public MailConfig MailSettings { get; set; }
+        public TelegramConfig TelegramSettings { get; set; }
         public int Threshold { get; set; }
     }
 }

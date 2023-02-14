@@ -38,7 +38,7 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
                 msg.Subject = SpectrumAutoSaveMailSubject;
                 string mailTemplate = await File.ReadAllTextAsync(Path.GetFullPath(SpectrumAutoSaveMailTemplate));
                 // prepare 
-                msg.Body = FormatMailMessage(mailTemplate, spectra);
+                msg.Body = NotificationMessageFormatter.FormatMailMessage(mailTemplate, spectra);
                 foreach (SpectrumReadyData spec in spectra)
                 {
                     Stream stream = new MemoryStream(spec.Spectrum);
