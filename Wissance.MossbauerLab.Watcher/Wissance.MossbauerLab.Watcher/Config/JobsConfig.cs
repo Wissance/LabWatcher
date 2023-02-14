@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Wissance.MossbauerLab.Watcher.Services.Config
+﻿namespace Wissance.MossbauerLab.Watcher.Web.Config
 {
     public class JobsConfig
     {

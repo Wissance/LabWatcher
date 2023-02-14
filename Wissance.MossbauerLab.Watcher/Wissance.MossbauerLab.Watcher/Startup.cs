@@ -15,8 +15,9 @@ using Wissance.MossbauerLab.Watcher.Data;
 using Wissance.MossbauerLab.Watcher.Common.Extensions;
 using Wissance.MossbauerLab.Watcher.Services.Notification;
 using Wissance.MossbauerLab.Watcher.Services.Store;
-using Wissance.MossbauerLab.Watcher.Services.Jobs;
-using Wissance.MossbauerLab.Watcher.Services.Config;
+using Wissance.MossbauerLab.Watcher.Web.Config;
+using Wissance.MossbauerLab.Watcher.Web.Services.Jobs;
+using Wissance.MossbauerLab.Watcher.Web.Services.Store;
 
 namespace Wissance.MossbauerLab.Watcher.Web
 {

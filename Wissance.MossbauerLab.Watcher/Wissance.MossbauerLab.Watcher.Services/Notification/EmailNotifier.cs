@@ -9,22 +9,22 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 using Wissance.MossbauerLab.Watcher.Common.Data;
-using Wissance.MossbauerLab.Watcher.Services.Config;
+using Wissance.MossbauerLab.Watcher.Common.Data.Notification;
 
 namespace Wissance.MossbauerLab.Watcher.Services.Notification
 {
     public class EmailNotifier : ISpectrumReadyNotifier
     {
-        public EmailNotifier(ApplicationConfig config, ILoggerFactory loggerFactory)
+        public EmailNotifier(MailSendRequisites mailRequisites, ILoggerFactory loggerFactory)
         {
-            _config = config;
+            _mailRequisites = mailRequisites;
             _logger = loggerFactory.CreateLogger<EmailNotifier>();
-            _smtpClient = new SmtpClient(_config.NotificationSettings.MailSettings.Host, _config.NotificationSettings.MailSettings.Port)
+            _smtpClient = new SmtpClient(_mailRequisites.Host, _mailRequisites.Port)
             {
                 EnableSsl = true,
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(_config.NotificationSettings.MailSettings.Sender, _config.NotificationSettings.MailSettings.Password)
+                Credentials = new NetworkCredential(_mailRequisites.Sender, _mailRequisites.Password)
             };
         }
 
@@ -32,8 +32,8 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
         {
             try
             {
-                string recipients = string.Join(",", _config.NotificationSettings.MailSettings.Recipients);
-                MailMessage msg = new MailMessage(_config.NotificationSettings.MailSettings.Sender, recipients);
+                string recipients = string.Join(",", _mailRequisites.Recipients);
+                MailMessage msg = new MailMessage(_mailRequisites.Sender, recipients);
                 msg.IsBodyHtml = true;
                 msg.Subject = SpectrumAutoSaveMailSubject;
                 string mailTemplate = await File.ReadAllTextAsync(Path.GetFullPath(SpectrumAutoSaveMailTemplate));
@@ -82,7 +82,7 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
         // <!--<li>Спектр {msSpName} по каналу {msChNumber} сохранен {msSaveDate}</li>-->
         private const string SavedSpectrumDescriptionTemplate = "<li>Спектр {0} по каналу {1} сохранен {2}</li>";
 
-        private readonly ApplicationConfig _config;
+        private readonly MailSendRequisites _mailRequisites;
         private readonly ILogger<EmailNotifier> _logger;
         private readonly SmtpClient _smtpClient;
     }

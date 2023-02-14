@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace Wissance.MossbauerLab.Watcher.Services.Config
+namespace Wissance.MossbauerLab.Watcher.Common.Data.Notification
 {
-    public class MailConfig
+    public class MailSendRequisites
     {
-        public MailConfig()
+        public MailSendRequisites()
         {
 
         }
 
-        public MailConfig(string host, int port, string sender, string password, string[] recipients)
+        public MailSendRequisites(string host, int port, string sender, string password, string[] recipients)
         {
             Host = host;
             Port = port;

@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Quartz;
+using Wissance.MossbauerLab.Watcher.Common.Data;
 using Wissance.MossbauerLab.Watcher.Data;
 using Wissance.MossbauerLab.Watcher.Data.Entities;
-using Wissance.MossbauerLab.Watcher.Common.Data;
-using Wissance.MossbauerLab.Watcher.Services.Store;
 using Wissance.MossbauerLab.Watcher.Services.Notification;
-using Wissance.MossbauerLab.Watcher.Services.Config;
+using Wissance.MossbauerLab.Watcher.Services.Store;
+using Wissance.MossbauerLab.Watcher.Web.Config;
 
-namespace Wissance.MossbauerLab.Watcher.Services.Jobs
+
+namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
 {
     public class SpectraNotifyJob : IJob
     {

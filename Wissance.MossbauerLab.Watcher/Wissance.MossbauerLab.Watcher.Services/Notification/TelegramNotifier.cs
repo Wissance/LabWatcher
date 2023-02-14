@@ -12,27 +12,27 @@ using Telegram.Bot.Requests;
 using Telegram.Bot.Types;
 
 using Wissance.MossbauerLab.Watcher.Common.Data;
-using Wissance.MossbauerLab.Watcher.Services.Config;
+using Wissance.MossbauerLab.Watcher.Common.Data.Notification;
 
 namespace Wissance.MossbauerLab.Watcher.Services.Notification
 {
     public class TelegramNotifier : ISpectrumReadyNotifier
     {
      
-        public TelegramNotifier(ApplicationConfig config, ILoggerFactory loggerFactory)
+        public TelegramNotifier(TelegramSendRequisites tgRequisites, ILoggerFactory loggerFactory)
         {
-            _config = config;
+            _tgRequisites = tgRequisites;
             _logger = loggerFactory.CreateLogger<TelegramNotifier>();
         }
         public async Task<bool> NotifySpectrumSavedAsync(IList<SpectrumReadyData> spectra)
         {
             ITelegramBotClient client = new TelegramBotClient("6253527316:AAHrOysU6QKubqCg51aHuVCNBf3PtD3nGBU");
            
-            string targetGroupName = _config.NotificationSettings.TelegramSettings.NotificationGroupName;
+            string targetGroupName = _tgRequisites.Group;
             ChatId targetChatId = new ChatId(targetGroupName);
 
             Message msg = new Message();
-            string mailTemplate = System.IO.File.ReadAllText(_config.NotificationSettings.TelegramSettings.TemplateFilePath);
+            string mailTemplate = System.IO.File.ReadAllText(_tgRequisites.TemplateFilePath);
             msg.Text = NotificationMessageFormatter.FormatTelegramMessage(mailTemplate, spectra);
             
             try
@@ -47,7 +47,7 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
             return true;
         }
         
-        private readonly ApplicationConfig _config;
+        private readonly TelegramSendRequisites _tgRequisites;
         private readonly ILogger<TelegramNotifier> _logger;
 
     }
