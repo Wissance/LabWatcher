@@ -18,7 +18,7 @@ namespace Wissance.MossbauerLab.Watcher.Tests
         [TestMethod]
         public async Task SendNotificationTest()
         {
-            TelegramSendRequisites tgRequisites = new TelegramSendRequisites("@WissanceBotTest", "Templates\\TelegramMessageTemplate.txt");
+            TelegramSendRequisites tgRequisites = new TelegramSendRequisites("@WissanceBotTest", "Templates\\testTelegramMessageTemplate.txt");
 
             SpectrumReadyData spectra = new SpectrumReadyData
             {

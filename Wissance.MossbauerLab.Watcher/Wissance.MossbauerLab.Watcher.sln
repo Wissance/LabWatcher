@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.4.33213.308
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32002.261
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wissance.MossbauerLab.Watcher.Web", "Wissance.MossbauerLab.Watcher\Wissance.MossbauerLab.Watcher.Web.csproj", "{11F80701-895A-4C18-BCD7-9FCDA2775AE2}"
 EndProject
@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wissance.MossbauerLab.Watch
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wissance.MossbauerLab.Watcher.Common", "Wissance.MossbauerLab.Watcher.Common\Wissance.MossbauerLab.Watcher.Common.csproj", "{94124351-8907-45B4-B22B-D2537C656798}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.MossbauerLab.Watcher.Tests", "Wissance.MossbauerLab.Watcher.Tests\Wissance.MossbauerLab.Watcher.Tests.csproj", "{26A8E4AC-4E00-4AAC-B4CC-7F4566BCA999}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wissance.MossbauerLab.Watcher.Services.Tests", "Wissance.MossbauerLab.Watcher.Tests\Wissance.MossbauerLab.Watcher.Services.Tests.csproj", "{26A8E4AC-4E00-4AAC-B4CC-7F4566BCA999}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
