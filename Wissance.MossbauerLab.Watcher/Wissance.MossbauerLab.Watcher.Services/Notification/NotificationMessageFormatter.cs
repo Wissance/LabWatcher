@@ -9,11 +9,6 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
 {
     internal static class NotificationMessageFormatter
     {
-        private const string AutosavedSpectraPlaceholder = "{savedSpectra}";
-        // <!--<li>Спектр {msSpName} по каналу {msChNumber} сохранен {msSaveDate}</li>-->
-        private const string SavedSpectrumDescriptionTemplate = "<li>Спектр {0} по каналу {1} сохранен {2}</li>";
-        private const string CurrentSatePlaceholder = "{currDate}";
-        private const string SavedSpectrumTelegramDescriptionTemplate = "- Спектр {0} по каналу {1} сохранен {2}";
 
         public static string FormatMailMessage(string template, IList<SpectrumReadyData> spectra)
         {
@@ -33,5 +28,11 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
 
             return mailMessage;
         }
+
+        private const string AutosavedSpectraPlaceholder = "{savedSpectra}";
+        // <!--<li>Спектр {msSpName} по каналу {msChNumber} сохранен {msSaveDate}</li>-->
+        private const string SavedSpectrumDescriptionTemplate = "<li>Спектр {0} по каналу {1} сохранен {2}</li>";
+        private const string CurrentSatePlaceholder = "{currDate}";
+        private const string SavedSpectrumTelegramDescriptionTemplate = "- Спектр {0} по каналу {1} сохранен {2}";
     }
 }
