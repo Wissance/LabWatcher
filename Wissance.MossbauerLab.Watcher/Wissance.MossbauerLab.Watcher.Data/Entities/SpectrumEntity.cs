@@ -16,7 +16,7 @@ namespace Wissance.MossbauerLab.Watcher.Data.Entities
             Name = name;
             Description = description;
             Location = location;
-            measureStartDate = MeasureStartDate;
+            MeasureStartDate = measureStartDate;
             First = first;
             Last = last;
         }
