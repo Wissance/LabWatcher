@@ -25,6 +25,7 @@ namespace Wissance.MossbauerLab.Watcher.Services.Jobs
             _logger = loggerFactory.CreateLogger<SpectraNotifyJob>();
             _mailNotifier = mailNotifier;
             _telegramNotifier = telegramNotifier;
+
         }
 
         public async Task Execute(IJobExecutionContext context)
@@ -62,11 +63,13 @@ namespace Wissance.MossbauerLab.Watcher.Services.Jobs
                     _logger.LogWarning("Unsuccessful spectra autosave e-mail notification send");
                 }
                 // todo(UMV): add Telegram bot to data send
+
                 result = await _telegramNotifier.NotifySpectrumSavedAsync(dataToSend);
                 if (!result)
                 {
                     _logger.LogWarning("Unsuccessful spectra autosave telegram notification send");
                 }
+
             }
             catch (Exception e)
             {
@@ -88,6 +91,7 @@ namespace Wissance.MossbauerLab.Watcher.Services.Jobs
         private readonly IModelContext _context;
         private readonly ISpectrumReadyNotifier _mailNotifier;
         private readonly ISpectrumReadyNotifier _telegramNotifier;
+
         private readonly ILogger<SpectraNotifyJob> _logger;
     }
 }
