@@ -17,4 +17,10 @@
     <ProjectReference Include="..\Wissance.MossbauerLab.Watcher.Data\Wissance.MossbauerLab.Watcher.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Notification\Templates\TelegramMessageTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

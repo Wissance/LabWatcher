@@ -31,12 +31,12 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
             ChatId targetChatId = new ChatId(targetGroupName);
 
             var msg = new Message();
-            string mailTemplate = await System.IO.File.ReadAllTextAsync(Path.GetFullPath(SpectrumAutoSaveMailTemplate));
-            msg.Text = NotificationMessageFormatter.FormatMailMessage(mailTemplate, spectra);
+            string mailTemplate = System.IO.File.ReadAllText(_config.NotificationSettings.TelegramSettings.TemplateFilePath);
+            msg.Text = NotificationMessageFormatter.FormatTelegramMessage(mailTemplate, spectra);
             
             try
             {
-                await client.SendTextMessageAsync(targetChatId, msg.Text, Telegram.Bot.Types.Enums.ParseMode.Html);
+                await client.SendTextMessageAsync(targetChatId, msg.Text);
             }
             catch (Exception)
             {
