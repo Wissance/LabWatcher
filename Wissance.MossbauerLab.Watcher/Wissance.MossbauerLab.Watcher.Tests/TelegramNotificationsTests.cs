@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Wissance.MossbauerLab.Watcher.Common.Data.Notification;
 
-namespace Wissance.MossbauerLab.Watcher.Tests
+namespace Wissance.MossbauerLab.Watcher.Services.Tests
 {
     [TestClass]
     public class TelegramNotificationsTests
