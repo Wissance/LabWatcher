@@ -18,9 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Notification\Templates\TelegramMessageTemplate.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="Notification\Templates\**" CopyToOutputDirectory="PreserveNewest" LinkBase="Templates\" />
   </ItemGroup>
 
 </Project>
