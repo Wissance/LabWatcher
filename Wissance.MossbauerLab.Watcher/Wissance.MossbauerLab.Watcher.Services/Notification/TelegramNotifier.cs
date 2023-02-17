@@ -26,13 +26,14 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
         }
         public async Task<bool> NotifySpectrumSavedAsync(IList<SpectrumReadyData> spectra)
         {
-            ITelegramBotClient client = new TelegramBotClient("6253527316:AAHrOysU6QKubqCg51aHuVCNBf3PtD3nGBU");
+            ITelegramBotClient client = new TelegramBotClient(_tgRequisites.BotKey);
            
             string targetGroupName = _tgRequisites.Group;
             ChatId targetChatId = new ChatId(targetGroupName);
 
             Message msg = new Message();
-            string mailTemplate = System.IO.File.ReadAllText(_tgRequisites.TemplateFilePath);
+            string template = !string.IsNullOrEmpty(_tgRequisites.TemplateFilePath) ? _tgRequisites.TemplateFilePath : DefaultSpectrumAutoSaveMailTemplate;
+            string mailTemplate = System.IO.File.ReadAllText(template);
             msg.Text = NotificationMessageFormatter.FormatTelegramMessage(mailTemplate, spectra);
             
             try
@@ -46,7 +47,8 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
             }
             return true;
         }
-        
+
+        private const string DefaultSpectrumAutoSaveMailTemplate = @"Notification/Templates/tgAutosaveDone.txt";
         private readonly TelegramSendRequisites _tgRequisites;
         private readonly ILogger<TelegramNotifier> _logger;
 
