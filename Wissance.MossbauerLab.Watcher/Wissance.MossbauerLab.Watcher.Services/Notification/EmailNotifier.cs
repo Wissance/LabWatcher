@@ -75,7 +75,7 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
 
         private const int MaxAllowedTimeout = 10000;
         private const string SpectrumAutoSaveMailSubject = "Автоматически сохраненные спектры";
-        private const string SpectrumAutoSaveMailTemplate = @"Templates/autosaveNotifications.html";
+        private const string SpectrumAutoSaveMailTemplate = @"Notification/Templates/autosaveNotifications.html";
 
         private const string CurrentSatePlaceholder = "{currDate}";
         private const string AutosavedSpectraPlaceholder = "{savedSpectra}";
