@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System;
+using System.Text;
 using System.Collections.Generic;
 
 using Wissance.MossbauerLab.Watcher.Common.Data;
@@ -18,7 +19,10 @@ namespace Wissance.MossbauerLab.Watcher.Services.Tests
         [TestMethod]
         public async Task SendNotificationTest()
         {
-            TelegramSendRequisites tgRequisites = new TelegramSendRequisites("@WissanceBotTest", "Templates\\testTelegramMessageTemplate.txt");
+            byte[] bin = Convert.FromBase64String("NjI1MzUyNzMxNjpBQUYzWGZuSnE2azlTMnFldTc2bmd6SHhEU29id3BMcm50SQ==");
+            string key = Encoding.UTF8.GetString(bin);
+
+            TelegramSendRequisites tgRequisites = new TelegramSendRequisites("@WissanceBotTest", key, "Templates\\testTelegramMessageTemplate.txt");
 
             SpectrumReadyData spectra = new SpectrumReadyData
             {
@@ -29,7 +33,7 @@ namespace Wissance.MossbauerLab.Watcher.Services.Tests
                 RawInfo = new System.IO.FileInfo("textFileForFileInfo.txt")
             };
            
-            TelegramNotifier telegramNotifier = new TelegramNotifier(tgRequisites, null);
+            TelegramNotifier telegramNotifier = new TelegramNotifier(tgRequisites, new LoggerFactory());
             bool result = await telegramNotifier.NotifySpectrumSavedAsync(new List<SpectrumReadyData> { spectra, spectra });
             Assert.IsTrue(result);
 
