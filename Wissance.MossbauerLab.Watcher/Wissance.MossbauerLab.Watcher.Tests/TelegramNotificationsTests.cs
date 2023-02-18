@@ -29,7 +29,7 @@ namespace Wissance.MossbauerLab.Watcher.Services.Tests
                 Spectrum = new byte[] { 4, 5, 6 },
                 Name = "Test spectra",
                 Channel = 1,
-                Updated = new DateTime(2023, 2, 14, 14, 30, 0),
+                Updated = DateTime.Now,
                 RawInfo = new System.IO.FileInfo("textFileForFileInfo.txt")
             };
            
