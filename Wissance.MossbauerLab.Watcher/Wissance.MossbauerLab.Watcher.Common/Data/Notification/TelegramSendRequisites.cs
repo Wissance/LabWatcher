@@ -19,6 +19,6 @@ namespace Wissance.MossbauerLab.Watcher.Common.Data.Notification
 
         public string Group { get; set; }
         public string BotKey { get; set; }
-        public string TemplateFilePath { get; internal set; }
+        public string TemplateFilePath { get; set; }
     }
 }
