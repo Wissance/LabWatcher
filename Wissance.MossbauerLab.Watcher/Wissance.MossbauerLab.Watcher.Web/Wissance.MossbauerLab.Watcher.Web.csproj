@@ -32,4 +32,11 @@
     <ProjectReference Include="..\Wissance.MossbauerLab.Watcher.Services\Wissance.MossbauerLab.Watcher.Services.csproj" />
   </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="..\Wissance.MossbauerLab.Watcher.Services\Notification\Templates\**\*.*">
+        <Link>Notification\Templates\%(RecursiveDir)%(FileName)</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>

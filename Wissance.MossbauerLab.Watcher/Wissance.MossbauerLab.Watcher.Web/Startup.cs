@@ -81,8 +81,14 @@ namespace Wissance.MossbauerLab.Watcher.Web
 
         private void ConfigureNotificationServices(IServiceCollection services)
         {
-            services.AddScoped<EmailNotifier>();
-            services.AddScoped<TelegramNotifier>();
+            services.AddScoped<EmailNotifier>(x =>
+            {
+                return new EmailNotifier(_config.NotificationSettings.MailSettings, x.GetRequiredService<ILoggerFactory>());
+            });
+            services.AddScoped<TelegramNotifier>(x =>
+            {
+                return new TelegramNotifier(_config.NotificationSettings.TelegramSettings, x.GetRequiredService<ILoggerFactory>());
+            });
         }
 
         private void ConfigureSharedFolderAccess(IServiceCollection services)
