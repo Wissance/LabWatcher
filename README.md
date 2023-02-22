@@ -4,7 +4,7 @@ A set of tools that helps to analyze **state of spectrometry devices** and notif
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/wissance/LabWatcher?style=plastic) 
 ![GitHub issues](https://img.shields.io/github/issues/wissance/LabWatcher?style=plastic)
 ![GitHub Release Date](https://img.shields.io/github/release-date/wissance/LabWatcher) 
-![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/LabWatcher/v1.0/total?style=plastic)
+![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/LabWatcher/v1.1/total?style=plastic)
 
 ![LabWatcher: is automated Mossbauer laboratory control toolset](/docs/img/labwatcher.jpg)
 
