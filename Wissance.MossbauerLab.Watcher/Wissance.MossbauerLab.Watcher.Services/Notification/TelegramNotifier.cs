@@ -38,7 +38,7 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
             
             try
             {
-                var m = await client.SendTextMessageAsync(targetChatId, msg.Text);
+                 await client.SendTextMessageAsync(targetChatId, msg.Text);
             }
             catch (Exception e )
             {
