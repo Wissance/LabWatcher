@@ -28,8 +28,8 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
         {
             ITelegramBotClient client = new TelegramBotClient(_tgRequisites.BotKey);
            
-            string targetGroupName = _tgRequisites.Group;
-            ChatId targetChatId = new ChatId(targetGroupName);
+            long targetGroupId = _tgRequisites.GroupId;
+            ChatId targetChatId = new ChatId(targetGroupId);
 
             Message msg = new Message();
             string template = !string.IsNullOrEmpty(_tgRequisites.TemplateFilePath) ? _tgRequisites.TemplateFilePath : DefaultSpectrumAutoSaveMailTemplate;
@@ -38,11 +38,11 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
             
             try
             {
-                await client.SendTextMessageAsync(targetChatId, msg.Text);
+                var m = await client.SendTextMessageAsync(targetChatId, msg.Text);
             }
             catch (Exception e )
             {
-                _logger.LogError($"An error occurred during sending message to telegram group {targetGroupName}: {e.Message}");
+                _logger.LogError($"An error occurred during sending message to telegram group {targetGroupId}: {e.Message}");
                 return false;
             }
             return true;

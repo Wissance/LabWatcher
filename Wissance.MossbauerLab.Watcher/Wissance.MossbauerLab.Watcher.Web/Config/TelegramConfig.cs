@@ -8,8 +8,8 @@ namespace Wissance.MossbauerLab.Watcher.Web.Config
         {
         }
 
-        public TelegramConfig(string group, string key, string templateFilePath)
-           :base(group, key, templateFilePath)
+        public TelegramConfig(long groupId, string key, string templateFilePath)
+           :base(groupId, key, templateFilePath)
         {
 
         }

@@ -10,14 +10,14 @@ namespace Wissance.MossbauerLab.Watcher.Common.Data.Notification
         {
         }
 
-        public TelegramSendRequisites(string group, string botKey, string templateFilePath)
+        public TelegramSendRequisites(long groupId, string botKey, string templateFilePath)
         {
-            Group = group;
+            GroupId = groupId;
             BotKey = botKey;
             TemplateFilePath = templateFilePath;
         }
 
-        public string Group { get; set; }
+        public long GroupId { get; set; }
         public string BotKey { get; set; }
         public string TemplateFilePath { get; set; }
     }
