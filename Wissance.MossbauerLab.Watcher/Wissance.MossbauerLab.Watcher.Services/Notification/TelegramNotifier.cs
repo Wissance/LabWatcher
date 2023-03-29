@@ -28,9 +28,9 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
         {
             ITelegramBotClient client = new TelegramBotClient(_tgRequisites.BotKey);
            
-            long targetGroupId = _tgRequisites.GroupId;
-            ChatId targetChatId = new ChatId(targetGroupId);
-
+         
+            ChatId targetChatId = GetChatId(_tgRequisites);
+           
             Message msg = new Message();
             string template = !string.IsNullOrEmpty(_tgRequisites.TemplateFilePath) ? _tgRequisites.TemplateFilePath : DefaultSpectrumAutoSaveMailTemplate;
             string mailTemplate = System.IO.File.ReadAllText(template);
@@ -42,10 +42,18 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
             }
             catch (Exception e )
             {
-                _logger.LogError($"An error occurred during sending message to telegram group {targetGroupId}: {e.Message}");
+                _logger.LogError($"An error occurred during sending message to telegram group {targetChatId.Username}: {e.Message}");
                 return false;
             }
             return true;
+        }
+        
+        private ChatId GetChatId(TelegramSendRequisites _tgRequisites)
+        {
+            long targetGroupId = _tgRequisites.GroupId;
+            string targetGroupName = _tgRequisites.GroupName;
+            return string.IsNullOrEmpty(targetGroupName) ? 
+               new ChatId(targetGroupId) : new ChatId(targetGroupName);
         }
 
         private const string DefaultSpectrumAutoSaveMailTemplate = @"Notification/Templates/tgAutosaveDone.txt";
