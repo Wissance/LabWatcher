@@ -28,7 +28,6 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
         {
             ITelegramBotClient client = new TelegramBotClient(_tgRequisites.BotKey);
             ChatId targetChatId = GetChatId(_tgRequisites);
-
             Message msg = CreateMessageFor(spectra);
 
             try
