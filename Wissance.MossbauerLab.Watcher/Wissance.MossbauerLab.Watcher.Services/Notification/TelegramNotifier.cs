@@ -27,27 +27,31 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
         public async Task<bool> NotifySpectrumSavedAsync(IList<SpectrumReadyData> spectra)
         {
             ITelegramBotClient client = new TelegramBotClient(_tgRequisites.BotKey);
-           
-         
             ChatId targetChatId = GetChatId(_tgRequisites);
-           
-            Message msg = new Message();
-            string template = !string.IsNullOrEmpty(_tgRequisites.TemplateFilePath) ? _tgRequisites.TemplateFilePath : DefaultSpectrumAutoSaveMailTemplate;
-            string mailTemplate = System.IO.File.ReadAllText(template);
-            msg.Text = NotificationMessageFormatter.FormatTelegramMessage(mailTemplate, spectra);
-            
+
+            Message msg = CreateMessageFor(spectra);
+
             try
             {
-                 await client.SendTextMessageAsync(targetChatId, msg.Text);
+                await client.SendTextMessageAsync(targetChatId, msg.Text);
             }
-            catch (Exception e )
+            catch (Exception e)
             {
                 _logger.LogError($"An error occurred during sending message to telegram group {targetChatId.Username}: {e.Message}");
                 return false;
             }
             return true;
         }
-        
+
+        private Message CreateMessageFor(IList<SpectrumReadyData> spectra)
+        {
+            Message msg = new Message();
+            string template = !string.IsNullOrEmpty(_tgRequisites.TemplateFilePath) ? _tgRequisites.TemplateFilePath : DefaultSpectrumAutoSaveMailTemplate;
+            string mailTemplate = System.IO.File.ReadAllText(template);
+            msg.Text = NotificationMessageFormatter.FormatTelegramMessage(mailTemplate, spectra);
+            return msg;
+        }
+
         private ChatId GetChatId(TelegramSendRequisites _tgRequisites)
         {
             long targetGroupId = _tgRequisites.GroupId;
