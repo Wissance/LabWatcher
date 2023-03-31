@@ -27,28 +27,38 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
         public async Task<bool> NotifySpectrumSavedAsync(IList<SpectrumReadyData> spectra)
         {
             ITelegramBotClient client = new TelegramBotClient(_tgRequisites.BotKey);
-           
-            string targetGroupName = _tgRequisites.Group;
-            ChatId targetChatId = new ChatId(targetGroupName);
+            ChatId targetChatId = GetChatId(_tgRequisites);
+            Message msg = CreateMessageFromTemplate(spectra);
 
-            Message msg = new Message();
-            string template = !string.IsNullOrEmpty(_tgRequisites.TemplateFilePath) ? _tgRequisites.TemplateFilePath : DefaultSpectrumAutoSaveMailTemplate;
-            string mailTemplate = System.IO.File.ReadAllText(template);
-            msg.Text = NotificationMessageFormatter.FormatTelegramMessage(mailTemplate, spectra);
-            
             try
             {
                 await client.SendTextMessageAsync(targetChatId, msg.Text);
             }
-            catch (Exception e )
+            catch (Exception e)
             {
-                _logger.LogError($"An error occurred during sending message to telegram group {targetGroupName}: {e.Message}");
+                _logger.LogError($"An error occurred during sending message to telegram group {targetChatId.Username}: {e.Message}");
                 return false;
             }
             return true;
         }
 
-        private const string DefaultSpectrumAutoSaveMailTemplate = @"Notification/Templates/tgAutosaveDone.txt";
+        private Message CreateMessageFromTemplate(IList<SpectrumReadyData> spectra)
+        {
+            Message msg = new Message();
+            string template = !string.IsNullOrEmpty(_tgRequisites.TemplateFilePath) ? _tgRequisites.TemplateFilePath : DefaultSpectrumAutoSaveMsgTemplate;
+            string mailTemplate = System.IO.File.ReadAllText(template);
+            msg.Text = NotificationMessageFormatter.FormatTelegramMessage(mailTemplate, spectra);
+            return msg;
+        }
+
+        private ChatId GetChatId(TelegramSendRequisites _tgRequisites)
+        {
+            if (_tgRequisites.GroupId.HasValue)
+                return new ChatId(_tgRequisites.GroupId.Value);
+            return new ChatId(_tgRequisites.GroupName);
+        }
+
+        private const string DefaultSpectrumAutoSaveMsgTemplate = @"Notification/Templates/tgAutosaveDone.txt";
         private readonly TelegramSendRequisites _tgRequisites;
         private readonly ILogger<TelegramNotifier> _logger;
 

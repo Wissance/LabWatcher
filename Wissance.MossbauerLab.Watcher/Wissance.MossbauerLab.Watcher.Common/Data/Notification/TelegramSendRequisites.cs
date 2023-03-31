@@ -10,14 +10,18 @@ namespace Wissance.MossbauerLab.Watcher.Common.Data.Notification
         {
         }
 
-        public TelegramSendRequisites(string group, string botKey, string templateFilePath)
+        public TelegramSendRequisites(string botKey, string templateFilePath, long? groupId, string groupName = null)
         {
-            Group = group;
+            if (groupId == null && string.IsNullOrEmpty(groupName))
+                throw new ArgumentException("Group id and name are both null, it is required to provide a value for one of them");
             BotKey = botKey;
-            TemplateFilePath = templateFilePath;
+            TemplateFilePath = templateFilePath; 
+            GroupId = groupId;
+            GroupName = groupName;
         }
 
-        public string Group { get; set; }
+        public long? GroupId { get; set; }
+        public string GroupName { get; set; }
         public string BotKey { get; set; }
         public string TemplateFilePath { get; set; }
     }
