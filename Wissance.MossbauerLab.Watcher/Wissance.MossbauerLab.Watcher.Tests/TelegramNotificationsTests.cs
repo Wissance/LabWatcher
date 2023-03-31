@@ -22,7 +22,7 @@ namespace Wissance.MossbauerLab.Watcher.Services.Tests
             byte[] bin = Convert.FromBase64String("NjI1MzUyNzMxNjpBQUYzWGZuSnE2azlTMnFldTc2bmd6SHhEU29id3BMcm50SQ==");
             string key = Encoding.UTF8.GetString(bin);
 
-            TelegramSendRequisites tgRequisites = new TelegramSendRequisites(-1001520411610, key, "Templates\\testTelegramMessageTemplate.txt", null);
+            TelegramSendRequisites tgRequisites = new TelegramSendRequisites( key, "Templates\\testTelegramMessageTemplate.txt",-1001520411610, null);
 
             SpectrumReadyData spectra = new SpectrumReadyData
             {

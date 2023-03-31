@@ -53,10 +53,9 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
 
         private ChatId GetChatId(TelegramSendRequisites _tgRequisites)
         {
-            long targetGroupId = _tgRequisites.GroupId;
-            string targetGroupName = _tgRequisites.GroupName;
-            return string.IsNullOrEmpty(targetGroupName) ? 
-               new ChatId(targetGroupId) : new ChatId(targetGroupName);
+            if (_tgRequisites.GroupId.HasValue)
+                return new ChatId(_tgRequisites.GroupId.Value);
+            return new ChatId(_tgRequisites.GroupName);
         }
 
         private const string DefaultSpectrumAutoSaveMsgTemplate = @"Notification/Templates/tgAutosaveDone.txt";
