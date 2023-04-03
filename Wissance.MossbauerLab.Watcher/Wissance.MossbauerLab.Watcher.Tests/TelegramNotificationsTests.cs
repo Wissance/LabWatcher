@@ -27,7 +27,7 @@ namespace Wissance.MossbauerLab.Watcher.Services.Tests
              bin = Convert.FromBase64String("NjI1MzUyNzMxNjpBQUYzWGZuSnE2azlTMnFldTc2bmd6SHhEU29id3BMcm50SQ==");
              key = Encoding.UTF8.GetString(bin);
 
-            tgRequisites = new TelegramSendRequisites(key, "Templates\\testTelegramMessageTemplate.txt", -1001520411610, null);
+            tgRequisites = new TelegramSendRequisites(key, "Templates\\testEmptySpectraTemplate.txt", "Templates\\testTelegramMessageTemplate.txt", -1001520411610, null);
             telegramNotifier = new TelegramNotifier(tgRequisites, new LoggerFactory());
         }
         [TestMethod]
@@ -50,7 +50,7 @@ namespace Wissance.MossbauerLab.Watcher.Services.Tests
 
         }
         [TestMethod]
-        public async void NotifyAboutTroubles()
+        public async Task NotifyAboutTroubles()
         {
             bool result = await telegramNotifier.NotifySpectrumSavedAsync(new List<SpectrumReadyData>());
             Assert.IsTrue(result);

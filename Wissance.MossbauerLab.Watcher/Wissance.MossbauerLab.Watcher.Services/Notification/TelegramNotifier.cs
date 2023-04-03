@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 using Telegram.Bot;
@@ -45,7 +46,13 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
         private Message CreateMessageFromTemplate(IList<SpectrumReadyData> spectra)
         {
             Message msg = new Message();
-            string template = !string.IsNullOrEmpty(_tgRequisites.TemplateFilePath) ? _tgRequisites.TemplateFilePath : DefaultSpectrumAutoSaveMsgTemplate;
+            string templateNormal = !string.IsNullOrEmpty(_tgRequisites.TemplateFilePath) ? _tgRequisites.TemplateFilePath : DefaultSpectrumAutoSaveMsgTemplate;
+            string templateEmpty = !string.IsNullOrEmpty(_tgRequisites.TemplateFilePathEmptySpectra) ? _tgRequisites.TemplateFilePathEmptySpectra : DefaultEmptySpectrumMsgTemplate;
+            string template = templateNormal;
+            if (!spectra.Any())
+            {
+                template = templateEmpty;
+            }
             string mailTemplate = System.IO.File.ReadAllText(template);
             msg.Text = NotificationMessageFormatter.FormatTelegramMessage(mailTemplate, spectra);
             return msg;
@@ -59,6 +66,7 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
         }
 
         private const string DefaultSpectrumAutoSaveMsgTemplate = @"Notification/Templates/tgAutosaveDone.txt";
+        private const string DefaultEmptySpectrumMsgTemplate = @"Notification/Templates/tgSpectraIsEmpty.txt";
         private readonly TelegramSendRequisites _tgRequisites;
         private readonly ILogger<TelegramNotifier> _logger;
 
