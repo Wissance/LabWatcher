@@ -54,6 +54,10 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
             {
                 template = templateEmpty;
             }
+            else
+            {
+                template = templateNormal;
+            }
             string mailTemplate = System.IO.File.ReadAllText(template);
             msg.Text = NotificationMessageFormatter.FormatTelegramMessage(mailTemplate, spectra);
             return msg;
