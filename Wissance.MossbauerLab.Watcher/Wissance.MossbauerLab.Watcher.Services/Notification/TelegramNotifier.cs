@@ -49,7 +49,8 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
             string templateNormal = !string.IsNullOrEmpty(_tgRequisites.TemplateFilePath) ? _tgRequisites.TemplateFilePath : DefaultSpectrumAutoSaveMsgTemplate;
             string templateEmpty = !string.IsNullOrEmpty(_tgRequisites.TemplateFilePathEmptySpectra) ? _tgRequisites.TemplateFilePathEmptySpectra : DefaultEmptySpectrumMsgTemplate;
             string template = templateNormal;
-            if (!spectra.Any())
+            bool spectraIsEmpty = !spectra.Any();
+            if (spectraIsEmpty)
             {
                 template = templateEmpty;
             }
