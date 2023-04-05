@@ -13,7 +13,7 @@ using Wissance.MossbauerLab.Watcher.Common.Data.Notification;
 
 namespace Wissance.MossbauerLab.Watcher.Services.Notification
 {
-    public class EmailNotifier : ISpectrumReadyNotifier
+    public class EmailNotifier : ISpectrumMeasureEventsNotifier
     {
         public EmailNotifier(MailSendRequisites mailRequisites, ILoggerFactory loggerFactory)
         {

@@ -17,7 +17,7 @@ using Wissance.MossbauerLab.Watcher.Common.Data.Notification;
 
 namespace Wissance.MossbauerLab.Watcher.Services.Notification
 {
-    public class TelegramNotifier : ISpectrumReadyNotifier
+    public class TelegramNotifier : ISpectrumMeasureEventsNotifier
     {
      
         public TelegramNotifier(TelegramSendRequisites tgRequisites, ILoggerFactory loggerFactory)
