@@ -25,7 +25,7 @@ namespace Wissance.MossbauerLab.Watcher.Common.Data.Notification
         /// </summary>
         public string PositiveCase { get; set; }
         /// <summary>
-        ///    PositiveCase means that event (SpectrometerEvent) occurred and some condition is FALSE (i.e. SpectrumSaved occurred and spectra are NOT empty)
+        /// NegativeCase means that event (SpectrometerEvent) occurred and some condition is FALSE (i.e. SpectrumSaved occurred and spectra are NOT empty)
         /// </summary>
         public string NegativeCase { get; set; }
     }
