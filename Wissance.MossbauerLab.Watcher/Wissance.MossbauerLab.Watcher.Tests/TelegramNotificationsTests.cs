@@ -25,7 +25,7 @@ namespace Wissance.MossbauerLab.Watcher.Services.Tests
             _templates = new Dictionary<SpectrometerEvent, MessageTemplate>();
             _templates[SpectrometerEvent.SpectrumSaved] = new MessageTemplate(true, @"Templates\testTelegramMessageTemplate.txt", @"Templates\testEmptySpectraTemplate.txt");
             _tgRequisites = new TelegramSendRequisites(_key, -1001520411610, null);
-            _telegramNotifier = new TelegramNotifier(_tgRequisites, _templates, new LoggerFactory());
+            _telegramNotifier = new TelegramNotifier(_tgRequisites, new TemplateManager(_templates), new LoggerFactory());
         }
         
         [TestMethod]

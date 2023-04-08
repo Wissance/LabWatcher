@@ -15,13 +15,13 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
 {
     public class EmailNotifier : ISpectrumMeasureEventsNotifier
     {
-        public EmailNotifier(MailSendRequisites mailRequisites, IDictionary<SpectrometerEvent, MessageTemplate> templates, ILoggerFactory loggerFactory)
+        public EmailNotifier(MailSendRequisites mailRequisites, TemplateManager templateManager, ILoggerFactory loggerFactory)
         {
             _mailRequisites = mailRequisites;
             _logger = loggerFactory.CreateLogger<EmailNotifier>();
-            if (templates == null)
-                throw new ArgumentNullException("templates");
-            _templates = templates;
+            if (templateManager == null)
+                throw new ArgumentNullException("templateManager");
+            _templateManager = templateManager;
             _smtpClient = new SmtpClient(_mailRequisites.Host, _mailRequisites.Port)
             {
                 EnableSsl = true,
@@ -39,9 +39,9 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
                 MailMessage msg = new MailMessage(_mailRequisites.Sender, recipients);
                 msg.IsBodyHtml = true;
                 msg.Subject = SpectrumAutoSaveMailSubject;
-                if (!_templates.ContainsKey(SpectrometerEvent.SpectrumSaved))
+                if (!_templateManager.Templates.ContainsKey(SpectrometerEvent.SpectrumSaved))
                     throw new InvalidDataException("Expected that key \"SpectrometerEvent.SpectrumSaved\" present in _templates, actually not");
-                string template = _templates[SpectrometerEvent.SpectrumSaved].PositiveCase;
+                string template = _templateManager.Templates[SpectrometerEvent.SpectrumSaved].PositiveCase;
                 string mailTemplate = await File.ReadAllTextAsync(Path.GetFullPath(template));
                 // prepare 
                 msg.Body = NotificationMessageFormatter.FormatMailMessage(mailTemplate, spectra);
@@ -91,6 +91,6 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
         private readonly MailSendRequisites _mailRequisites;
         private readonly ILogger<EmailNotifier> _logger;
         private readonly SmtpClient _smtpClient;
-        private IDictionary<SpectrometerEvent, MessageTemplate> _templates;
+        private readonly TemplateManager _templateManager;
     }
 }

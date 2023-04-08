@@ -86,19 +86,19 @@ namespace Wissance.MossbauerLab.Watcher.Web
             services.AddScoped<EmailNotifier>(x =>
             {
                 return new EmailNotifier(_config.NotificationSettings.MailSettings,
-                    new Dictionary<SpectrometerEvent, MessageTemplate>()
+                    new TemplateManager(new Dictionary<SpectrometerEvent, MessageTemplate>()
                     {
                         {SpectrometerEvent.SpectrumSaved, new MessageTemplate(true, _config.NotificationSettings.Templates.Mail.AutosaveDone, null)}
-                    },
+                    }),
                     x.GetRequiredService<ILoggerFactory>());
             });
             services.AddScoped<TelegramNotifier>(x =>
             {
-                return new TelegramNotifier(_config.NotificationSettings.TelegramSettings, 
-                    new Dictionary<SpectrometerEvent, MessageTemplate>()
+                return new TelegramNotifier(_config.NotificationSettings.TelegramSettings,
+                    new TemplateManager(new Dictionary<SpectrometerEvent, MessageTemplate>()
                     {
                         {SpectrometerEvent.SpectrumSaved, new MessageTemplate(true, _config.NotificationSettings.Templates.Telegram.AutosaveDone, _config.NotificationSettings.Templates.Telegram.AutosaveEmpty)}
-                    },
+                    }),
                     x.GetRequiredService<ILoggerFactory>());
             });
         }

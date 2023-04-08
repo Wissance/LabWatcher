@@ -20,12 +20,12 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
     public class TelegramNotifier : ISpectrumMeasureEventsNotifier
     {
      
-        public TelegramNotifier(TelegramSendRequisites tgRequisites, IDictionary<SpectrometerEvent, MessageTemplate> templates, ILoggerFactory loggerFactory)
+        public TelegramNotifier(TelegramSendRequisites tgRequisites, TemplateManager templateManager, ILoggerFactory loggerFactory)
         {
             _tgRequisites = tgRequisites;
-            if (templates == null)
-                throw new ArgumentNullException("templates");
-            _templates = templates;
+            if (templateManager == null)
+                throw new ArgumentNullException("templateManager");
+            _templateManager = templateManager;
             _logger = loggerFactory.CreateLogger<TelegramNotifier>();
         }
         public async Task<bool> NotifySpectrumSavedAsync(IList<SpectrumReadyData> spectra)
@@ -50,17 +50,17 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
         private Message CreateMessageFromTemplate(IList<SpectrumReadyData> spectra)
         {
             Message msg = new Message();
-            if (!_templates.ContainsKey(SpectrometerEvent.SpectrumSaved))
+            if (!_templateManager.Templates.ContainsKey(SpectrometerEvent.SpectrumSaved))
                 throw new InvalidDataException("Expected that key \"SpectrometerEvent.SpectrumSaved\" present in _templates, actually not");
             string template;
             bool spectraIsEmpty = !spectra.Any();
             if (spectraIsEmpty)
             {
-                template = _templates[SpectrometerEvent.SpectrumSaved].PositiveCase;
+                template = _templateManager.Templates[SpectrometerEvent.SpectrumSaved].PositiveCase;
             }
             else
             {
-                template = _templates[SpectrometerEvent.SpectrumSaved].NegativeCase;
+                template = _templateManager.Templates[SpectrometerEvent.SpectrumSaved].NegativeCase;
             }
             string mailTemplate = System.IO.File.ReadAllText(template);
             msg.Text = NotificationMessageFormatter.FormatTelegramMessage(mailTemplate, spectra);
@@ -74,7 +74,7 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
             return new ChatId(_tgRequisites.GroupName);
         }
 
-        private readonly IDictionary<SpectrometerEvent, MessageTemplate> _templates;
+        private readonly TemplateManager _templateManager;
         private readonly TelegramSendRequisites _tgRequisites;
         private readonly ILogger<TelegramNotifier> _logger;
     }
