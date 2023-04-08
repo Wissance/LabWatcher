@@ -23,6 +23,8 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
         public TelegramNotifier(TelegramSendRequisites tgRequisites, IDictionary<SpectrometerEvent, MessageTemplate> templates, ILoggerFactory loggerFactory)
         {
             _tgRequisites = tgRequisites;
+            if (templates == null)
+                throw new ArgumentNullException("templates");
             _templates = templates;
             _logger = loggerFactory.CreateLogger<TelegramNotifier>();
         }

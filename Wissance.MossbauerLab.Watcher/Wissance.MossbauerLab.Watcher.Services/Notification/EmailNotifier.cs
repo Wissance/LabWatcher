@@ -7,7 +7,7 @@ using System.Net.Mail;
 using System.Threading.Tasks;
 
 using Microsoft.Extensions.Logging;
-
+using Wissance.MossbauerLab.Watcher.Common;
 using Wissance.MossbauerLab.Watcher.Common.Data;
 using Wissance.MossbauerLab.Watcher.Common.Data.Notification;
 
@@ -15,10 +15,13 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
 {
     public class EmailNotifier : ISpectrumMeasureEventsNotifier
     {
-        public EmailNotifier(MailSendRequisites mailRequisites, ILoggerFactory loggerFactory)
+        public EmailNotifier(MailSendRequisites mailRequisites, IDictionary<SpectrometerEvent, MessageTemplate> templates, ILoggerFactory loggerFactory)
         {
             _mailRequisites = mailRequisites;
             _logger = loggerFactory.CreateLogger<EmailNotifier>();
+            if (templates == null)
+                throw new ArgumentNullException("templates");
+            _templates = templates;
             _smtpClient = new SmtpClient(_mailRequisites.Host, _mailRequisites.Port)
             {
                 EnableSsl = true,
@@ -36,7 +39,10 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
                 MailMessage msg = new MailMessage(_mailRequisites.Sender, recipients);
                 msg.IsBodyHtml = true;
                 msg.Subject = SpectrumAutoSaveMailSubject;
-                string mailTemplate = await File.ReadAllTextAsync(Path.GetFullPath(SpectrumAutoSaveMailTemplate));
+                if (!_templates.ContainsKey(SpectrometerEvent.SpectrumSaved))
+                    throw new InvalidDataException("Expected that key \"SpectrometerEvent.SpectrumSaved\" present in _templates, actually not");
+                string template = _templates[SpectrometerEvent.SpectrumSaved].PositiveCase;
+                string mailTemplate = await File.ReadAllTextAsync(Path.GetFullPath(template));
                 // prepare 
                 msg.Body = NotificationMessageFormatter.FormatMailMessage(mailTemplate, spectra);
                 foreach (SpectrumReadyData spec in spectra)
@@ -75,7 +81,7 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
 
         private const int MaxAllowedTimeout = 10000;
         private const string SpectrumAutoSaveMailSubject = "Автоматически сохраненные спектры";
-        private const string SpectrumAutoSaveMailTemplate = @"Notification/Templates/autosaveNotifications.html";
+        // private const string SpectrumAutoSaveMailTemplate = @"Notification/Templates/autosaveNotifications.html";
 
         private const string CurrentSatePlaceholder = "{currDate}";
         private const string AutosavedSpectraPlaceholder = "{savedSpectra}";
@@ -85,5 +91,6 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
         private readonly MailSendRequisites _mailRequisites;
         private readonly ILogger<EmailNotifier> _logger;
         private readonly SmtpClient _smtpClient;
+        private IDictionary<SpectrometerEvent, MessageTemplate> _templates;
     }
 }
