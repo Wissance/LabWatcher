@@ -12,6 +12,9 @@ namespace Wissance.MossbauerLab.Watcher.Common.Data.Notification
 
         public MessageTemplate(bool hasNegativeCase, string positiveCase, string negativeCase)
         {
+            HasNegativeCase = hasNegativeCase;
+            PositiveCase = positiveCase;
+            NegativeCase = negativeCase;
         }
         /// <summary>
         ///    Means that NegativeCase does not exists
