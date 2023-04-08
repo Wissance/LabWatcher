@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Quartz;
 using Serilog;
+using Wissance.MossbauerLab.Watcher.Common;
+using Wissance.MossbauerLab.Watcher.Common.Data.Notification;
 using Wissance.MossbauerLab.Watcher.Data;
 using Wissance.MossbauerLab.Watcher.Common.Extensions;
 using Wissance.MossbauerLab.Watcher.Services.Notification;
@@ -87,7 +89,12 @@ namespace Wissance.MossbauerLab.Watcher.Web
             });
             services.AddScoped<TelegramNotifier>(x =>
             {
-                return new TelegramNotifier(_config.NotificationSettings.TelegramSettings, x.GetRequiredService<ILoggerFactory>());
+                return new TelegramNotifier(_config.NotificationSettings.TelegramSettings, 
+                    new Dictionary<SpectrometerEvent, MessageTemplate>()
+                    {
+                        { SpectrometerEvent.SpectrumSaved, new MessageTemplate(true, _config.NotificationSettings.Templates.Telegram.AutosaveDone, _config.NotificationSettings.Templates.Telegram.AutosaveEmpty)}
+                    },
+                    x.GetRequiredService<ILoggerFactory>());
             });
         }
 
