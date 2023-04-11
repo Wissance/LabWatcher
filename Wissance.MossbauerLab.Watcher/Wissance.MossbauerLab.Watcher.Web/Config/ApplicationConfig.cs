@@ -8,7 +8,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Config
 
         }
 
-        public ApplicationConfig(JobsConfig defaultJobsSettings, SpectraStoreConfig sm2201SpectraStoreSettings, NotificationConfig notificationSettings, string connStr)
+        public ApplicationConfig(JobsConfig defaultJobsSettings, SpectraStoreConfig sm2201SpectraStoreSettings, NotificationConfig notificationSettings, FtpConfig ftpSettings, string connStr)
         {
             DefaultJobsSettings = defaultJobsSettings;
             Sm2201SpectraStoreSettings = sm2201SpectraStoreSettings;
@@ -20,5 +20,6 @@ namespace Wissance.MossbauerLab.Watcher.Web.Config
         public SpectraStoreConfig Sm2201SpectraStoreSettings { get; set; }
         public NotificationConfig NotificationSettings { get; set; }
         public string ConnStr { get; set; }
+        public FtpConfig FTPSettings { get; internal set; }
     }
 }

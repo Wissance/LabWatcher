@@ -132,6 +132,8 @@ namespace Wissance.MossbauerLab.Watcher.Web
                 quartz.AddTrigger(trigger => trigger.ForJob(nameof(SpectraNotifyJob))
                       //.WithSimpleSchedule(SimpleScheduleBuilder.RepeatMinutelyForever()));
                       .WithCronSchedule(_config.DefaultJobsSettings.DefaultSpectraNotifySchedule));
+                quartz.AddTrigger(trigger => trigger.ForJob(nameof(FTPArchiveFilesJob))
+                      .WithCronSchedule(_config.DefaultJobsSettings.DefaultFileArchiveingSchedule));
             });
 
             services.AddQuartzHostedService(options =>
