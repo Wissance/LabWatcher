@@ -29,6 +29,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
         }
         public async Task Execute(IJobExecutionContext context)
         {
+            //TODO: 
             //using AsyncFtpClient ftp = new AsyncFtpClient(_config.FTPSettings.Host, _config.FTPSettings.UserCredentials.User, _config.FTPSettings.UserCredentials.Password);
             //await ftp.AutoConnect();
             string relativeDir = GetRelativePathWinShare();
