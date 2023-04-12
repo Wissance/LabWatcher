@@ -1,10 +1,12 @@
 ﻿using FluentFTP;
 
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Validations;
 
 using Quartz;
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,15 +31,30 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
         }
         public async Task Execute(IJobExecutionContext context)
         {
-            //TODO: 
-            //using AsyncFtpClient ftp = new AsyncFtpClient(_config.FTPSettings.Host, _config.FTPSettings.UserCredentials.User, _config.FTPSettings.UserCredentials.Password);
-            //await ftp.AutoConnect();
+            //TODO: refactor
+         
             string relativeDir = GetRelativePathWinShare();
-            var fileNamesToTransfer = (await _storeService.GetAllDirectoryFilesInfoAsync(relativeDir))
-                .Where(x => x.LastWriteTimeUtc > DateTime.UtcNow.AddDays(_config.FTPSettings.ArchiveWhenFileIsOlderThanInDays))
+            var fileInfos = (await _storeService.GetAllDirectoryFilesInfoAsync(relativeDir))
+                .Where(x => x.LastWriteTimeUtc > DateTime.UtcNow.AddDays(_config.FTPSettings.ArchiveWhenFileIsOlderThanInDays));
+            var fileNamesToTransfer = fileInfos
                 .Select(x => x.FullName);
-            
-          
+            var bytesToTransfer = new List<byte[]>();
+            foreach (var file in fileNamesToTransfer)
+            {
+                bytesToTransfer.Add(await _storeService.ReadAsync(file));
+            }
+            var dict = fileNamesToTransfer.Zip(bytesToTransfer).ToDictionary(x => x.First, x => x.Second);
+            using AsyncFtpClient ftp = new AsyncFtpClient(_config.FTPSettings.Host, _config.FTPSettings.UserCredentials.User, _config.FTPSettings.UserCredentials.Password);
+            await ftp.AutoConnect();
+            var dirPath = @$"{_config.FTPSettings.ServerFolderPath}\ArchivedSpectra_{DateTime.UtcNow}";
+            await ftp.CreateDirectory(dirPath);
+            await ftp.SetWorkingDirectory(dirPath);
+            foreach (var item in dict)
+            {
+                await ftp.UploadBytes(item.Value, item.Key);
+            }
+            await ftp.Disconnect();
+
         }
 
         private string GetRelativePathWinShare()
