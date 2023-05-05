@@ -40,16 +40,23 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
                 // 2. Process every spectra and do the same
                 foreach (SpectrumEntity spectrum in archSpectra)
                 {
-                    // 3. Get all files in spectra directory from Shared Directory/SMB
+                    // 3. Get all files in spectra directory from Shared Directory/SMB &&
+                    //    Transfer every file in appropriate directory using FtpClient
+                    _logger.LogDebug($"Started to archive spectrum: {spectrum.Name}");
+                    bool result = await TransferSpectrumFiles(spectrum.Name);
+                    // 4. Set spectrum.IsArchived = true
+                    if (result)
+                    {
+                        // spectrum.IsArchived = true;
+                    }
+                    else
+                    {
 
-                    // 4. Transfer every file in appropriate directory using FtpClient
-
-                    // 5. Set spectrum.IsArchived = true
-
-                    // 6. Save Context
+                    }
+                    
                 }
-
-
+                // 6. Save Context
+                int saveResult = await _context.SaveChangesAsync();
 
 
                 // Нужно, вероятно достать из БД, а далее последовательно обрабатывать каждый спектр из БД
@@ -85,6 +92,22 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
                 _logger.LogError($"An error occurred during FTP archiving job: {e.Message}");
             }
             _logger.LogInformation("*********** FTP archiving job finished ***********");
+        }
+
+        private async Task<bool> TransferSpectrumFiles(string spectrumName)
+        {
+            try
+            {
+                string relativeDir = GetRelativePathWinShare();
+                IList<string> children = await _storeService.GetChildrenAsync(_config.Sm2201SpectraStoreSettings.Folder, spectrumName);
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"An error occurred during archive spectrum: \"{spectrumName}\", error: {e.Message}");
+                return false;
+            }
+            
         }
 
         private string GetRelativePathWinShare()
