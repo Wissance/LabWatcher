@@ -31,30 +31,42 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
         }
         public async Task Execute(IJobExecutionContext context)
         {
-            //TODO: refactor
-         
-            string relativeDir = GetRelativePathWinShare();
-            var fileInfos = (await _storeService.GetAllDirectoryFilesInfoAsync(relativeDir))
-                .Where(x => x.LastWriteTimeUtc > DateTime.UtcNow.AddDays(_config.FTPSettings.ArchiveWhenFileIsOlderThanInDays));
-            var fileNamesToTransfer = fileInfos
-                .Select(x => x.FullName);
-            var bytesToTransfer = new List<byte[]>();
-            foreach (var file in fileNamesToTransfer)
+            _logger.LogInformation("*********** FTP archiving job started ***********");
+            try
             {
-                bytesToTransfer.Add(await _storeService.ReadAsync(file));
-            }
-            var dict = fileNamesToTransfer.Zip(bytesToTransfer).ToDictionary(x => x.First, x => x.Second);
-            using AsyncFtpClient ftp = new AsyncFtpClient(_config.FTPSettings.Host, _config.FTPSettings.UserCredentials.User, _config.FTPSettings.UserCredentials.Password);
-            await ftp.AutoConnect();
-            var dirPath = @$"{_config.FTPSettings.ServerFolderPath}\ArchivedSpectra_{DateTime.UtcNow}";
-            await ftp.CreateDirectory(dirPath);
-            await ftp.SetWorkingDirectory(dirPath);
-            foreach (var item in dict)
-            {
-                await ftp.UploadBytes(item.Value, item.Key);
-            }
-            await ftp.Disconnect();
+                // 1. Достаем полный список всех директорий 
+                // Нужно, вероятно достать из БД, а далее последовательно обрабатывать каждый спектр из БД
+                string relativeDir = GetRelativePathWinShare();
+                IList<FileInfo> archSpectraFolders = (await _storeService.GetAllDirectoryFilesInfoAsync(relativeDir))
+                    .Where(x => x.LastWriteTimeUtc > DateTime.UtcNow.AddDays(_config.FTPSettings.ArchiveWhenFileIsOlderThanInDays)).ToList();
+                IList<string> foldersNames = archSpectraFolders.Select(x => x.FullName).ToList();
+                List<byte[]> bytesToTransfer = new List<byte[]>();
+                foreach (string folder in foldersNames)
+                {
+                    // это не правильно! ReadAsync считывает отдельный файл, мы же должны копировать всю папку
+                    bytesToTransfer.Add(await _storeService.ReadAsync(folder));
+                }
 
+                var filesContent = foldersNames.Zip(bytesToTransfer).ToDictionary(x => x.First, x => x.Second);
+                using AsyncFtpClient ftp = new AsyncFtpClient(_config.FTPSettings.Host,
+                    _config.FTPSettings.UserCredentials.User, _config.FTPSettings.UserCredentials.Password);
+                await ftp.AutoConnect();
+                var dirPath = @$"{_config.FTPSettings.ServerFolderPath}\ArchivedSpectra_{DateTime.UtcNow}";
+                bool ftpDirCreationResult = await ftp.CreateDirectory(dirPath);
+                await ftp.SetWorkingDirectory(dirPath);
+                foreach (KeyValuePair<string, byte[]> item in filesContent)
+                {
+                    await ftp.UploadBytes(item.Value, item.Key);
+                }
+
+                await ftp.Disconnect();
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"An error occurred during FTP archiving job: {e.Message}");
+            }
+            _logger.LogInformation("*********** FTP archiving job finished ***********");
         }
 
         private string GetRelativePathWinShare()
