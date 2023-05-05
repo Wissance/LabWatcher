@@ -38,7 +38,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
                 // Нужно, вероятно достать из БД, а далее последовательно обрабатывать каждый спектр из БД
                 string relativeDir = GetRelativePathWinShare();
                 IList<FileInfo> archSpectraFolders = (await _storeService.GetAllDirectoryFilesInfoAsync(relativeDir))
-                    .Where(x => x.LastWriteTimeUtc > DateTime.UtcNow.AddDays(_config.FtpArchSettings.ArchiveWhenFileIsOlderThanInDays)).ToList();
+                    .Where(x => x.LastWriteTimeUtc > DateTime.UtcNow.AddDays(_config.FtpArchSettings.TransferThreshold)).ToList();
                 IList<string> foldersNames = archSpectraFolders.Select(x => x.FullName).ToList();
                 List<byte[]> bytesToTransfer = new List<byte[]>();
                 foreach (string folder in foldersNames)
@@ -48,10 +48,11 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
                 }
 
                 var filesContent = foldersNames.Zip(bytesToTransfer).ToDictionary(x => x.First, x => x.Second);
-                using AsyncFtpClient ftp = new AsyncFtpClient(_config.FtpArchSettings.Host,
-                    _config.FtpArchSettings.UserCredentials.User, _config.FtpArchSettings.UserCredentials.Password);
+                using AsyncFtpClient ftp = new AsyncFtpClient(_config.FtpArchSettings.FtpSettings.Host,
+                    _config.FtpArchSettings.FtpSettings.Username, _config.FtpArchSettings.FtpSettings.Password, _config.FtpArchSettings.FtpSettings.Port);
                 await ftp.AutoConnect();
-                var dirPath = @$"{_config.FtpArchSettings.ServerFolderPath}\ArchivedSpectra_{DateTime.UtcNow}";
+                // неправильное имя!!!!!
+                var dirPath = @$"{_config.FtpArchSettings.FtpArchRootDir}\ArchivedSpectra_{DateTime.UtcNow}";
                 bool ftpDirCreationResult = await ftp.CreateDirectory(dirPath);
                 await ftp.SetWorkingDirectory(dirPath);
                 foreach (KeyValuePair<string, byte[]> item in filesContent)
