@@ -17,15 +17,15 @@ using Wissance.MossbauerLab.Watcher.Web.Config;
 
 namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
 {
-    public class FTPArchiveFilesJob : IJob
+    public class FtpArchiveFilesJob : IJob
     {
         
 
-        public FTPArchiveFilesJob(IFileStoreService storeService, ModelContext context, ILoggerFactory loggerFactory, ApplicationConfig config)
+        public FtpArchiveFilesJob(IFileStoreService storeService, ModelContext context, ILoggerFactory loggerFactory, ApplicationConfig config)
         {
             _storeService= storeService;
             _context = context;
-            _logger = loggerFactory.CreateLogger<FTPArchiveFilesJob>();
+            _logger = loggerFactory.CreateLogger<FtpArchiveFilesJob>();
             _config = config;
 
         }
@@ -74,7 +74,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
 
         private readonly IFileStoreService _storeService;
         private readonly ModelContext _context;
-        private readonly ILogger<FTPArchiveFilesJob> _logger;
+        private readonly ILogger<FtpArchiveFilesJob> _logger;
         private readonly ApplicationConfig _config;
     }
 }
