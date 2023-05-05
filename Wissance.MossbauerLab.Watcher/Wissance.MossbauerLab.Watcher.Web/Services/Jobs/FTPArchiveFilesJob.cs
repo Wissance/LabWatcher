@@ -36,6 +36,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
             try
             {
                 // 1. Retrieve spectra that should be transferred to ftp and made archived
+                // TODO:UMV: add IsArchived = False
                 IList<SpectrumEntity> archSpectra = _context.Spectra.Where(s => s.Last != null && s.Last.Value < DateTime.Now.AddDays(-1 * _config.FtpArchSettings.TransferThreshold)).ToList();
                 // 2. Process every spectra and do the same
                 foreach (SpectrumEntity spectrum in archSpectra)
@@ -43,15 +44,16 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
                     // 3. Get all files in spectra directory from Shared Directory/SMB &&
                     //    Transfer every file in appropriate directory using FtpClient
                     _logger.LogDebug($"Started to archive spectrum: {spectrum.Name}");
-                    bool result = await TransferSpectrumFiles(spectrum.Name);
+                    int result = await TransferSpectrumFiles(spectrum.Name);
                     // 4. Set spectrum.IsArchived = true
-                    if (result)
+                    if (result > 0)
                     {
                         // spectrum.IsArchived = true;
+                        _logger.LogDebug($"Successfully transferred {result} samples of spectrum: \" {spectrum.Name}\" from shared folder to FTP");
                     }
                     else
                     {
-
+                        _logger.LogDebug($"Spectrum transfer \"{spectrum.Name}\" from shared folder to FTP failed");
                     }
                     
                 }
@@ -60,7 +62,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
 
 
                 // Нужно, вероятно достать из БД, а далее последовательно обрабатывать каждый спектр из БД
-                string relativeDir = GetRelativePathWinShare();
+               /* string relativeDir = GetRelativePathWinShare();
                 IList<FileInfo> archSpectraFolders = (await _storeService.GetAllDirectoryFilesInfoAsync(relativeDir))
                     .Where(x => x.LastWriteTimeUtc > DateTime.UtcNow.AddDays(_config.FtpArchSettings.TransferThreshold)).ToList();
                 IList<string> foldersNames = archSpectraFolders.Select(x => x.FullName).ToList();
@@ -84,7 +86,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
                     await ftp.UploadBytes(item.Value, item.Key);
                 }
 
-                await ftp.Disconnect();
+                await ftp.Disconnect();*/
 
             }
             catch (Exception e)
@@ -94,18 +96,40 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
             _logger.LogInformation("*********** FTP archiving job finished ***********");
         }
 
-        private async Task<bool> TransferSpectrumFiles(string spectrumName)
+        private async Task<int> TransferSpectrumFiles(string spectrumName)
         {
             try
             {
+                // todo (UMV): define roper PATH ....
                 string relativeDir = GetRelativePathWinShare();
                 IList<string> children = await _storeService.GetChildrenAsync(_config.Sm2201SpectraStoreSettings.Folder, spectrumName);
-                return true;
+                string dirPath = Path.Combine(@$"{_config.FtpArchSettings.FtpArchRootDir}", spectrumName);
+                using AsyncFtpClient ftp = new AsyncFtpClient(_config.FtpArchSettings.FtpSettings.Host, _config.FtpArchSettings.FtpSettings.Username, 
+                                                              _config.FtpArchSettings.FtpSettings.Password, _config.FtpArchSettings.FtpSettings.Port);
+                bool ftpDirCreationResult = await ftp.CreateDirectory(dirPath);
+                if (!ftpDirCreationResult)
+                {
+                    _logger.LogDebug($"FTP directory \"{dirPath}\" creation result is false, can't copy files");
+                    return -1;
+                }
+
+                await ftp.SetWorkingDirectory(dirPath);
+                foreach (string child in children)
+                {
+                    // Get File content
+                    // await _storeService.ReadAsync(folder);
+                    // Transfer to FTP
+                }
+                // going to ROOT dir 
+                await ftp.SetWorkingDirectory(".");
+
+                await ftp.Disconnect();
+                return children.Count;
             }
             catch (Exception e)
             {
                 _logger.LogError($"An error occurred during archive spectrum: \"{spectrumName}\", error: {e.Message}");
-                return false;
+                return -1;
             }
             
         }
