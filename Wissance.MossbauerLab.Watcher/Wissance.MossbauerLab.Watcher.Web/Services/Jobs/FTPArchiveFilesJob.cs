@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Wissance.MossbauerLab.Watcher.Data;
+using Wissance.MossbauerLab.Watcher.Data.Entities;
 using Wissance.MossbauerLab.Watcher.Services.Store;
 using Wissance.MossbauerLab.Watcher.Web.Config;
 
@@ -34,7 +35,23 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
             _logger.LogInformation("*********** FTP archiving job started ***********");
             try
             {
-                // 1. Достаем полный список всех директорий 
+                // 1. Retrieve spectra that should be transferred to ftp and made archived
+                IList<SpectrumEntity> archSpectra = _context.Spectra.Where(s => s.Last != null && s.Last.Value < DateTime.Now.AddDays(-1 * _config.FtpArchSettings.TransferThreshold)).ToList();
+                // 2. Process every spectra and do the same
+                foreach (SpectrumEntity spectrum in archSpectra)
+                {
+                    // 3. Get all files in spectra directory from Shared Directory/SMB
+
+                    // 4. Transfer every file in appropriate directory using FtpClient
+
+                    // 5. Set spectrum.IsArchived = true
+
+                    // 6. Save Context
+                }
+
+
+
+
                 // Нужно, вероятно достать из БД, а далее последовательно обрабатывать каждый спектр из БД
                 string relativeDir = GetRelativePathWinShare();
                 IList<FileInfo> archSpectraFolders = (await _storeService.GetAllDirectoryFilesInfoAsync(relativeDir))
