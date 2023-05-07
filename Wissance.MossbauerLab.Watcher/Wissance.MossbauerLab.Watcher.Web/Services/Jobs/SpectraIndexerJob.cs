@@ -75,7 +75,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
                             // creating new one
                             if (nonEmpty)
                                 _context.Spectra.Add(new SpectrumEntity(shortName, string.Format(SpectrumDescriptionTemplate, nameData.OneLetterSpectrumType, nameData.Channel),
-                                                                        child, nameData.MeasureStart, first, last));
+                                                                        child, nameData.MeasureStart, first, last, false));
                         }
                         else
                         {

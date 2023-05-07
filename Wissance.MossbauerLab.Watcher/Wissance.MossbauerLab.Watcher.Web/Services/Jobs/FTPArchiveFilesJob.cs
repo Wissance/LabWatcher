@@ -37,7 +37,8 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
             {
                 // 1. Retrieve spectra that should be transferred to ftp and made archived
                 // TODO:UMV: add IsArchived = False
-                IList<SpectrumEntity> archSpectra = _context.Spectra.Where(s => s.Last != null && s.Last.Value < DateTime.Now.AddDays(-1 * _config.FtpArchSettings.TransferThreshold)).ToList();
+                IList<SpectrumEntity> archSpectra = _context.Spectra.Where(s => s.IsArchived == false && s.Last != null && 
+                                                                           s.Last.Value < DateTime.Now.AddDays(-1 * _config.FtpArchSettings.TransferThreshold)).ToList();
                 // 2. Process every spectra and do the same
                 foreach (SpectrumEntity spectrum in archSpectra)
                 {
@@ -48,7 +49,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
                     // 4. Set spectrum.IsArchived = true
                     if (result > 0)
                     {
-                        // spectrum.IsArchived = true;
+                        spectrum.IsArchived = true;
                         _logger.LogDebug($"Successfully transferred {result} samples of spectrum: \" {spectrum.Name}\" from shared folder to FTP");
                     }
                     else
@@ -61,7 +62,8 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
                 int saveResult = await _context.SaveChangesAsync();
                 if (saveResult < 0)
                 {
-                    _logger.LogError("");
+                    string spectraNames = String.Join(", ", archSpectra.Select(s => s.Name).ToArray());
+                    _logger.LogError($"An error occurred during setting IsArchived = true when processing following spectra: {spectraNames}");
                 }
 
             }

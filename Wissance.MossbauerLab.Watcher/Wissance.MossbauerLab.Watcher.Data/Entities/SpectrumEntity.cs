@@ -11,7 +11,7 @@ namespace Wissance.MossbauerLab.Watcher.Data.Entities
         {
         }
 
-        public SpectrumEntity(string name, string description, string location, DateTime measureStartDate, DateTime? first, DateTime? last)
+        public SpectrumEntity(string name, string description, string location, DateTime measureStartDate, DateTime? first, DateTime? last, bool isArchived)
         {
             Name = name;
             Description = description;
@@ -19,6 +19,7 @@ namespace Wissance.MossbauerLab.Watcher.Data.Entities
             MeasureStartDate = measureStartDate;
             First = first;
             Last = last;
+            IsArchived = isArchived;
         }
 
         public int Id { get; }
@@ -28,5 +29,6 @@ namespace Wissance.MossbauerLab.Watcher.Data.Entities
         public DateTime MeasureStartDate { get; set; }
         public DateTime? First { get; set; }
         public DateTime? Last { get; set; }
+        public bool IsArchived { get; set; }
     }
 }
