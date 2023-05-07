@@ -59,34 +59,10 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
                 }
                 // 6. Save Context
                 int saveResult = await _context.SaveChangesAsync();
-
-
-                // Нужно, вероятно достать из БД, а далее последовательно обрабатывать каждый спектр из БД
-               /* string relativeDir = GetSpectrumShareRootDir();
-                IList<FileInfo> archSpectraFolders = (await _storeService.GetAllDirectoryFilesInfoAsync(relativeDir))
-                    .Where(x => x.LastWriteTimeUtc > DateTime.UtcNow.AddDays(_config.FtpArchSettings.TransferThreshold)).ToList();
-                IList<string> foldersNames = archSpectraFolders.Select(x => x.FullName).ToList();
-                List<byte[]> bytesToTransfer = new List<byte[]>();
-                foreach (string folder in foldersNames)
+                if (saveResult < 0)
                 {
-                    // это не правильно! ReadAsync считывает отдельный файл, мы же должны копировать всю папку
-                    bytesToTransfer.Add(await _storeService.ReadAsync(folder));
+                    _logger.LogError("");
                 }
-
-                var filesContent = foldersNames.Zip(bytesToTransfer).ToDictionary(x => x.First, x => x.Second);
-                using AsyncFtpClient ftp = new AsyncFtpClient(_config.FtpArchSettings.FtpSettings.Host,
-                    _config.FtpArchSettings.FtpSettings.Username, _config.FtpArchSettings.FtpSettings.Password, _config.FtpArchSettings.FtpSettings.Port);
-                await ftp.AutoConnect();
-                // неправильное имя!!!!!
-                var dirPath = @$"{_config.FtpArchSettings.FtpArchRootDir}\ArchivedSpectra_{DateTime.UtcNow}";
-                bool ftpDirCreationResult = await ftp.CreateDirectory(dirPath);
-                await ftp.SetWorkingDirectory(dirPath);
-                foreach (KeyValuePair<string, byte[]> item in filesContent)
-                {
-                    await ftp.UploadBytes(item.Value, item.Key);
-                }
-
-                await ftp.Disconnect();*/
 
             }
             catch (Exception e)
@@ -122,7 +98,15 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
                     byte[] spectrumSampleContent = await _storeService.ReadAsync(sampleFile);
                     // await _storeService.ReadAsync(folder);
                     // Transfer to FTP
-                    await ftp.UploadBytes(spectrumSampleContent, sample);
+                    FtpStatus uploadStatus = await ftp.UploadBytes(spectrumSampleContent, sample);
+                    if (uploadStatus == FtpStatus.Failed)
+                    {
+                        _logger.LogError($"An error occurred during file \"{sample}\" upload from share: \"{sampleFile}\" to FTP dir: \"{ftpSpectrumDir}\"");
+                    }
+                    else
+                    {
+                        // could safely remove file from share (temporarily, off)
+                    }
                 }
                 // going to ROOT dir 
                 await ftp.SetWorkingDirectory(".");
