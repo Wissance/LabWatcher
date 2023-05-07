@@ -62,7 +62,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
 
 
                 // Нужно, вероятно достать из БД, а далее последовательно обрабатывать каждый спектр из БД
-               /* string relativeDir = GetRelativePathWinShare();
+               /* string relativeDir = GetSpectrumShareRootDir();
                 IList<FileInfo> archSpectraFolders = (await _storeService.GetAllDirectoryFilesInfoAsync(relativeDir))
                     .Where(x => x.LastWriteTimeUtc > DateTime.UtcNow.AddDays(_config.FtpArchSettings.TransferThreshold)).ToList();
                 IList<string> foldersNames = archSpectraFolders.Select(x => x.FullName).ToList();
@@ -101,30 +101,34 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
             try
             {
                 // todo (UMV): define roper PATH ....
-                string relativeDir = GetRelativePathWinShare();
-                IList<string> children = await _storeService.GetChildrenAsync(_config.Sm2201SpectraStoreSettings.Folder, spectrumName);
-                string dirPath = Path.Combine(@$"{_config.FtpArchSettings.FtpArchRootDir}", spectrumName);
+                string spectrumShareRootDir = GetSpectrumShareRootDir();
+                IList<string> spectrumSamples = await _storeService.GetChildrenAsync(spectrumName, spectrumShareRootDir);
+                string ftpSpectrumDir = Path.Combine(@$"{_config.FtpArchSettings.FtpArchRootDir}", spectrumName);
                 using AsyncFtpClient ftp = new AsyncFtpClient(_config.FtpArchSettings.FtpSettings.Host, _config.FtpArchSettings.FtpSettings.Username, 
                                                               _config.FtpArchSettings.FtpSettings.Password, _config.FtpArchSettings.FtpSettings.Port);
-                bool ftpDirCreationResult = await ftp.CreateDirectory(dirPath);
+                // todo (UMV): check is FTP dir already exists
+                bool ftpDirCreationResult = await ftp.CreateDirectory(ftpSpectrumDir);
                 if (!ftpDirCreationResult)
                 {
-                    _logger.LogDebug($"FTP directory \"{dirPath}\" creation result is false, can't copy files");
+                    _logger.LogDebug($"FTP directory \"{ftpSpectrumDir}\" creation result is false, can't copy files");
                     return -1;
                 }
 
-                await ftp.SetWorkingDirectory(dirPath);
-                foreach (string child in children)
+                await ftp.SetWorkingDirectory(ftpSpectrumDir);
+                foreach (string sample in spectrumSamples)
                 {
                     // Get File content
+                    string sampleFile = Path.Combine(spectrumShareRootDir, spectrumName, sample);
+                    byte[] spectrumSampleContent = await _storeService.ReadAsync(sampleFile);
                     // await _storeService.ReadAsync(folder);
                     // Transfer to FTP
+                    await ftp.UploadBytes(spectrumSampleContent, sample);
                 }
                 // going to ROOT dir 
                 await ftp.SetWorkingDirectory(".");
 
                 await ftp.Disconnect();
-                return children.Count;
+                return spectrumSamples.Count;
             }
             catch (Exception e)
             {
@@ -134,19 +138,19 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
             
         }
 
-        private string GetRelativePathWinShare()
+        private string GetSpectrumShareRootDir()
         {
-            string relativeDir;
+            string shareRootDir;
             if (!string.IsNullOrEmpty(_config.Sm2201SpectraStoreSettings.Address))
             {
-                relativeDir = $@"\\{_config.Sm2201SpectraStoreSettings.Address}\{_config.Sm2201SpectraStoreSettings.Folder}";
+                shareRootDir = $@"\\{_config.Sm2201SpectraStoreSettings.Address}\{_config.Sm2201SpectraStoreSettings.Folder}";
             }
             else
             {
-                relativeDir = _config.Sm2201SpectraStoreSettings.Folder;
+                shareRootDir = _config.Sm2201SpectraStoreSettings.Folder;
             }
 
-            return relativeDir;
+            return shareRootDir;
         }
 
         private readonly IFileStoreService _storeService;
