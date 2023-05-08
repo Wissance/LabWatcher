@@ -22,12 +22,13 @@
     <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
     <!--<PackageReference Include="SimpleImpersonation" Version="4.2.0" />-->
     <PackageReference Include="Wissance.Authorization" Version="1.1.1" />
-    <PackageReference Include="Wissance.WebApiToolkit" Version="1.0.1" />
+    <PackageReference Include="Wissance.WebApiToolkit" Version="1.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.17" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="5.0.17" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Wissance.MossabuerLab.Watcher.Dto\Wissance.MossabuerLab.Watcher.Dto.csproj" />
     <ProjectReference Include="..\Wissance.MossbauerLab.Watcher.Common\Wissance.MossbauerLab.Watcher.Common.csproj" />
     <ProjectReference Include="..\Wissance.MossbauerLab.Watcher.Data\Wissance.MossbauerLab.Watcher.Data.csproj" />
     <ProjectReference Include="..\Wissance.MossbauerLab.Watcher.Services\Wissance.MossbauerLab.Watcher.Services.csproj" />
@@ -38,6 +39,10 @@
         <Link>Notification\Templates\%(RecursiveDir)%(FileName)</Link>
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Controllers\" />
     </ItemGroup>
 
 </Project>
