@@ -20,6 +20,6 @@ namespace Wissance.MossbauerLab.Watcher.Web.Config
         public SpectraStoreConfig Sm2201SpectraStoreSettings { get; set; }
         public NotificationConfig NotificationSettings { get; set; }
         public string ConnStr { get; set; }
-        public FtpArchConfig FtpArchSettings { get; internal set; }
+        public FtpArchConfig FtpArchSettings { get; set; }
     }
 }
