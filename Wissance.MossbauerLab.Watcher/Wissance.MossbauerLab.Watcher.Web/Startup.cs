@@ -18,6 +18,7 @@ using Wissance.MossbauerLab.Watcher.Common.Extensions;
 using Wissance.MossbauerLab.Watcher.Services.Notification;
 using Wissance.MossbauerLab.Watcher.Services.Store;
 using Wissance.MossbauerLab.Watcher.Web.Config;
+using Wissance.MossbauerLab.Watcher.Web.Managers;
 using Wissance.MossbauerLab.Watcher.Web.Services.Jobs;
 using Wissance.MossbauerLab.Watcher.Web.Services.Store;
 
@@ -44,7 +45,14 @@ namespace Wissance.MossbauerLab.Watcher.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
 
         private void ConfigureDatabase(IServiceCollection services)
@@ -78,7 +86,9 @@ namespace Wissance.MossbauerLab.Watcher.Web
 
         private void ConfigureWebApi(IServiceCollection services)
         {
+            services.AddControllers();
 
+            services.AddScoped<SpectrumManager>();
         }
 
         private void ConfigureNotificationServices(IServiceCollection services)
