@@ -19,6 +19,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Controllers
             _manager = manager;
         }
 
+        // http://localhost:7890/api/Spectrum/3/Samples
         [HttpGet]
         [Route("api/[controller]/{id}/samples")]
         public async Task<SpectrumSamplesInfoDto> ReadSamplesByIdAsync([FromRoute] int id)
@@ -26,6 +27,13 @@ namespace Wissance.MossbauerLab.Watcher.Web.Controllers
             OperationResultDto<SpectrumSamplesInfoDto> result = await _manager.GetSpectrumSamplesAsync(id);
             HttpContext.Response.StatusCode = result.Status;
             return result.Data;
+        }
+
+        [HttpGet]
+        [Route("api/[controller]/{id}/samples/{sampleName}/spectrum")]
+        public async Task<IActionResult> ReadSpectrumSampleFileAsync([FromRoute] int id, [FromRoute] string sampleName)
+        {
+            return null;
         }
 
         private readonly SpectrumManager _manager;

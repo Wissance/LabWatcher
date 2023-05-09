@@ -74,6 +74,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
             _logger.LogInformation("*********** FTP archiving job finished ***********");
         }
 
+        //todo  (UMV): pass SpectrumEntity to change Location in SpectrumEntity !!!!
         private async Task<int> TransferSpectrumFiles(string spectrumName)
         {
             try
