@@ -44,6 +44,11 @@ namespace Wissance.MossbauerLab.Watcher.Web.Managers
             }
         }
 
+        public async Task<OperationResultDto<byte[]>> GetSpectrumSampleFileAsync(int spectrum, string sampleNumber)
+        {
+            return null;
+        }
+
         private async Task<string[]> GetSamples(SpectrumEntity spectrum)
         {
             if (!spectrum.IsArchived)
