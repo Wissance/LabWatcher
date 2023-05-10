@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Wissance.MossabuerLab.Watcher.Dto;
@@ -31,9 +32,21 @@ namespace Wissance.MossbauerLab.Watcher.Web.Controllers
 
         [HttpGet]
         [Route("api/[controller]/{id}/samples/{sampleName}/spectrum")]
-        public async Task<IActionResult> ReadSpectrumSampleFileAsync([FromRoute] int id, [FromRoute] string sampleName)
+        public async Task<HttpResponseMessage> ReadSpectrumSampleFileAsync([FromRoute] int id, [FromRoute] string sampleName)
         {
-            return null;
+            HttpResponseMessage resp = new HttpResponseMessage();
+            OperationResultDto<byte[]> result = await _manager.GetSpectrumSampleFileAsync(id, sampleName);
+            HttpContext.Response.StatusCode = result.Status;
+            if (result.Data != null)
+            {
+                //return File(result.Data, )
+                resp.Content = new ByteArrayContent(result.Data);
+                resp.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
+                resp.Content.Headers.ContentDisposition.FileName = sampleName;
+                resp.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            }
+
+            return resp;
         }
 
         private readonly SpectrumManager _manager;
