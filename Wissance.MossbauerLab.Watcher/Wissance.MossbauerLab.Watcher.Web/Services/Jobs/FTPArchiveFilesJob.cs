@@ -93,8 +93,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
                     bool ftpDirCreationResult = await ftp.CreateDirectory(ftpSpectrumDir);
                     if (!ftpDirCreationResult)
                     {
-                        _logger.LogDebug(
-                            $"FTP directory \"{ftpSpectrumDir}\" creation result is false, can't copy files");
+                        _logger.LogDebug($"FTP directory \"{ftpSpectrumDir}\" creation result is false, can't copy files");
                         return -1;
                     }
                 }

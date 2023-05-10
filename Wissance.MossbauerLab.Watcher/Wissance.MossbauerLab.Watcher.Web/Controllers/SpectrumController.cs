@@ -32,21 +32,19 @@ namespace Wissance.MossbauerLab.Watcher.Web.Controllers
 
         [HttpGet]
         [Route("api/[controller]/{id}/samples/{sampleName}/spectrum")]
-        public async Task<HttpResponseMessage> ReadSpectrumSampleFileAsync([FromRoute] int id, [FromRoute] string sampleName)
+        public async Task<IActionResult> ReadSpectrumSampleFileAsync([FromRoute] int id, [FromRoute] string sampleName)
         {
-            HttpResponseMessage resp = new HttpResponseMessage();
             OperationResultDto<byte[]> result = await _manager.GetSpectrumSampleFileAsync(id, sampleName);
-            HttpContext.Response.StatusCode = result.Status;
             if (result.Data != null)
             {
-                //return File(result.Data, )
-                resp.Content = new ByteArrayContent(result.Data);
-                resp.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
-                resp.Content.Headers.ContentDisposition.FileName = sampleName;
-                resp.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+                string mimeType = "application/octet-stream";
+                return new FileContentResult(result.Data, mimeType)
+                {
+                    FileDownloadName = sampleName.ToLower().EndsWith(".spc") ? sampleName : sampleName + ".spc"
+                };
             }
 
-            return resp;
+            return null;
         }
 
         private readonly SpectrumManager _manager;
