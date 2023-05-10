@@ -104,7 +104,6 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
                     // Get File content
                     string sampleFile = Path.Combine(spectrumShareRootDir, spectrum.Name, sample.Name);
                     byte[] spectrumSampleContent = await _storeService.ReadAsync(sampleFile);
-                    // await _storeService.ReadAsync(folder);
                     // Transfer to FTP
                     FtpStatus uploadStatus = await ftp.UploadBytes(spectrumSampleContent, sample.Name);
                     if (uploadStatus == FtpStatus.Failed)
@@ -113,11 +112,13 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
                     }
                     else
                     {
-                        // could safely remove file from share (temporarily, off)
+                        spectrum.Location = ftpSpectrumDir;
+                        // TODO(UMV): could safely remove file from share (temporarily, off)
+
                     }
                 }
                 // going to ROOT dir 
-                await ftp.SetWorkingDirectory(".");
+                await ftp.SetWorkingDirectory("/");
 
                 await ftp.Disconnect();
                 return spectrumSamples.Count;

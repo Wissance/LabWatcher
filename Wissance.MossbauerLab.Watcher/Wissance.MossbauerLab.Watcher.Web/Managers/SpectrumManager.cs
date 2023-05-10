@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
+using FluentFTP;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Wissance.MossabuerLab.Watcher.Dto;
@@ -24,7 +26,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Managers
         {
             _context = dbContext;
             _storeService = storeService;
-            _appConfig = appConfig;
+            _config = appConfig;
             _logger = loggerFactory.CreateLogger<SpectrumManager>();
         }
 
@@ -99,7 +101,13 @@ namespace Wissance.MossbauerLab.Watcher.Web.Managers
             else
             {
                 // we should get from FTP, temporarily we can't do (FTP was not configured properly and we still in DEBUG)
-                return null;
+                using AsyncFtpClient ftp = new AsyncFtpClient(_config.FtpArchSettings.FtpSettings.Host, _config.FtpArchSettings.FtpSettings.Username,
+                    _config.FtpArchSettings.FtpSettings.Password, _config.FtpArchSettings.FtpSettings.Port);
+                await ftp.SetWorkingDirectory(spectrum.Location);
+                string[] samples = await ftp.GetNameListing();
+                await ftp.SetWorkingDirectory("/");
+                await ftp.Disconnect();
+                return samples;
             }
         }
 
@@ -114,6 +122,10 @@ namespace Wissance.MossbauerLab.Watcher.Web.Managers
             else
             {
                 // we should get from FTP, temporarily we can't do (FTP was not configured properly and we still in DEBUG)
+                using AsyncFtpClient ftp = new AsyncFtpClient(_config.FtpArchSettings.FtpSettings.Host, _config.FtpArchSettings.FtpSettings.Username,
+                    _config.FtpArchSettings.FtpSettings.Password, _config.FtpArchSettings.FtpSettings.Port);
+                await ftp.SetWorkingDirectory(spectrum.Location);
+                byte[] spectrumSampleContent = await ftp.DownloadBytes(sampleFile, new CancellationToken());
                 return null;
             }
         }
@@ -121,6 +133,6 @@ namespace Wissance.MossbauerLab.Watcher.Web.Managers
         private readonly ILogger<SpectrumManager> _logger;
         private readonly IModelContext _context;
         private readonly IFileStoreService _storeService;
-        private readonly ApplicationConfig _appConfig;
+        private readonly ApplicationConfig _config;
     }
 }
