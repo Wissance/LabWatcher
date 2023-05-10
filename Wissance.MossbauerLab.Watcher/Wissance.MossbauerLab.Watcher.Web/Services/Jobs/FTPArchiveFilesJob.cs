@@ -45,7 +45,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
                     // 3. Get all files in spectra directory from Shared Directory/SMB &&
                     //    Transfer every file in appropriate directory using FtpClient
                     _logger.LogDebug($"Started to archive spectrum: {spectrum.Name}");
-                    int result = await TransferSpectrumFiles(spectrum.Name);
+                    int result = await TransferSpectrumFiles(spectrum);
                     // 4. Set spectrum.IsArchived = true
                     if (result > 0)
                     {
@@ -75,33 +75,39 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
         }
 
         //todo  (UMV): pass SpectrumEntity to change Location in SpectrumEntity !!!!
-        private async Task<int> TransferSpectrumFiles(string spectrumName)
+        private async Task<int> TransferSpectrumFiles(SpectrumEntity spectrum)
         {
             try
             {
                 // todo (UMV): define roper PATH ....
                 string spectrumShareRootDir = GetSpectrumShareRootDir();
-                IList<string> spectrumSamples = await _storeService.GetChildrenAsync(spectrumName, spectrumShareRootDir);
-                string ftpSpectrumDir = Path.Combine(@$"{_config.FtpArchSettings.FtpArchRootDir}", spectrumName);
+                IList<FileInfo> spectrumSamples = await _storeService.GetAllDirectoryFilesInfoAsync(spectrum.Location);
+                //IList<string> spectrumSamples = await _storeService.GetChildrenAsync(spectrumN, spectrumShareRootDir);
+                string ftpSpectrumDir = Path.Combine(@$"{_config.FtpArchSettings.FtpArchRootDir}", spectrum.Name);
                 using AsyncFtpClient ftp = new AsyncFtpClient(_config.FtpArchSettings.FtpSettings.Host, _config.FtpArchSettings.FtpSettings.Username, 
                                                               _config.FtpArchSettings.FtpSettings.Password, _config.FtpArchSettings.FtpSettings.Port);
                 // todo (UMV): check is FTP dir already exists
-                bool ftpDirCreationResult = await ftp.CreateDirectory(ftpSpectrumDir);
-                if (!ftpDirCreationResult)
+                bool ftpSpectrumDirExists = await ftp.DirectoryExists(ftpSpectrumDir);
+                if (!ftpSpectrumDirExists)
                 {
-                    _logger.LogDebug($"FTP directory \"{ftpSpectrumDir}\" creation result is false, can't copy files");
-                    return -1;
+                    bool ftpDirCreationResult = await ftp.CreateDirectory(ftpSpectrumDir);
+                    if (!ftpDirCreationResult)
+                    {
+                        _logger.LogDebug(
+                            $"FTP directory \"{ftpSpectrumDir}\" creation result is false, can't copy files");
+                        return -1;
+                    }
                 }
 
                 await ftp.SetWorkingDirectory(ftpSpectrumDir);
-                foreach (string sample in spectrumSamples)
+                foreach (FileInfo sample in spectrumSamples)
                 {
                     // Get File content
-                    string sampleFile = Path.Combine(spectrumShareRootDir, spectrumName, sample);
+                    string sampleFile = Path.Combine(spectrumShareRootDir, spectrum.Name, sample.Name);
                     byte[] spectrumSampleContent = await _storeService.ReadAsync(sampleFile);
                     // await _storeService.ReadAsync(folder);
                     // Transfer to FTP
-                    FtpStatus uploadStatus = await ftp.UploadBytes(spectrumSampleContent, sample);
+                    FtpStatus uploadStatus = await ftp.UploadBytes(spectrumSampleContent, sample.Name);
                     if (uploadStatus == FtpStatus.Failed)
                     {
                         _logger.LogError($"An error occurred during file \"{sample}\" upload from share: \"{sampleFile}\" to FTP dir: \"{ftpSpectrumDir}\"");
@@ -119,7 +125,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occurred during archive spectrum: \"{spectrumName}\", error: {e.Message}");
+                _logger.LogError($"An error occurred during archive spectrum: \"{spectrum.Name}\", error: {e.Message}");
                 return -1;
             }
             
