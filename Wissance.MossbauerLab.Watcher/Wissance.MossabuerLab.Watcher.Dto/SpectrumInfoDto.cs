@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Wissance.WebApiToolkit.Data.Entity;
 
-namespace Wissance.MossbauerLab.Watcher.Data.Entities
+namespace Wissance.MossabuerLab.Watcher.Dto
 {
-    public class SpectrumEntity : IModelIdentifiable<int>
+    public class SpectrumInfoDto
     {
-        public SpectrumEntity()
+        public SpectrumInfoDto()
         {
         }
 
-        public SpectrumEntity(string name, string description, string location, DateTime measureStartDate, DateTime? first, DateTime? last, bool isArchived)
+        public SpectrumInfoDto(int id, string name, string description, DateTime measureStartDate, DateTime? first, DateTime? last, bool isArchived)
         {
+            Id = id;
             Name = name;
             Description = description;
-            Location = location;
             MeasureStartDate = measureStartDate;
             First = first;
             Last = last;
@@ -25,7 +24,6 @@ namespace Wissance.MossbauerLab.Watcher.Data.Entities
         public int Id { get; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public string Location { get; set; }
         public DateTime MeasureStartDate { get; set; }
         public DateTime? First { get; set; }
         public DateTime? Last { get; set; }

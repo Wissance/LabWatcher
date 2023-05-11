@@ -29,6 +29,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Templates\testEmptySpectraTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Templates\testTelegramMessageTemplate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

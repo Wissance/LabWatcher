@@ -90,8 +90,8 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
         private readonly ApplicationConfig _config;
         private readonly IFileStoreService _storeService;
         private readonly IModelContext _context;
-        private readonly ISpectrumReadyNotifier _mailNotifier;
-        private readonly ISpectrumReadyNotifier _telegramNotifier;
+        private readonly ISpectrumMeasureEventsNotifier _mailNotifier;
+        private readonly ISpectrumMeasureEventsNotifier _telegramNotifier;
 
         private readonly ILogger<SpectraNotifyJob> _logger;
     }

@@ -9,6 +9,7 @@ using Wissance.MossbauerLab.Watcher.Services.Notification;
 using Microsoft.QualityTools.Testing.Fakes;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Wissance.MossbauerLab.Watcher.Common;
 using Wissance.MossbauerLab.Watcher.Common.Data.Notification;
 
 namespace Wissance.MossbauerLab.Watcher.Services.Tests
@@ -16,13 +17,21 @@ namespace Wissance.MossbauerLab.Watcher.Services.Tests
     [TestClass]
     public class TelegramNotificationsTests
     {
+        [TestInitialize]
+        public void Init()
+        {
+            _bin = Convert.FromBase64String("NjI1MzUyNzMxNjpBQUYzWGZuSnE2azlTMnFldTc2bmd6SHhEU29id3BMcm50SQ==");
+            _key = Encoding.UTF8.GetString(_bin);
+            _templates = new Dictionary<SpectrometerEvent, MessageTemplate>();
+            _templates[SpectrometerEvent.SpectrumSaved] = new MessageTemplate(true, @"Templates\testTelegramMessageTemplate.txt", @"Templates\testEmptySpectraTemplate.txt");
+            _tgRequisites = new TelegramSendRequisites(_key, -1001520411610, null);
+            _telegramNotifier = new TelegramNotifier(_tgRequisites, new TemplateManager(_templates), new LoggerFactory());
+        }
+        
         [TestMethod]
         public async Task SendNotificationTest()
         {
-            byte[] bin = Convert.FromBase64String("NjI1MzUyNzMxNjpBQUYzWGZuSnE2azlTMnFldTc2bmd6SHhEU29id3BMcm50SQ==");
-            string key = Encoding.UTF8.GetString(bin);
-
-            TelegramSendRequisites tgRequisites = new TelegramSendRequisites("@WissanceBotTest", key, "Templates\\testTelegramMessageTemplate.txt");
+          
 
             SpectrumReadyData spectra = new SpectrumReadyData
             {
@@ -33,10 +42,22 @@ namespace Wissance.MossbauerLab.Watcher.Services.Tests
                 RawInfo = new System.IO.FileInfo("textFileForFileInfo.txt")
             };
            
-            TelegramNotifier telegramNotifier = new TelegramNotifier(tgRequisites, new LoggerFactory());
-            bool result = await telegramNotifier.NotifySpectrumSavedAsync(new List<SpectrumReadyData> { spectra, spectra });
+           
+            bool result = await _telegramNotifier.NotifySpectrumSavedAsync(new List<SpectrumReadyData> { spectra, spectra });
             Assert.IsTrue(result);
 
         }
+        [TestMethod]
+        public async Task NotifyAboutTroubles()
+        {
+            bool result = await _telegramNotifier.NotifySpectrumSavedAsync(new List<SpectrumReadyData>());
+            Assert.IsTrue(result);
+        }
+
+        private byte[] _bin;
+        private string _key;
+        private TelegramSendRequisites _tgRequisites;
+        private TelegramNotifier _telegramNotifier;
+        private IDictionary<SpectrometerEvent, MessageTemplate> _templates;
     }
 }

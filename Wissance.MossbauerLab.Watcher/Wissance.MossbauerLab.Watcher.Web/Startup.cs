@@ -11,11 +11,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Quartz;
 using Serilog;
+using Wissance.MossbauerLab.Watcher.Common;
+using Wissance.MossbauerLab.Watcher.Common.Data.Notification;
 using Wissance.MossbauerLab.Watcher.Data;
 using Wissance.MossbauerLab.Watcher.Common.Extensions;
 using Wissance.MossbauerLab.Watcher.Services.Notification;
 using Wissance.MossbauerLab.Watcher.Services.Store;
 using Wissance.MossbauerLab.Watcher.Web.Config;
+using Wissance.MossbauerLab.Watcher.Web.Managers;
 using Wissance.MossbauerLab.Watcher.Web.Services.Jobs;
 using Wissance.MossbauerLab.Watcher.Web.Services.Store;
 
@@ -42,7 +45,14 @@ namespace Wissance.MossbauerLab.Watcher.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
 
         private void ConfigureDatabase(IServiceCollection services)
@@ -76,18 +86,30 @@ namespace Wissance.MossbauerLab.Watcher.Web
 
         private void ConfigureWebApi(IServiceCollection services)
         {
+            services.AddControllers();
 
+            services.AddScoped<SpectrumManager>();
         }
 
         private void ConfigureNotificationServices(IServiceCollection services)
         {
             services.AddScoped<EmailNotifier>(x =>
             {
-                return new EmailNotifier(_config.NotificationSettings.MailSettings, x.GetRequiredService<ILoggerFactory>());
+                return new EmailNotifier(_config.NotificationSettings.MailSettings,
+                    new TemplateManager(new Dictionary<SpectrometerEvent, MessageTemplate>()
+                    {
+                        {SpectrometerEvent.SpectrumSaved, new MessageTemplate(true, _config.NotificationSettings.Templates.Mail.AutosaveDone, null)}
+                    }),
+                    x.GetRequiredService<ILoggerFactory>());
             });
             services.AddScoped<TelegramNotifier>(x =>
             {
-                return new TelegramNotifier(_config.NotificationSettings.TelegramSettings, x.GetRequiredService<ILoggerFactory>());
+                return new TelegramNotifier(_config.NotificationSettings.TelegramSettings,
+                    new TemplateManager(new Dictionary<SpectrometerEvent, MessageTemplate>()
+                    {
+                        {SpectrometerEvent.SpectrumSaved, new MessageTemplate(true, _config.NotificationSettings.Templates.Telegram.AutosaveDone, _config.NotificationSettings.Templates.Telegram.AutosaveEmpty)}
+                    }),
+                    x.GetRequiredService<ILoggerFactory>());
             });
         }
 
@@ -120,6 +142,10 @@ namespace Wissance.MossbauerLab.Watcher.Web
                 quartz.AddTrigger(trigger => trigger.ForJob(nameof(SpectraNotifyJob))
                       //.WithSimpleSchedule(SimpleScheduleBuilder.RepeatMinutelyForever()));
                       .WithCronSchedule(_config.DefaultJobsSettings.DefaultSpectraNotifySchedule));
+                quartz.AddJob<FtpArchiveFilesJob>(job => job.WithIdentity(nameof(FtpArchiveFilesJob)));
+                quartz.AddTrigger(trigger => trigger.ForJob(nameof(FtpArchiveFilesJob))
+                    .WithSimpleSchedule(SimpleScheduleBuilder.RepeatMinutelyForever(5)));
+                    //.WithCronSchedule(_config.DefaultJobsSettings.DefaultFileArchSchedule));
             });
 
             services.AddQuartzHostedService(options =>

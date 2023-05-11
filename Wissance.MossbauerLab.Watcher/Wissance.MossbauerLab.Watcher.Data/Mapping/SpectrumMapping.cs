@@ -15,6 +15,7 @@ namespace Wissance.MossbauerLab.Watcher.Data.Mapping
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Name).IsRequired();
             builder.HasIndex(p => p.Name);
+            builder.Property(p => p.IsArchived).IsRequired().HasDefaultValue(false);
         }
     }
 }
