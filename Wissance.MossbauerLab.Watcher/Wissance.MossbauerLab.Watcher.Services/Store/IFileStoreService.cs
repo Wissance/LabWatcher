@@ -11,6 +11,7 @@ namespace Wissance.MossbauerLab.Watcher.Services.Store
         Task<FileInfo> GetFileInfoAsync(string fileName);
         //Task<FileInfo> GetLastWrittenFileInfoAsync(string directory);
         Task<IList<FileInfo>> GetAllDirectoryFilesInfoAsync(string directory);
+        Task<bool> RemoveDirectoryRecursiveAsync(string directory);
         Task<Tuple<FileInfo, byte[]>> GetLastChangedFileAsync(string directory);
         Task<byte[]> ReadAsync(string fileName);
     }
