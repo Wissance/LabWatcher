@@ -124,9 +124,11 @@ namespace Wissance.MossbauerLab.Watcher.Web.Managers
                 // we should get from FTP, temporarily we can't do (FTP was not configured properly and we still in DEBUG)
                 using AsyncFtpClient ftp = new AsyncFtpClient(_config.FtpArchSettings.FtpSettings.Host, _config.FtpArchSettings.FtpSettings.Username,
                     _config.FtpArchSettings.FtpSettings.Password, _config.FtpArchSettings.FtpSettings.Port);
-                await ftp.SetWorkingDirectory(spectrum.Location);
+                await ftp.Connect();
+                //await ftp.SetWorkingDirectory(spectrum.Location);
                 byte[] spectrumSampleContent = await ftp.DownloadBytes(sampleFile, new CancellationToken());
-                return null;
+                await ftp.Disconnect();
+                return spectrumSampleContent;
             }
         }
 

@@ -81,6 +81,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
             {
                 // todo (UMV): define roper PATH ....
                 string spectrumShareRootDir = GetSpectrumShareRootDir();
+                string spectrumPrevDir = spectrum.Location;
                 IList<FileInfo> spectrumSamples = await _storeService.GetAllDirectoryFilesInfoAsync(spectrum.Location);
                 //IList<string> spectrumSamples = await _storeService.GetChildrenAsync(spectrumN, spectrumShareRootDir);
                 string ftpSpectrumDir = Path.Combine(@$"{_config.FtpArchSettings.FtpArchRootDir}", spectrum.Name);
@@ -116,7 +117,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
                     }
                 }
 
-                await _storeService.RemoveDirectoryRecursiveAsync(spectrumShareRootDir);
+                await _storeService.RemoveDirectoryRecursiveAsync(spectrumPrevDir);
                 // going to ROOT dir 
                 await ftp.SetWorkingDirectory("/");
 
