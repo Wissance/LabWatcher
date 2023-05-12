@@ -113,10 +113,10 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
                     else
                     {
                         spectrum.Location = ftpSpectrumDir;
-                        // TODO(UMV): could safely remove file from share (temporarily, off)
-
                     }
                 }
+
+                await _storeService.RemoveDirectoryRecursiveAsync(spectrumShareRootDir);
                 // going to ROOT dir 
                 await ftp.SetWorkingDirectory("/");
 

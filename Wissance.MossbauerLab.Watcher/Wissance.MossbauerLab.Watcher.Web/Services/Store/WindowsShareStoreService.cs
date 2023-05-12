@@ -90,6 +90,21 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Store
             }
         }
 
+        public async Task<bool> RemoveDirectoryRecursiveAsync(string directory)
+        {
+            try
+            {
+                Directory.Delete(directory, true);
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"An error occurred during removing folder files: {e.Message}");
+                return false;
+            }
+        }
+
         public async Task<Tuple<FileInfo, byte[]>> GetLastChangedFileAsync(string directory)
         {
             try
