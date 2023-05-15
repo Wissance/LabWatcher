@@ -120,7 +120,7 @@ WantedBy=multi-user.target
 7. Execute `sudo systemctl enable labwatcher`
 8. Execute `sudo systemctl start labwatcher`
 
-### 4. Troubleshooting
+## 4. Troubleshooting
 
 1. If we are mount automatically and got error like:
 ```
@@ -129,7 +129,18 @@ Jan 08 18:14:32 LabControl mount.sh[495]: Refer to the mount.cifs(8) manual page
 ```
 there are many solutions but for me helpful was adding `sleep 20s` in `.sh` script prior to `mount`
 
-## Contributors
+## 5. Web API
+
+There are following endpoints to receive/manage state from browser or other clients:
+
+* `GET /api/Spectrum` - list all spectra from database;
+  ![Get indexed spectra](/docs/img/api/get_all.jpg)
+* `GET /api/Spectrum/{id}` - return one spectrum by its id;
+* `GET /api/Spectrum/{id}/samples` - return spectrum data including list of all intermediate measurements;
+* `GET /api/Spectrum/{id}/samples/{sampleName}/spectrum` - return spectrum with file name = `{sampleName}`
+  ![Get spectrum](/docs/img/api/get_spectrum_itself.jpg)
+
+## 6. Contributors
 
 <a href="https://github.com/Wissance/LabWatcher/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=Wissance/LabWatcher" />
