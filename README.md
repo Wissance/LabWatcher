@@ -1,5 +1,12 @@
 # Wissance.MossbauerLab.Watcher
-A set of tools that helps to analyze **state of spectrometry devices** and notify about important events in **scientific lab**.
+A set of tools that helps to **automate measure/control processes of any Scientific / Industrial Lab**. Current solution is using for:
+* **collect** measurements **data** produced by **another our software** working over existing scientific equipment (`mossbauer spectrometer`);
+* **notify** about **measurements state** and send **data** itself over multiple channels (`e-mail`, `Telegram`)
+* **watch events and notify** about possible issues;
+* **provides Web interface** to obtain stored spectra even any intermediate;
+* **run an AI tools** with computer vision (if future versions).
+
+This software **is a laboratory specific** and made as example **if you would like to automate your laboratory / industry** please **contact us** using email in our organization info.
 
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/wissance/LabWatcher?style=plastic) 
 ![GitHub issues](https://img.shields.io/github/issues/wissance/LabWatcher?style=plastic)
@@ -8,7 +15,7 @@ A set of tools that helps to analyze **state of spectrometry devices** and notif
 
 ![LabWatcher: is automated Mossbauer laboratory control toolset](/docs/img/labwatcher.jpg)
 
-Mossbauer laboratory event watcher and notifier, used for add some specific controls (custom) over Mossbauer spectrometric devices.
+Mossbauer laboratory automation tool controls spectra measurements from `SM2201 Mossbauer spectrometer` and watches state of other equipment.
 
 ### Key features
 * `SM2201` spectrometer controlled by software that is running on **`Windows 98`**
