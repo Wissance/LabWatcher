@@ -53,8 +53,7 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
             if (!_templateManager.Templates.ContainsKey(SpectrometerEvent.SpectrumSaved))
                 throw new InvalidDataException("Expected that key \"SpectrometerEvent.SpectrumSaved\" present in _templates, actually not");
             string template;
-            bool spectraIsEmpty = !spectra.Any();
-            if (spectraIsEmpty)
+            if (spectra.Any())
             {
                 template = _templateManager.Templates[SpectrometerEvent.SpectrumSaved].PositiveCase;
             }
