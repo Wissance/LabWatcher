@@ -8,11 +8,12 @@ using Wissance.MossabuerLab.Watcher.Dto;
 using Wissance.MossbauerLab.Watcher.Data.Entities;
 using Wissance.MossbauerLab.Watcher.Web.Managers;
 using Wissance.WebApiToolkit.Core.Controllers;
+using Wissance.WebApiToolkit.Core.Data;
 using Wissance.WebApiToolkit.Dto;
 
 namespace Wissance.MossbauerLab.Watcher.Web.Controllers
 {
-    public class SpectrumController : BasicReadController<SpectrumInfoDto, SpectrumEntity, int>
+    public class SpectrumController : BasicReadController<SpectrumInfoDto, SpectrumEntity, int, EmptyAdditionalFilters>
     {
         public SpectrumController(SpectrumManager manager)
         {

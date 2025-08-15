@@ -22,7 +22,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Managers
     public class SpectrumManager: EfModelManager<SpectrumInfoDto, SpectrumEntity, int>
     {
         public SpectrumManager(ModelContext dbContext, ILoggerFactory loggerFactory, IFileStoreService storeService, ApplicationConfig appConfig) 
-            : base(dbContext, null, SpectrumFactory.Create, loggerFactory)
+            : base(dbContext, null, SpectrumFactory.Create, null, null, loggerFactory)
         {
             _context = dbContext;
             _storeService = storeService;
