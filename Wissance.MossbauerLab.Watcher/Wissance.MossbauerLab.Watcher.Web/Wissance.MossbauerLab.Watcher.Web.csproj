@@ -11,7 +11,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.1" />
     <PackageReference Include="Quartz" Version="3.4.0" />
     <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.4.0" />
     <PackageReference Include="Quartz.Extensions.Hosting" Version="3.4.0" />
@@ -25,6 +25,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.17" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="5.0.17" />
     <PackageReference Include="Wissance.WebApiToolkit.Data.Ef" Version="4.0.1" />
+    <PackageReference Include="Wissance.WebApiToolkit.Ef" Version="4.0.1" />
   </ItemGroup>
 
   <ItemGroup>
