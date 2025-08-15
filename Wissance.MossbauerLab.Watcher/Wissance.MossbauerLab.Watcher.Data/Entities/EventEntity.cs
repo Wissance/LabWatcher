@@ -25,7 +25,7 @@ namespace Wissance.MossbauerLab.Watcher.Data.Entities
             Finish = finish;
         }
 
-        public int Id { get; }
+        public int Id { get; set; }
         public EventType Type { get; set; }
         public DateTime Start { get; set; }
         public DateTime? Finish { get; set; }

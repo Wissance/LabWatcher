@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Wissance.MossabuerLab.Watcher.Dto;
 using Wissance.MossbauerLab.Watcher.Data.Entities;
 using Wissance.MossbauerLab.Watcher.Web.Managers;
-using Wissance.WebApiToolkit.Controllers;
+using Wissance.WebApiToolkit.Core.Controllers;
 using Wissance.WebApiToolkit.Dto;
 
 namespace Wissance.MossbauerLab.Watcher.Web.Controllers

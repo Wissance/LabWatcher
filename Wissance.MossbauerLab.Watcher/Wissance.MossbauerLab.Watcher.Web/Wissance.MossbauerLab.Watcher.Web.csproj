@@ -6,11 +6,11 @@
 
   <ItemGroup>
     <PackageReference Include="FluentFTP" Version="46.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />
     <PackageReference Include="Quartz" Version="3.4.0" />
     <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.4.0" />
@@ -21,10 +21,10 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
     <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
     <!--<PackageReference Include="SimpleImpersonation" Version="4.2.0" />-->
-    <PackageReference Include="Wissance.Authorization" Version="1.1.1" />
-    <PackageReference Include="Wissance.WebApiToolkit" Version="1.1.2" />
+    <PackageReference Include="Wissance.Authorization" Version="1.1.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.17" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="5.0.17" />
+    <PackageReference Include="Wissance.WebApiToolkit.Data.Ef" Version="4.0.1" />
   </ItemGroup>
 
   <ItemGroup>

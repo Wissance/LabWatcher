@@ -22,7 +22,7 @@ namespace Wissance.MossbauerLab.Watcher.Data.Entities
             IsArchived = isArchived;
         }
 
-        public int Id { get; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string Location { get; set; }

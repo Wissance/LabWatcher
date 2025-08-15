@@ -15,11 +15,11 @@ using Wissance.MossbauerLab.Watcher.Services.Store;
 using Wissance.MossbauerLab.Watcher.Web.Config;
 using Wissance.MossbauerLab.Watcher.Web.Factories;
 using Wissance.WebApiToolkit.Dto;
-using Wissance.WebApiToolkit.Managers;
+using Wissance.WebApiToolkit.Ef.Managers;
 
 namespace Wissance.MossbauerLab.Watcher.Web.Managers
 {
-    public class SpectrumManager: EfModelManager<SpectrumEntity, SpectrumInfoDto, int>
+    public class SpectrumManager: EfModelManager<SpectrumInfoDto, SpectrumEntity, int>
     {
         public SpectrumManager(ModelContext dbContext, ILoggerFactory loggerFactory, IFileStoreService storeService, ApplicationConfig appConfig) 
             : base(dbContext, null, SpectrumFactory.Create, loggerFactory)
