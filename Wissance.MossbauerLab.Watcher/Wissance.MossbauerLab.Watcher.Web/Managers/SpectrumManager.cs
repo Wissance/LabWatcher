@@ -19,7 +19,7 @@ using Wissance.WebApiToolkit.Ef.Managers;
 
 namespace Wissance.MossbauerLab.Watcher.Web.Managers
 {
-    public class SpectrumManager: EfModelManager<SpectrumInfoDto, SpectrumEntity, int>
+    public class SpectrumManager: EfModelManager<ModelContext, SpectrumInfoDto, SpectrumEntity, int>
     {
         public SpectrumManager(ModelContext dbContext, ILoggerFactory loggerFactory, IFileStoreService storeService, ApplicationConfig appConfig) 
             : base(dbContext, null, SpectrumFactory.Create, null, null, loggerFactory)
