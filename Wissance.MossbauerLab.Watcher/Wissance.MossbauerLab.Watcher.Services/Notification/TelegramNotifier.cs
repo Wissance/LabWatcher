@@ -34,7 +34,7 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
             try
             {
                 ITelegramBotClient client = new TelegramBotClient(_tgRequisites.BotKey);
-                ChatId targetChatId = GetChatId(_tgRequisites);
+                ChatId targetChatId = GetChatId();
                 Message msg = CreateMessageFromTemplate(spectra);
                 username = targetChatId.Username;
                 await client.SendTextMessageAsync(targetChatId, msg.Text);
@@ -66,7 +66,7 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
             return msg;
         }
 
-        private ChatId GetChatId(TelegramSendRequisites _tgRequisites)
+        private ChatId GetChatId()
         {
             if (_tgRequisites.GroupId.HasValue)
                 return new ChatId(_tgRequisites.GroupId.Value);
