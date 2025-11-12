@@ -38,7 +38,7 @@ There are 2 run profiles (`Development` and `Production`) and 2 possible configs
 
 1. Running on Windows allows to use Net Directory class with network path to files && folders, therefore `SM2201` config section
    looks like:
-   ```csharp
+   ```json
    "Sm2201SpectraStoreSettings": {
       "Address": "192.168.10.212",
       "Domain": "MOSSBAUERLAB",
@@ -49,7 +49,7 @@ There are 2 run profiles (`Development` and `Production`) and 2 possible configs
    
 2. Running on any Linux requires to mount Windows shared folder using `cifs.mount`, because `Directory` in Linux doesn't
    understand Windows network Path, therefore `SM2201` config section looks like:
-   ```csharp
+   ```json
    "Sm2201SpectraStoreSettings": {
       "Address": "",
       "Domain": "MOSSBAUERLAB",
@@ -94,8 +94,7 @@ To run `Wissance.MossbauerLab.Watcher.Web` as a service it should be configured 
 1. Create group - `sudo groupadd mossbauer`
 2. Create user - `labwatcher - sudo useradd -r -g mossbauer -d /usr/local/sbin/labwatcher -s /sbin/nologin labwatcher`
 3. Create labwatcher.service file with following content:
-```
-
+```bash
 [Unit]
 Description=Wissance.MossbauerLab.Watcher service
 After=syslog.target network.target
@@ -113,6 +112,15 @@ StandardError=syslog
 [Install]
 WantedBy=multi-user.target
 
+```
+Recently, we Started to build **self-contained archive into single file** except `.pdb`(debug symbols) and configs, in this 
+case after copy published file `Wissance.MossbauerLab.Watcher.Web` must be made executable `+x` (via `chmod`):
+```bash
+sudo -u labwatcher chmod +x Wissance.MossbauerLab.Watcher.Web
+````
+after that change ExecStart in service file like this:
+```bash
+ExecStart=/usr/local/sbin/labwatcher/app/Wissance.MossbauerLab.Watcher.Web --environment=Production
 ```
 4. Change directory owner to `mossbauer:labwatcher` - `sudo chown -R labwatcher:mossbauer /usr/local/sbin/labwatcher`
 5. Copy `labwatcher.service` file to `/etc/systemd/system`

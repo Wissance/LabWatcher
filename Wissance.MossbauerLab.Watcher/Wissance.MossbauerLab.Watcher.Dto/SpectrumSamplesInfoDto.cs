@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Wissance.MossabuerLab.Watcher.Dto
+namespace Wissance.MossbauerLab.Watcher.Dto
 {
     public class SpectrumSamplesInfoDto
     {
