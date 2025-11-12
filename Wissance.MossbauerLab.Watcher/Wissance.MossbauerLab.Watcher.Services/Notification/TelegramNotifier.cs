@@ -68,6 +68,7 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
 
         private ChatId GetChatId()
         {
+            // This is tutorial about where to get chatId : https://gist.github.com/nafiesl/4ad622f344cd1dc3bb1ecbe468ff9f8a
             if (_tgRequisites.GroupId.HasValue)
                 return new ChatId(_tgRequisites.GroupId.Value);
             return new ChatId(_tgRequisites.GroupName);
