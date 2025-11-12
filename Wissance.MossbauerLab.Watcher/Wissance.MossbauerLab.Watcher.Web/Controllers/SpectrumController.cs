@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Wissance.MossabuerLab.Watcher.Dto;
+using Wissance.MossbauerLab.Watcher.Dto;
 using Wissance.MossbauerLab.Watcher.Data.Entities;
 using Wissance.MossbauerLab.Watcher.Web.Managers;
 using Wissance.WebApiToolkit.Core.Controllers;

@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Wissance.MossabuerLab.Watcher.Dto\Wissance.MossabuerLab.Watcher.Dto.csproj" />
+    <ProjectReference Include="..\Wissance.MossbauerLab.Watcher.Dto\Wissance.MossbauerLab.Watcher.Dto.csproj" />
     <ProjectReference Include="..\Wissance.MossbauerLab.Watcher.Common\Wissance.MossbauerLab.Watcher.Common.csproj" />
     <ProjectReference Include="..\Wissance.MossbauerLab.Watcher.Data\Wissance.MossbauerLab.Watcher.Data.csproj" />
     <ProjectReference Include="..\Wissance.MossbauerLab.Watcher.Services\Wissance.MossbauerLab.Watcher.Services.csproj" />

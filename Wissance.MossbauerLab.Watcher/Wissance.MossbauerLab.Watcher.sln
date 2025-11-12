@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wissance.MossbauerLab.Watch
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wissance.MossbauerLab.Watcher.Services.Tests", "Wissance.MossbauerLab.Watcher.Tests\Wissance.MossbauerLab.Watcher.Services.Tests.csproj", "{26A8E4AC-4E00-4AAC-B4CC-7F4566BCA999}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.MossabuerLab.Watcher.Dto", "Wissance.MossabuerLab.Watcher.Dto\Wissance.MossabuerLab.Watcher.Dto.csproj", "{BD960648-ED4A-4949-897C-9AD6CA5ABE44}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.MossbauerLab.Watcher.Dto", "Wissance.MossbauerLab.Watcher.Dto\Wissance.MossbauerLab.Watcher.Dto.csproj", "{BD960648-ED4A-4949-897C-9AD6CA5ABE44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

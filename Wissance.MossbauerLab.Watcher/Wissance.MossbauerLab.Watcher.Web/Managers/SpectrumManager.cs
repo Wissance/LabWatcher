@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using FluentFTP;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Wissance.MossabuerLab.Watcher.Dto;
+using Wissance.MossbauerLab.Watcher.Dto;
 using Wissance.MossbauerLab.Watcher.Data;
 using Wissance.MossbauerLab.Watcher.Data.Entities;
 using Wissance.MossbauerLab.Watcher.Services.Store;
