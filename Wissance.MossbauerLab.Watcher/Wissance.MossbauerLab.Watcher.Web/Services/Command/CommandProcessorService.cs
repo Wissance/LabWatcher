@@ -67,7 +67,17 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Command
                         // todo(UMV) : allow messages for only the chat members
                         Message rawMessage = update.Message;
                         // rawMessage.From.Username
-                        // rawMessage.Text
+                        if (rawMessage != null && rawMessage.Text != null)
+                        {
+                            string trimmedMessage = rawMessage.Text.Trim(new[] {' '});
+                            string[] messageParts = trimmedMessage.Split(new char[] {' '});
+                            // 0 is cmd 
+                            if (messageParts.Length < 1)
+                            {
+                                _logger.LogError($"An error occurred during command detecting: number of parts can't be less then 1, message text: \"{rawMessage.Text}\"");
+                            }
+                        }
+
                         break;
                     
                 }
@@ -78,10 +88,23 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Command
             }
         }
 
+        private string OnStartCmdHandle(string[] args)
+        {
+            return null;
+        }
+        
+        private string OnHelpCmdHandle(string[] args)
+        {
+            return null;
+        }
+
         private async Task ErrorHandler(ITelegramBotClient botClient, Exception error, CancellationToken cancellationToken)
         {
         }
 
+        private const string StartCmd = "/start";
+        private const string HelpCmd = "/help";
+        
         // private readonly TelegramSendRequisites _tgRequisites;
         private readonly ReceiverOptions _receiverOptions;
         private readonly ITelegramBotClient _botClient;
