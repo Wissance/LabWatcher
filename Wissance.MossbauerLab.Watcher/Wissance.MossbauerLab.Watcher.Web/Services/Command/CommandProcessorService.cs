@@ -43,11 +43,39 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Command
             Task closeTask = _botClient.CloseAsync();
             closeTask.Wait();
         }
-
-
+        
+        /// <summary>
+        ///    Updates handling from TgBot. This function could handle multiple events, however we are plan to handling
+        ///    messages here, there are following messages:
+        ///    1. /start for interactive mode start , responses with greeting and command list like /help
+        ///    2. /help for view message types
+        ///    3. /get-spectra-list for return all spectra, equivalent to GET ~/api/spectrum
+        ///    4. /get-spectrum-info {spectrum_id} return spectrum state, measure date and files list (like GET ~/api/Spectrum/{id}/samples)
+        ///    5. /get-spectrum-files {from} {to} {where} return zip with files
+        ///    6. /check-state returns current state
+        /// </summary>
+        /// <param name="botClient"></param>
+        /// <param name="update"></param>
+        /// <param name="cancellationToken"></param>
         private async Task UpdateHandler(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            
+            try
+            {
+                switch (update.Type)
+                {
+                    case UpdateType.Message:
+                        // todo(UMV) : allow messages for only the chat members
+                        Message rawMessage = update.Message;
+                        // rawMessage.From.Username
+                        // rawMessage.Text
+                        break;
+                    
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"An error occurred during Telegram update handle, error: {e.Message}");
+            }
         }
 
         private async Task ErrorHandler(ITelegramBotClient botClient, Exception error, CancellationToken cancellationToken)
