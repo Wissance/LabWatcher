@@ -19,7 +19,6 @@ namespace Wissance.MossbauerLab.Watcher.Services.Notification
 {
     public class TelegramNotifier : ISpectrumMeasureEventsNotifier
     {
-     
         public TelegramNotifier(TelegramSendRequisites tgRequisites, TemplateManager templateManager, ILoggerFactory loggerFactory)
         {
             _tgRequisites = tgRequisites;
