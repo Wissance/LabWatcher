@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,17 +10,22 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Wissance.MossbauerLab.Watcher.Common.Data.Notification;
 using Wissance.MossbauerLab.Watcher.Data;
+using Wissance.MossbauerLab.Watcher.Web.Command;
+using Wissance.MossbauerLab.Watcher.Web.Config;
 
-namespace Wissance.MossbauerLab.Watcher.Web.Services.Command
+namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
 {
     /// <summary>
     /// CommandProcessorService is a singleton service that working all time app is working
     /// </summary>
     public class CommandProcessorService : IDisposable
     {
-        public CommandProcessorService(ModelContext modelContext, TelegramSendRequisites tgRequisites, ILoggerFactory loggerFactory)
+        public CommandProcessorService(ModelContext modelContext, TelegramSendRequisites tgRequisites, 
+            CommandAnswerConfig commandAnswerConfig, ILoggerFactory loggerFactory)
         {
-            _botClient = new TelegramBotClient(tgRequisites.BotKey);
+            _modelContext = modelContext;
+            _tgRequisites = tgRequisites;
+            _botClient = new TelegramBotClient(_tgRequisites.BotKey);
             // UpdateTypes must be limited by 
             _receiverOptions = new ReceiverOptions()
             {
@@ -32,6 +38,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Command
                 ThrowPendingUpdates = true, 
             };
             _cancellationTokenSource = new CancellationTokenSource();
+            _commandAnswerConfig = commandAnswerConfig;
             _logger = loggerFactory.CreateLogger<CommandProcessorService>();
             _botClient.StartReceiving(UpdateHandler, ErrorHandler, _receiverOptions, _cancellationTokenSource.Token);
         }
@@ -49,9 +56,9 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Command
         ///    messages here, there are following messages:
         ///    1. /start for interactive mode start , responses with greeting and command list like /help
         ///    2. /help for view message types
-        ///    3. /get-spectra-list for return all spectra, equivalent to GET ~/api/spectrum
+        ///    3. /list-spectra for return all spectra, equivalent to GET ~/api/spectrum
         ///    4. /get-spectrum-info {spectrum_id} return spectrum state, measure date and files list (like GET ~/api/Spectrum/{id}/samples)
-        ///    5. /get-spectrum-files {from} {to} {where} return zip with files
+        ///    5. /get-spectrum-files {id} {from} {to} {where} return zip with files
         ///    6. /check-state returns current state
         /// </summary>
         /// <param name="botClient"></param>
@@ -76,10 +83,11 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Command
                             {
                                 _logger.LogError($"An error occurred during command detecting: number of parts can't be less then 1, message text: \"{rawMessage.Text}\"");
                             }
-                        }
 
+                            string[] parameters = messageParts.Skip(1).Select(p => p).ToArray();
+                            ICommand command = CommandFactory.Create(messageParts[0], botClient, _modelContext, rawMessage.Chat.Id,  _commandAnswerConfig);
+                        }
                         break;
-                    
                 }
             }
             catch (Exception e)
@@ -101,14 +109,13 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Command
         private async Task ErrorHandler(ITelegramBotClient botClient, Exception error, CancellationToken cancellationToken)
         {
         }
-
-        private const string StartCmd = "/start";
-        private const string HelpCmd = "/help";
         
-        // private readonly TelegramSendRequisites _tgRequisites;
+        private readonly TelegramSendRequisites _tgRequisites;
+        private readonly ModelContext _modelContext;
         private readonly ReceiverOptions _receiverOptions;
         private readonly ITelegramBotClient _botClient;
         private readonly ILogger<CommandProcessorService> _logger;
         private readonly CancellationTokenSource _cancellationTokenSource;
+        private readonly CommandAnswerConfig _commandAnswerConfig;
     }
 }

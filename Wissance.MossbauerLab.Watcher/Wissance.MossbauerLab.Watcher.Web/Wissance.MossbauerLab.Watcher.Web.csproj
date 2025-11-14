@@ -36,6 +36,9 @@
   </ItemGroup>
 
     <ItemGroup>
+      <Content Include="..\Wissance.MossbauerLab.Watcher.Services\Notification\Commands\helpAnswer.txt">
+        <Link>Notification\Commands\%(RecursiveDir)%(FileName)</Link>
+      </Content>
       <Content Include="..\Wissance.MossbauerLab.Watcher.Services\Notification\Templates\**\*.*">
         <Link>Notification\Templates\%(RecursiveDir)%(FileName)</Link>
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
