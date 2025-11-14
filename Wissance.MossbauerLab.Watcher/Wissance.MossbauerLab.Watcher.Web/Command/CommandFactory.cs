@@ -13,17 +13,14 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
         {
             switch (command.ToLower())
             {
-                case StartCmd:
+                case CommandDefs.StartCmd:
                     return new StartCommand(commandAnswerConfig.StartCmdAnswer, botClient, chat);
-                case HelpCmd:
+                case CommandDefs.HelpCmd:
                     return new HelpCommand(commandAnswerConfig.HelpCmdAnswer, botClient, chat);
                 default:
                     return null;
             }
         }
         
-        
-        private const string StartCmd = "/start";
-        private const string HelpCmd = "/help";
     }
 }

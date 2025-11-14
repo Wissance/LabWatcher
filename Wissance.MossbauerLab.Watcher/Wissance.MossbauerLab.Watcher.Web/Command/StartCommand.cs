@@ -1,13 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 using Wissance.MossbauerLab.Watcher.Common.Data.Notification;
 using File = System.IO.File;
 
 namespace Wissance.MossbauerLab.Watcher.Web.Command
 {
+    // todo(UMV) : pass logger factory
     public class StartCommand : ICommand
     {
         public StartCommand(string answerFilePath, ITelegramBotClient botClient, ChatId chat)
@@ -32,13 +35,28 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
                 }
 
                 string greetingMsg = await File.ReadAllTextAsync(Path.GetFullPath(_answerFilePath));
+                // 1. Send greeting
                 await _botClient.SendTextMessageAsync(_chat, greetingMsg);
+                // 2. Send Keyboard
+                //_botClient.SendTextMessageAsync(_chat, new K)
                 return true;
             }
             catch (Exception e)
             {
                 return false;
             }
+        }
+
+        private static InlineKeyboardMarkup GetActionKeyboard()
+        {
+            InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup(new List<InlineKeyboardButton>[]
+            {
+                new List<InlineKeyboardButton>()
+                {
+                    InlineKeyboardButton.WithCallbackData("", CommandDefs.ListSpectraCmd)
+                }
+            });
+            return keyboard;
         }
 
         private readonly string _answerFilePath;
