@@ -20,6 +20,7 @@ using Wissance.MossbauerLab.Watcher.Services.Store;
 using Wissance.MossbauerLab.Watcher.Web.Config;
 using Wissance.MossbauerLab.Watcher.Web.Managers;
 using Wissance.MossbauerLab.Watcher.Web.Services.Jobs;
+using Wissance.MossbauerLab.Watcher.Web.Services.Processors;
 using Wissance.MossbauerLab.Watcher.Web.Services.Store;
 
 namespace Wissance.MossbauerLab.Watcher.Web
@@ -75,13 +76,15 @@ namespace Wissance.MossbauerLab.Watcher.Web
         private void ConfigureAppServices(IServiceCollection services)
         {
             // config 
-            services.AddSingleton<ApplicationConfig>(x => Configuration.GetSection(ApplicationConfigSectionName).Get<ApplicationConfig>());
+            services.AddSingleton(x => Configuration.GetSection(ApplicationConfigSectionName).Get<ApplicationConfig>());
             // Access to shared folder
             ConfigureSharedFolderAccess(services);
             // regular jobs (watch)
             ConfigureRegularJobs(services);
             // notifications
             ConfigureNotificationServices(services);
+            // command processor
+            ConfigureLongWorkingBackgroundService(services);
         }
 
         private void ConfigureWebApi(IServiceCollection services)
@@ -119,6 +122,17 @@ namespace Wissance.MossbauerLab.Watcher.Web
             {
                 return new WindowsShareStoreService(_config.Sm2201SpectraStoreSettings, x.GetRequiredService<ILoggerFactory>());
                 //return new Smb1Service(_config.Sm2201SpectraStoreSettings, x.GetRequiredService<ILoggerFactory>());
+            });
+        }
+
+        private void ConfigureLongWorkingBackgroundService(IServiceCollection services)
+        {
+            services.AddHostedService<CommandProcessorService>(x =>
+            {
+                return new CommandProcessorService(x.GetRequiredService<ModelContext>(),
+                    _config.NotificationSettings.TelegramSettings,
+                    _config.NotificationSettings.CommandAnswer,
+                    x.GetRequiredService<ILoggerFactory>());
             });
         }
 

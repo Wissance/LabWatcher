@@ -3,6 +3,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
@@ -18,7 +19,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
     /// <summary>
     /// CommandProcessorService is a singleton service that working all time app is working
     /// </summary>
-    public class CommandProcessorService : IDisposable
+    public class CommandProcessorService : IHostedService, IDisposable
     {
         public CommandProcessorService(ModelContext modelContext, TelegramSendRequisites tgRequisites, 
             CommandAnswerConfig commandAnswerConfig, ILoggerFactory loggerFactory)
@@ -41,7 +42,30 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
             _commandAnswerConfig = commandAnswerConfig;
             _loggerFactory = loggerFactory;
             _logger = loggerFactory.CreateLogger<CommandProcessorService>();
+            // _botClient.StartReceiving(UpdateHandler, ErrorHandler, _receiverOptions, _cancellationTokenSource.Token);
+        }
+        
+        public async Task StartAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogDebug("CommandProcessor \"Start\" begin");
             _botClient.StartReceiving(UpdateHandler, ErrorHandler, _receiverOptions, _cancellationTokenSource.Token);
+            while (true)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(10), cancellationToken);
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    _cancellationTokenSource.Cancel();
+                    break;
+                }
+            }
+            _logger.LogDebug("CommandProcessor \"Start\" end");
+        }
+
+        public async Task StopAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogDebug("CommandProcessor \"Stop\" begin");
+            // probably code from dispose must be placed here ...
+            _logger.LogDebug("CommandProcessor \"Stop\" end");
         }
 
         public void Dispose()

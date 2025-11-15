@@ -13,6 +13,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Config
             DefaultJobsSettings = defaultJobsSettings;
             Sm2201SpectraStoreSettings = sm2201SpectraStoreSettings;
             NotificationSettings = notificationSettings;
+            FtpArchSettings = ftpArchSettings;
             ConnStr = connStr;
         }
 
