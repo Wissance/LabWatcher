@@ -6,7 +6,12 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:5000"
+      "applicationUrl": "http://localhost:7890"
+    },
+    "Kestrel": {
+      "commandName": "Executable",
+      "executablePath": "Wissance.MossbauerLab.Watcher.Web.exe",
+      "commandLineArgs": "--environment=Development"
     }
   },
   "iisSettings": {

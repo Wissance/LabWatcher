@@ -127,9 +127,16 @@ namespace Wissance.MossbauerLab.Watcher.Web
 
         private void ConfigureLongWorkingBackgroundService(IServiceCollection services)
         {
+            //ModelContext modelContext = serviceProvider.GetRequiredService<ModelContext>();
             services.AddHostedService<CommandProcessorService>(x =>
             {
-                return new CommandProcessorService(x.GetRequiredService<ModelContext>(),
+                DbContextOptionsBuilder<ModelContext> optionsBuilder = new DbContextOptionsBuilder<ModelContext>();
+                optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll)
+                              .UseSqlite(_config.ConnStr)
+                              .UseLazyLoadingProxies();
+                ModelContext context = new ModelContext(optionsBuilder.Options);
+                return new CommandProcessorService(
+                    context,
                     _config.NotificationSettings.TelegramSettings,
                     _config.NotificationSettings.CommandAnswer,
                     x.GetRequiredService<ILoggerFactory>());
