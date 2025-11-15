@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using File = System.IO.File;
 
 namespace Wissance.MossbauerLab.Watcher.Web.Command
@@ -22,7 +23,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
             }
 
             string helpMessage = await File.ReadAllTextAsync(path);
-            await _context.BotClient.SendTextMessageAsync(_context.RawMessage.Chat.Id, helpMessage);
+            await _context.BotClient.SendTextMessageAsync(_context.RawMessage.Chat.Id, helpMessage, ParseMode.MarkdownV2);
             return true;
         }
 
