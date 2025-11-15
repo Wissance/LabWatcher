@@ -36,7 +36,7 @@
   </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\Wissance.MossbauerLab.Watcher.Services\Notification\Commands\helpAnswer.txt">
+      <Content Include="..\Wissance.MossbauerLab.Watcher.Services\Notification\Commands\**\*.*">
         <Link>Notification\Commands\%(RecursiveDir)%(FileName)</Link>
       </Content>
       <Content Include="..\Wissance.MossbauerLab.Watcher.Services\Notification\Templates\**\*.*">

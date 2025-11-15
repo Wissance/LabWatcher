@@ -39,6 +39,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
             };
             _cancellationTokenSource = new CancellationTokenSource();
             _commandAnswerConfig = commandAnswerConfig;
+            _loggerFactory = loggerFactory;
             _logger = loggerFactory.CreateLogger<CommandProcessorService>();
             _botClient.StartReceiving(UpdateHandler, ErrorHandler, _receiverOptions, _cancellationTokenSource.Token);
         }
@@ -85,7 +86,16 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
                             }
 
                             string[] parameters = messageParts.Skip(1).Select(p => p).ToArray();
-                            ICommand command = CommandFactory.Create(messageParts[0], botClient, _modelContext, rawMessage.Chat.Id,  _commandAnswerConfig);
+                            CommandContext context = CreateContext(messageParts[0], rawMessage);
+                            ICommand command = CommandFactory.Create(context);
+                            if (command == null)
+                            {
+                                await _botClient.SendTextMessageAsync(rawMessage.Chat.Id, "Пока не реализовано, в процессе разработки", 
+                                    cancellationToken: _cancellationTokenSource.Token);
+                                return;
+                            }
+
+                            await command.ExecuteAsync(parameters);
                         }
                         break;
                 }
@@ -96,24 +106,21 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
             }
         }
 
-        private string OnStartCmdHandle(string[] args)
-        {
-            return null;
-        }
-        
-        private string OnHelpCmdHandle(string[] args)
-        {
-            return null;
-        }
-
         private async Task ErrorHandler(ITelegramBotClient botClient, Exception error, CancellationToken cancellationToken)
         {
+        }
+
+        private CommandContext CreateContext(string command, Message rawMessage)
+        {
+            return new CommandContext(command, _botClient, _modelContext, rawMessage, _commandAnswerConfig,
+                _cancellationTokenSource.Token, _loggerFactory);
         }
         
         private readonly TelegramSendRequisites _tgRequisites;
         private readonly ModelContext _modelContext;
         private readonly ReceiverOptions _receiverOptions;
         private readonly ITelegramBotClient _botClient;
+        private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger<CommandProcessorService> _logger;
         private readonly CancellationTokenSource _cancellationTokenSource;
         private readonly CommandAnswerConfig _commandAnswerConfig;

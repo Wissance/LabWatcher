@@ -8,15 +8,14 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
 {
     public static class CommandFactory
     {
-        public static ICommand Create(string command, ITelegramBotClient botClient, ModelContext context,  ChatId chat, 
-            CommandAnswerConfig commandAnswerConfig)
+        public static ICommand Create(CommandContext context)
         {
-            switch (command.ToLower())
+            switch (context.Command.ToLower())
             {
                 case CommandDefs.StartCmd:
-                    return new StartCommand(commandAnswerConfig.StartCmdAnswer, botClient, chat);
+                    return new StartCommand(context);
                 case CommandDefs.HelpCmd:
-                    return new HelpCommand(commandAnswerConfig.HelpCmdAnswer, botClient, chat);
+                    return new HelpCommand(context);
                 default:
                     return null;
             }

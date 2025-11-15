@@ -9,26 +9,23 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
 {
     public class HelpCommand : ICommand
     {
-        public HelpCommand(string answerFilePath, ITelegramBotClient botClient, ChatId chat)
+        public HelpCommand(CommandContext context)
         {
-            _answerFilePath = answerFilePath;
-            _botClient = botClient;
-            _chat = chat;
+            _context = context;
         }
         public async Task<bool> ExecuteAsync(string[] parameters)
         {
-            string path = Path.GetFullPath(_answerFilePath);
+            string path = Path.GetFullPath(_context.Config.HelpCmdAnswer);
             if (!File.Exists(path))
             {
                 return false;
             }
 
-            string message = await File.ReadAllTextAsync(Path.GetFullPath(_answerFilePath));
+            string helpMessage = await File.ReadAllTextAsync(path);
+            await _context.BotClient.SendTextMessageAsync(_context.RawMessage.Chat.Id, helpMessage);
             return true;
         }
-        
-        private readonly string _answerFilePath;
-        private readonly ITelegramBotClient _botClient;
-        private readonly ChatId _chat;
+
+        private readonly CommandContext _context;
     }
 }

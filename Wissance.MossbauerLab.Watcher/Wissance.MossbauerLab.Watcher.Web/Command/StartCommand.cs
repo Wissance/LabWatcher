@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -13,11 +14,10 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
     // todo(UMV) : pass logger factory
     public class StartCommand : ICommand
     {
-        public StartCommand(string answerFilePath, ITelegramBotClient botClient, ChatId chat)
+        public StartCommand(CommandContext context)
         {
-            _answerFilePath = answerFilePath;
-            _botClient = botClient;
-            _chat = chat;
+            _context = context;
+            _logger = context.LoggerFactory.CreateLogger<StartCommand>();
         }
         /// <summary>
         ///    This is command executing when user send /start to tg bot
@@ -28,21 +28,22 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
         {
             try
             {
-                string path = Path.GetFullPath(_answerFilePath);
+                string path = Path.GetFullPath(_context.Config.StartCmdAnswer);
                 if (!File.Exists(path))
                 {
                     return false;
                 }
 
-                string greetingMsg = await File.ReadAllTextAsync(Path.GetFullPath(_answerFilePath));
+                string greetingMsg = await File.ReadAllTextAsync(path);
                 // 1. Send greeting
-                await _botClient.SendTextMessageAsync(_chat, greetingMsg);
+                await _context.BotClient.SendTextMessageAsync(_context.RawMessage.Chat.Id, greetingMsg);
                 // 2. Send Keyboard
-                //_botClient.SendTextMessageAsync(_chat, new K)
+                await _context.BotClient.SendTextMessageAsync(_context.RawMessage.Chat.Id, "Выберите команду", replyMarkup: GetActionKeyboard());
                 return true;
             }
             catch (Exception e)
             {
+                _logger.LogError($"An error occurred during the handling /start command, {e.Message}");
                 return false;
             }
         }
@@ -53,14 +54,22 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
             {
                 new List<InlineKeyboardButton>()
                 {
-                    InlineKeyboardButton.WithCallbackData("", CommandDefs.ListSpectraCmd)
+                    InlineKeyboardButton.WithCallbackData(CommandDefs.KeyboardCaptions[CommandDefs.ListSpectraCmd], CommandDefs.ListSpectraCmd)
+                },
+                new List<InlineKeyboardButton>()
+                {
+                    InlineKeyboardButton.WithCallbackData(CommandDefs.KeyboardCaptions[CommandDefs.GetSpectrumInfoCmd], CommandDefs.GetSpectrumInfoCmd),
+                    InlineKeyboardButton.WithCallbackData(CommandDefs.KeyboardCaptions[CommandDefs.GetSpectrumFilesCmd], CommandDefs.GetSpectrumFilesCmd)
+                },
+                new List<InlineKeyboardButton>()
+                {
+                    InlineKeyboardButton.WithCallbackData(CommandDefs.KeyboardCaptions[CommandDefs.CheckStateCmd], CommandDefs.CheckStateCmd)
                 }
             });
             return keyboard;
         }
 
-        private readonly string _answerFilePath;
-        private readonly ITelegramBotClient _botClient;
-        private readonly ChatId _chat;
+        private readonly CommandContext _context;
+        private readonly ILogger<StartCommand> _logger;
     }
 }
