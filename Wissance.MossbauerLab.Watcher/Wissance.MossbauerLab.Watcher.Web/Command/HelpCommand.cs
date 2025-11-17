@@ -23,7 +23,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
             }
 
             string helpMessage = await File.ReadAllTextAsync(path);
-            await _context.BotClient.SendTextMessageAsync(_context.RawMessage.Chat.Id, helpMessage, ParseMode.MarkdownV2);
+            await _context.BotClient.SendTextMessageAsync(_context.RawMessage.Chat.Id, helpMessage, ParseMode.Markdown);
             return true;
         }
 
