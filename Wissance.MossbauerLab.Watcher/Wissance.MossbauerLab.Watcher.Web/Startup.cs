@@ -135,11 +135,7 @@ namespace Wissance.MossbauerLab.Watcher.Web
                               .UseSqlite(_config.ConnStr)
                               .UseLazyLoadingProxies();
                 ModelContext context = new ModelContext(optionsBuilder.Options);
-                return new CommandProcessorService(
-                    context,
-                    _config.NotificationSettings.TelegramSettings,
-                    _config.NotificationSettings.CommandAnswer,
-                    x.GetRequiredService<ILoggerFactory>());
+                return new CommandProcessorService(context, _config, x.GetRequiredService<ILoggerFactory>());
             });
         }
 

@@ -21,12 +21,11 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
     /// </summary>
     public class CommandProcessorService : IHostedService, IDisposable
     {
-        public CommandProcessorService(ModelContext modelContext, TelegramSendRequisites tgRequisites, 
-            CommandAnswerConfig commandAnswerConfig, ILoggerFactory loggerFactory)
+        public CommandProcessorService(ModelContext modelContext, ApplicationConfig config, ILoggerFactory loggerFactory)
         {
+            _config = config;
             _modelContext = modelContext;
-            _tgRequisites = tgRequisites;
-            _botClient = new TelegramBotClient(_tgRequisites.BotKey);
+            _botClient = new TelegramBotClient(_config.NotificationSettings.TelegramSettings.BotKey);
             // UpdateTypes must be limited by 
             _receiverOptions = new ReceiverOptions()
             {
@@ -39,7 +38,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
                 ThrowPendingUpdates = true, 
             };
             _cancellationTokenSource = new CancellationTokenSource();
-            _commandAnswerConfig = commandAnswerConfig;
+            _config = config;
             _loggerFactory = loggerFactory;
             _logger = loggerFactory.CreateLogger<CommandProcessorService>();
             // _botClient.StartReceiving(UpdateHandler, ErrorHandler, _receiverOptions, _cancellationTokenSource.Token);
@@ -81,10 +80,10 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
         ///    messages here, there are following messages:
         ///    1. /start for interactive mode start , responses with greeting and command list like /help
         ///    2. /help for view message types
-        ///    3. /list-spectra for return all spectra, equivalent to GET ~/api/spectrum
-        ///    4. /get-spectrum-info {spectrum_id} return spectrum state, measure date and files list (like GET ~/api/Spectrum/{id}/samples)
-        ///    5. /get-spectrum-files {id} {from} {to} {where} return zip with files
-        ///    6. /check-state returns current state
+        ///    3. /listSpectra for return all spectra, equivalent to GET ~/api/spectrum
+        ///    4. /getSpectrumInfo {spectrum_id} return spectrum state, measure date and files list (like GET ~/api/Spectrum/{id}/samples)
+        ///    5. /getSpectrumFiles {id} {from} {to} {where} return zip with files
+        ///    6. /checkState returns current state
         /// </summary>
         /// <param name="botClient"></param>
         /// <param name="update"></param>
@@ -132,21 +131,22 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
 
         private async Task ErrorHandler(ITelegramBotClient botClient, Exception error, CancellationToken cancellationToken)
         {
+            _logger.LogError($"An error occurred during \"CommandProcessorService\": {error.Message}");
+            await Task.Delay(10, cancellationToken);
         }
 
         private CommandContext CreateContext(string command, Message rawMessage)
         {
-            return new CommandContext(command, _botClient, _modelContext, rawMessage, _commandAnswerConfig,
+            return new CommandContext(command, _botClient, _modelContext, rawMessage, _config,
                 _cancellationTokenSource.Token, _loggerFactory);
         }
         
-        private readonly TelegramSendRequisites _tgRequisites;
         private readonly ModelContext _modelContext;
         private readonly ReceiverOptions _receiverOptions;
         private readonly ITelegramBotClient _botClient;
         private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger<CommandProcessorService> _logger;
         private readonly CancellationTokenSource _cancellationTokenSource;
-        private readonly CommandAnswerConfig _commandAnswerConfig;
+        private readonly ApplicationConfig _config;
     }
 }

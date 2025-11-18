@@ -28,7 +28,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
         {
             try
             {
-                string path = Path.GetFullPath(_context.Config.StartCmdAnswer);
+                string path = Path.GetFullPath(_context.Config.NotificationSettings.CommandAnswer.StartCmdAnswer);
                 if (!File.Exists(path))
                 {
                     return false;
@@ -43,7 +43,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occurred during the handling /start command, {e.Message}");
+                _logger.LogError($"An error occurred during the handling {_context.Command} command, {e.Message}");
                 return false;
             }
         }
@@ -54,16 +54,16 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
             {
                 new List<InlineKeyboardButton>()
                 {
-                    InlineKeyboardButton.WithCallbackData(CommandDefs.KeyboardCaptions[CommandDefs.ListSpectraCmd], CommandDefs.ListSpectraCmd)
+                    InlineKeyboardButton.WithCallbackData(CommandAnswerLocalizationDefs.KeyboardCaptions[CommandAnswerLocalizationDefs.ListSpectraCmd], CommandAnswerLocalizationDefs.ListSpectraCmd)
                 },
                 new List<InlineKeyboardButton>()
                 {
-                    InlineKeyboardButton.WithCallbackData(CommandDefs.KeyboardCaptions[CommandDefs.GetSpectrumInfoCmd], CommandDefs.GetSpectrumInfoCmd),
-                    InlineKeyboardButton.WithCallbackData(CommandDefs.KeyboardCaptions[CommandDefs.GetSpectrumFilesCmd], CommandDefs.GetSpectrumFilesCmd)
+                    InlineKeyboardButton.WithCallbackData(CommandAnswerLocalizationDefs.KeyboardCaptions[CommandAnswerLocalizationDefs.GetSpectrumInfoCmd], CommandAnswerLocalizationDefs.GetSpectrumInfoCmd),
+                    InlineKeyboardButton.WithCallbackData(CommandAnswerLocalizationDefs.KeyboardCaptions[CommandAnswerLocalizationDefs.GetSpectrumFilesCmd], CommandAnswerLocalizationDefs.GetSpectrumFilesCmd)
                 },
                 new List<InlineKeyboardButton>()
                 {
-                    InlineKeyboardButton.WithCallbackData(CommandDefs.KeyboardCaptions[CommandDefs.CheckStateCmd], CommandDefs.CheckStateCmd)
+                    InlineKeyboardButton.WithCallbackData(CommandAnswerLocalizationDefs.KeyboardCaptions[CommandAnswerLocalizationDefs.CheckStateCmd], CommandAnswerLocalizationDefs.CheckStateCmd)
                 }
             });
             return keyboard;

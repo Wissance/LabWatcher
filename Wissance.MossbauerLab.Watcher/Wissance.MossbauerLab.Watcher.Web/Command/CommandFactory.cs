@@ -12,9 +12,9 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
         {
             switch (context.Command.ToLower())
             {
-                case CommandDefs.StartCmd:
+                case CommandAnswerLocalizationDefs.StartCmd:
                     return new StartCommand(context);
-                case CommandDefs.HelpCmd:
+                case CommandAnswerLocalizationDefs.HelpCmd:
                     return new HelpCommand(context);
                 default:
                     return null;

@@ -14,13 +14,13 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
         }
 
         public CommandContext(string command, ITelegramBotClient botClient, ModelContext context, Message rawMessage,
-            CommandAnswerConfig commandAnswerConfig, CancellationToken token, ILoggerFactory loggerFactory)
+            ApplicationConfig config, CancellationToken token, ILoggerFactory loggerFactory)
         {
             Command = command;
             BotClient = botClient;
             Context = context;
             RawMessage = rawMessage;
-            Config = commandAnswerConfig;
+            Config = config;
             Token = token;
             LoggerFactory = loggerFactory;
         }
@@ -29,7 +29,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
         public ITelegramBotClient BotClient { get; set; }
         public ModelContext Context { get; set; }
         public Message RawMessage { get; set; }
-        public CommandAnswerConfig Config { get; set; }
+        public ApplicationConfig Config { get; set; }
         public CancellationToken Token { get; set; }
         public ILoggerFactory LoggerFactory { get; set; }
     }
