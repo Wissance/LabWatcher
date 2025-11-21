@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Wissance.MossbauerLab.Watcher.Data;
+using Wissance.MossbauerLab.Watcher.Services.Store;
 using Wissance.MossbauerLab.Watcher.Web.Config;
 
 namespace Wissance.MossbauerLab.Watcher.Web.Command
@@ -13,12 +14,13 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
         {
         }
 
-        public CommandContext(string command, ITelegramBotClient botClient, ModelContext context, Message rawMessage,
-            ApplicationConfig config, CancellationToken token, ILoggerFactory loggerFactory)
+        public CommandContext(string command, ITelegramBotClient botClient, ModelContext context, IFileStoreService fileStore, 
+            Message rawMessage, ApplicationConfig config, CancellationToken token, ILoggerFactory loggerFactory)
         {
             Command = command;
             BotClient = botClient;
             Context = context;
+            FileStore = fileStore;
             RawMessage = rawMessage;
             Config = config;
             Token = token;
@@ -28,6 +30,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
         public string Command { get; set; }
         public ITelegramBotClient BotClient { get; set; }
         public ModelContext Context { get; set; }
+        public IFileStoreService FileStore { get; set; }
         public Message RawMessage { get; set; }
         public ApplicationConfig Config { get; set; }
         public CancellationToken Token { get; set; }

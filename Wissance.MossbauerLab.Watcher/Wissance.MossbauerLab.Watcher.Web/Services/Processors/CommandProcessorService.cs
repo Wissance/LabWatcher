@@ -11,6 +11,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Wissance.MossbauerLab.Watcher.Common.Data.Notification;
 using Wissance.MossbauerLab.Watcher.Data;
+using Wissance.MossbauerLab.Watcher.Services.Store;
 using Wissance.MossbauerLab.Watcher.Web.Command;
 using Wissance.MossbauerLab.Watcher.Web.Config;
 
@@ -21,10 +22,11 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
     /// </summary>
     public class CommandProcessorService : IHostedService, IDisposable
     {
-        public CommandProcessorService(ModelContext modelContext, ApplicationConfig config, ILoggerFactory loggerFactory)
+        public CommandProcessorService(ModelContext modelContext, IFileStoreService fileStore, ApplicationConfig config, ILoggerFactory loggerFactory)
         {
             _config = config;
             _modelContext = modelContext;
+            _fileStore = fileStore;
             _botClient = new TelegramBotClient(_config.NotificationSettings.TelegramSettings.BotKey);
             // UpdateTypes must be limited by 
             _receiverOptions = new ReceiverOptions()
@@ -137,11 +139,12 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
 
         private CommandContext CreateContext(string command, Message rawMessage)
         {
-            return new CommandContext(command, _botClient, _modelContext, rawMessage, _config,
+            return new CommandContext(command, _botClient, _modelContext, _fileStore, rawMessage, _config,
                 _cancellationTokenSource.Token, _loggerFactory);
         }
         
         private readonly ModelContext _modelContext;
+        private readonly IFileStoreService _fileStore;
         private readonly ReceiverOptions _receiverOptions;
         private readonly ITelegramBotClient _botClient;
         private readonly ILoggerFactory _loggerFactory;

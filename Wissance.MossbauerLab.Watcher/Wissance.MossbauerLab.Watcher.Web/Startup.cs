@@ -135,7 +135,6 @@ namespace Wissance.MossbauerLab.Watcher.Web
 
         private void ConfigureLongWorkingBackgroundService(IServiceCollection services)
         {
-            //ModelContext modelContext = serviceProvider.GetRequiredService<ModelContext>();
             services.AddHostedService<CommandProcessorService>(x =>
             {
                 DbContextOptionsBuilder<ModelContext> optionsBuilder = new DbContextOptionsBuilder<ModelContext>();
@@ -143,7 +142,8 @@ namespace Wissance.MossbauerLab.Watcher.Web
                               .UseSqlite(_config.ConnStr)
                               .UseLazyLoadingProxies();
                 ModelContext context = new ModelContext(optionsBuilder.Options);
-                return new CommandProcessorService(context, _config, x.GetRequiredService<ILoggerFactory>());
+                IFileStoreService fileStore = new WindowsShareStoreService(_config.Sm2201SpectraStoreSettings, x.GetRequiredService<ILoggerFactory>());
+                return new CommandProcessorService(context, fileStore, _config, x.GetRequiredService<ILoggerFactory>());
             });
         }
 
