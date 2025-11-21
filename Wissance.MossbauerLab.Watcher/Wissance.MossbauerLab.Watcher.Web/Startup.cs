@@ -21,6 +21,7 @@ using Wissance.MossbauerLab.Watcher.Web.Config;
 using Wissance.MossbauerLab.Watcher.Web.Managers;
 using Wissance.MossbauerLab.Watcher.Web.Services.Jobs;
 using Wissance.MossbauerLab.Watcher.Web.Services.Processors;
+using Wissance.MossbauerLab.Watcher.Web.Services.State;
 using Wissance.MossbauerLab.Watcher.Web.Services.Store;
 
 namespace Wissance.MossbauerLab.Watcher.Web
@@ -76,9 +77,11 @@ namespace Wissance.MossbauerLab.Watcher.Web
         private void ConfigureAppServices(IServiceCollection services)
         {
             // config 
-            services.AddSingleton(x => Configuration.GetSection(ApplicationConfigSectionName).Get<ApplicationConfig>());
+            ConfigureConfiguration(services);
             // Access to shared folder
             ConfigureSharedFolderAccess(services);
+            // special service (state checker, ...)
+            ConfigureSpecialServices(services);
             // regular jobs (watch)
             ConfigureRegularJobs(services);
             // notifications
@@ -87,11 +90,16 @@ namespace Wissance.MossbauerLab.Watcher.Web
             ConfigureLongWorkingBackgroundService(services);
         }
 
+        private void ConfigureConfiguration(IServiceCollection services)
+        {
+            services.AddSingleton(x => Configuration.GetSection(ApplicationConfigSectionName).Get<ApplicationConfig>());
+        }
+
         private void ConfigureWebApi(IServiceCollection services)
         {
-            services.AddControllers();
-
+            // todo(UMV): add Swagger
             services.AddScoped<SpectrumManager>();
+            services.AddControllers();
         }
 
         private void ConfigureNotificationServices(IServiceCollection services)
@@ -170,6 +178,13 @@ namespace Wissance.MossbauerLab.Watcher.Web
                 options.WaitForJobsToComplete = true;
                 options.AwaitApplicationStarted = true;
             });
+        }
+
+        private void ConfigureSpecialServices(IServiceCollection services)
+        {
+            services.AddScoped<StateCheckerService>(x =>
+                new StateCheckerService(x.GetRequiredService<ModelContext>(),
+                    x.GetRequiredService<IFileStoreService>(), _config, x.GetRequiredService<ILoggerFactory>()));
         }
 
         private IConfiguration Configuration { get; }
