@@ -20,6 +20,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
 
         public const string SpectrumIdNotProvidedError = "Для выполнения этой команды необходимо предоставить целочисленный идентификатор спектра";
         public const string SpectrumIdCantBeExtractedError = "Значение переданное в качестве идентификатора спектра не является целочисленным";
+        public const string SpectrometryLabState = "Состояние контролируемых в лаборатории объектов:";
         
         public static readonly IDictionary<string, string> KeyboardCaptions = new Dictionary<string, string>()
         {
