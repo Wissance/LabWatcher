@@ -29,7 +29,8 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
     /// <summary>
     /// CommandProcessorService is a singleton service that working all time app is working
     /// </summary>
-    public class CommandProcessorService : IHostedService, IDisposable
+    public class CommandProcessorService : BackgroundService
+        //IHostedService, IDisposable
     {
         public CommandProcessorService(ModelContext modelContext, IFileStoreService fileStore, ApplicationConfig config, ILoggerFactory loggerFactory)
         {
@@ -53,12 +54,11 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
             _config = config;
             _loggerFactory = loggerFactory;
             _logger = loggerFactory.CreateLogger<CommandProcessorService>();
-            // _botClient.StartReceiving(UpdateHandler, ErrorHandler, _receiverOptions, _cancellationTokenSource.Token);
         }
-        
-        public async Task StartAsync(CancellationToken cancellationToken)
+
+        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            _logger.LogDebug("CommandProcessor \"Start\" begin");
+            _logger.LogDebug("CommandProcessor \"Execute\" begin");
             _botClient.StartReceiving(UpdateHandler, ErrorHandler, _receiverOptions, _cancellationTokenSource.Token);
             while (true)
             {
@@ -66,25 +66,11 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
                 if (cancellationToken.IsCancellationRequested)
                 {
                     _cancellationTokenSource.Cancel();
+                    await _botClient.CloseAsync();
                     break;
                 }
             }
             _logger.LogDebug("CommandProcessor \"Start\" end");
-        }
-
-        public async Task StopAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogDebug("CommandProcessor \"Stop\" begin");
-            // probably code from dispose must be placed here ...
-            _logger.LogDebug("CommandProcessor \"Stop\" end");
-        }
-
-        public void Dispose()
-        {
-            if (!_cancellationTokenSource.IsCancellationRequested)
-                _cancellationTokenSource.Cancel();
-            Task closeTask = _botClient.CloseAsync();
-            closeTask.Wait();
         }
         
         /// <summary>

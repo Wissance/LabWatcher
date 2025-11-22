@@ -51,6 +51,12 @@ namespace Wissance.MossbauerLab.Watcher.Web
             {
                 app.UseDeveloperExceptionPage();
             }
+            
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", AppName);
+            });
 
             app.UseRouting();
 
@@ -97,7 +103,7 @@ namespace Wissance.MossbauerLab.Watcher.Web
 
         private void ConfigureWebApi(IServiceCollection services)
         {
-            // todo(UMV): add Swagger
+            services.AddSwaggerGen();
             services.AddScoped<SpectrumManager>();
             services.AddControllers();
         }
@@ -191,6 +197,7 @@ namespace Wissance.MossbauerLab.Watcher.Web
         private IWebHostEnvironment Environment { get; }
 
         private const string ApplicationConfigSectionName = "Application";
+        private const string AppName = "Wissance.MossbauerLab.Watcher.Web";
 
         private readonly ApplicationConfig _config;
     }

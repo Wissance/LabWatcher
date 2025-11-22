@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Wissance.MossbauerLab.Watcher": {
+    "Wissance.MossbauerLab.Watcher.Web": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
