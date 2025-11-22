@@ -16,11 +16,12 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
         public const string GetSpectrumFilesCmd = "/getSpectrumFiles ";
         public const string CheckStateCmd = "/checkState";
 
-        public const string UnknownError = "Произошла ошибка, свяжитесь с администратором систем";
+        public const string UnknownError = "Произошла ошибка, проверьте состояние системы: " + CheckStateCmd + " и свяжитесь с администратором систем";
 
         public const string SpectrumIdNotProvidedError = "Для выполнения этой команды необходимо предоставить целочисленный идентификатор спектра";
         public const string SpectrumIdCantBeExtractedError = "Значение переданное в качестве идентификатора спектра не является целочисленным";
         public const string SpectrometryLabState = "Состояние контролируемых в лаборатории объектов:";
+        public const string SpectrumWasNotFound = "Спектр с таким идентификатором не найден в базе данных";
         
         public static readonly IDictionary<string, string> KeyboardCaptions = new Dictionary<string, string>()
         {

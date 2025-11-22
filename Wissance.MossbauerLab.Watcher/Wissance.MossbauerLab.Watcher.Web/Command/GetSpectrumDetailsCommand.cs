@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -45,10 +46,10 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
                 }
 
                 OperationResultDto <SpectrumInfoDto> spectrum = await manager.GetByIdAsync(spectrumId);
-                if (!spectrum.Success)
+                if (!spectrum.Success || spectrum.Status != (int)HttpStatusCode.OK)
                 {
                     _logger.LogError($"Error occurred during getting Spectrum by id in \"GetSpectrumDetailsCommand\" : {spectrum.Message}");
-                    await _context.BotClient.SendTextMessageAsync(_context.RawMessage.Chat.Id, CommandAnswerLocalizationDefs.UnknownError);
+                    await _context.BotClient.SendTextMessageAsync(_context.RawMessage.Chat.Id, CommandAnswerLocalizationDefs.SpectrumWasNotFound);
                     return false;
                 }
                 
