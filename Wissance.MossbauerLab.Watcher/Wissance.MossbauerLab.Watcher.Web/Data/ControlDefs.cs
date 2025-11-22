@@ -7,10 +7,10 @@ namespace Wissance.MossbauerLab.Watcher.Web.Data
         public const string NetworkFileStorageItemName = "Сетевое хранилище";
         public const string DatabaseItemName = "База данных";
         
-        public const string SharedFolderStateMessageTemplate = "Сетевая папка общего доступа: \"{0}\" - {1}";
-        public const string SpectrometerControllingComputerStateMessageTemplate = "Компьютер \"{0}\" управляющий спектрометром c IP-адресом \"{1}\" - {2}";
-        public const string NetworkFileStorageStateMessageTemplate = "Сетевое хранилище \"{0}\" - {1}";
-        public const string DatabaseStateMessageTemplate = "База данных \"{0}\" - {1}";
+        public const string SharedFolderStateMessageTemplate = "Сетевая папка общего доступа: \"_{0}_\" - *{1}*";
+        public const string SpectrometerControllingComputerStateMessageTemplate = "Компьютер \"_{0}_\" управляющий спектрометром c IP-адресом \"_{1}_\" - *{2}*";
+        public const string NetworkFileStorageStateMessageTemplate = "Сетевое хранилище \"_{0}_\" - *{1}*";
+        public const string DatabaseStateMessageTemplate = "База данных \"_{0}_\" - *{1}*";
 
         public const string AccessibleMessage = "ОК";
         public const string NotAccessibleMessage = "Нет доступа";

@@ -10,12 +10,18 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
     {
         public static ICommand Create(CommandContext context)
         {
-            switch (context.Command.ToLower())
+            switch (context.Command)
             {
                 case CommandAnswerLocalizationDefs.StartCmd:
                     return new StartCommand(context);
                 case CommandAnswerLocalizationDefs.HelpCmd:
                     return new HelpCommand(context);
+                case CommandAnswerLocalizationDefs.ListSpectraCmd:
+                    return new ListSpectraCommand(context);
+                case CommandAnswerLocalizationDefs.GetSpectrumInfoCmd:
+                    return new GetSpectrumDetailsCommand(context);
+                case CommandAnswerLocalizationDefs.CheckStateCmd:
+                    return new CheckStateCommand(context);
                 default:
                     return null;
             }

@@ -63,7 +63,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
                 StringBuilder sb = new StringBuilder();
                 sb.Append("```");
                 sb.Append(string.Format(AnswerTemplate, spectrumId, spectrum.Data.Name, 
-                    1,
+                    spectrumId,
                     spectrum.Data.MeasureStartDate.ToString("yyyy-MM-dd HH:mm:ss"),
                     spectrum.Data.First.HasValue ? spectrum.Data.First?.ToString("yyyy-MM-dd HH:mm:ss") : "",
                     spectrum.Data.Last.HasValue ? spectrum.Data.Last?.ToString("yyyy-MM-dd HH:mm:ss") : "",

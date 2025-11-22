@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Telegram.Bot;
+using Telegram.Bot.Types.Enums;
 using Wissance.MossbauerLab.Watcher.Web.Data;
 using Wissance.MossbauerLab.Watcher.Web.Services.State;
 
@@ -34,10 +35,10 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
                 sb.Append(CommandAnswerLocalizationDefs.SpectrometryLabState + Environment.NewLine);
                 foreach (ControllingItem controllingItem in state.StateItems)
                 {
-                    sb.Append($"* {controllingItem} : {controllingItem.StateStr} {Environment.NewLine}");
+                    sb.Append($"  - `{controllingItem.ItemStr}` : {controllingItem.StateStr} {Environment.NewLine}");
                 }
 
-                await _context.BotClient.SendTextMessageAsync(_context.RawMessage.Chat.Id, sb.ToString());
+                await _context.BotClient.SendTextMessageAsync(_context.RawMessage.Chat.Id, sb.ToString(), ParseMode.Markdown);
                 return true;
             }
             catch (Exception e)
