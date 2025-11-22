@@ -65,7 +65,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.State
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occurred during checking shared folder in the \"CheckSharedFolderAsync\" func:, {e.Message}");
+                _logger.LogError($"An error occurred during checking shared folder in the \"CheckSharedFolderAsync\" func: {e.Message}");
                 return new ControllingItem(ControllingItemType.SharedFolder, ControlDefs.SharedFolderItemName, false,
                     string.Format(ControlDefs.SharedFolderStateMessageTemplate, _config.Sm2201SpectraStoreSettings.Folder,
                         ControlDefs.NotAccessibleMessage));
@@ -93,7 +93,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.State
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occurred during checking Laboratory Controlling Computer in the \"CheckMeasureControllingMachineAsync\" func:, {e.Message}");
+                _logger.LogError($"An error occurred during checking Laboratory Controlling Computer in the \"CheckMeasureControllingMachineAsync\" func: {e.Message}");
                 return new ControllingItem(ControllingItemType.SpectrometerControllingComputer, ControlDefs.SpectrometerControllingComputerItemName, false,
                     string.Format(ControlDefs.SpectrometerControllingComputerStateMessageTemplate,
                                           _config.Sm2201SpectraStoreSettings.Domain, _config.Sm2201SpectraStoreSettings.Address,
@@ -121,7 +121,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.State
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occurred during checking Network file storage in the \"CheckNetworkFileStorageAsync\" func:, {e.Message}");
+                _logger.LogError($"An error occurred during checking Network file storage in the \"CheckNetworkFileStorageAsync\" func: {e.Message}");
                 return new ControllingItem(ControllingItemType.NetworkFileStorage,
                     ControlDefs.NetworkFileStorageItemName, false,
                     string.Format(ControlDefs.NetworkFileStorageStateMessageTemplate,  _config.FtpArchSettings.FtpSettings.Host,
@@ -142,7 +142,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.State
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occurred during checking Database in the \"CheckDatabaseAsync\" func:, {e.Message}");
+                _logger.LogError($"An error occurred during checking Database in the \"CheckDatabaseAsync\" func: {e.Message}");
                 return new ControllingItem(ControllingItemType.Database, ControlDefs.DatabaseItemName, false,
                     string.Format(ControlDefs.DatabaseStateMessageTemplate, dbName, ControlDefs.NotAccessibleMessage));
             }

@@ -10,6 +10,7 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Wissance.MossbauerLab.Watcher.Common.Data.Notification;
+using Wissance.MossbauerLab.Watcher.Common.Utils.Telegram;
 using Wissance.MossbauerLab.Watcher.Data;
 using Wissance.MossbauerLab.Watcher.Services.Store;
 using Wissance.MossbauerLab.Watcher.Web.Command;
@@ -99,6 +100,13 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
                     case UpdateType.Message:
                         // todo(UMV) : allow messages for only the chat members
                         Message rawMessage = update.Message;
+                        bool shouldProcess = await ShouldProcessCommand(rawMessage);
+                        if (!shouldProcess)
+                        {
+                            await _botClient.SendTextMessageAsync(rawMessage.Chat.Id, CommandAnswerLocalizationDefs.UserOperationIsNotPermitted);
+                            break;
+                        }
+
                         // rawMessage.From.Username
                         if (rawMessage != null && rawMessage.Text != null)
                         {
@@ -123,6 +131,15 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
                             await command.ExecuteAsync(parameters);
                         }
                         break;
+                    case UpdateType.CallbackQuery:
+                        Message callbackMessage = update.Message;
+                        bool shouldProcessCallback = await ShouldProcessCommand(callbackMessage);
+                        if (!shouldProcessCallback)
+                        {
+                            await _botClient.SendTextMessageAsync(callbackMessage.Chat.Id, CommandAnswerLocalizationDefs.UserOperationIsNotPermitted);
+                            break;
+                        }
+                        break;
                 }
             }
             catch (Exception e)
@@ -135,6 +152,25 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
         {
             _logger.LogError($"An error occurred during \"CommandProcessorService\": {error.Message}");
             await Task.Delay(10, cancellationToken);
+        }
+
+        private async Task<bool> ShouldProcessCommand(Message message)
+        {
+            if (message.From == null)
+                return false;
+            long messageSenderId = message.From.Id;
+            try
+            {
+                ChatMember member = await _botClient.GetChatMemberAsync(ChatIdBuilder.Build(_config.NotificationSettings.TelegramSettings),
+                    messageSenderId, _cancellationTokenSource.Token);
+                return member.Status == ChatMemberStatus.Member || member.Status == ChatMemberStatus.Administrator ||
+                       member.Status == ChatMemberStatus.Creator || member.Status == ChatMemberStatus.Restricted;
+
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
         }
 
         private CommandContext CreateContext(string command, Message rawMessage)

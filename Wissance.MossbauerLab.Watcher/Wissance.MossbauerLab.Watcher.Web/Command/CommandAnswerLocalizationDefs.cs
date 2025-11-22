@@ -22,6 +22,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
         public const string SpectrumIdCantBeExtractedError = "Значение переданное в качестве идентификатора спектра не является целочисленным";
         public const string SpectrometryLabState = "Состояние контролируемых в лаборатории объектов:";
         public const string SpectrumWasNotFound = "Спектр с таким идентификатором не найден в базе данных";
+        public const string UserOperationIsNotPermitted = "Для выполнения команды необходимо быть членом группы мессбауэровской спектроскопии, обратитесь к администратору группы";
         
         public static readonly IDictionary<string, string> KeyboardCaptions = new Dictionary<string, string>()
         {
