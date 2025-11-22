@@ -8,7 +8,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
         {
             return isArchived ? "архивный" : "активный";
         }
-
+        
         public const string StartCmd = "/start";
         public const string HelpCmd = "/help";
         public const string ListSpectraCmd = "/listSpectra";
@@ -23,6 +23,8 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
         public const string SpectrometryLabState = "Состояние контролируемых в лаборатории объектов:";
         public const string SpectrumWasNotFound = "Спектр с таким идентификатором не найден в базе данных";
         public const string UserOperationIsNotPermitted = "Для выполнения команды необходимо быть членом группы мессбауэровской спектроскопии, обратитесь к администратору группы";
+        public const string NotSupportedYetDevelopmentInProgress = "Пока не реализовано, в процессе разработки";
+        public const string RequestRequiredParameters = "Отправьте параметры для выполнения команды идентификатор спектра и (для получения файлов) даты+время для выборки, см. /help";
         
         public static readonly IDictionary<string, string> KeyboardCaptions = new Dictionary<string, string>()
         {

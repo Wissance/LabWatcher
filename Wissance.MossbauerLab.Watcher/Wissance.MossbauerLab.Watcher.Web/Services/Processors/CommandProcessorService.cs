@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -18,6 +20,12 @@ using Wissance.MossbauerLab.Watcher.Web.Config;
 
 namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
 {
+    internal class IncompleteMessage
+    {
+        public string Command { get; set; }
+        public DateTimeOffset Time { get; set; }
+    }
+
     /// <summary>
     /// CommandProcessorService is a singleton service that working all time app is working
     /// </summary>
@@ -35,6 +43,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
                 AllowedUpdates = new UpdateType[]
                 {
                     UpdateType.Message,
+                    UpdateType.CallbackQuery,
                     UpdateType.ChatMember
                 },
                 // true = Ignore messages that were sent during App was offline
@@ -95,50 +104,73 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
         {
             try
             {
+                Message rawMessage = null;
+                Tuple<bool, string, string[]> commandParams = null;
                 switch (update.Type)
                 {
                     case UpdateType.Message:
                         // todo(UMV) : allow messages for only the chat members
-                        Message rawMessage = update.Message;
+                        rawMessage = update.Message;
                         bool shouldProcess = await ShouldProcessCommand(rawMessage);
                         if (!shouldProcess)
                         {
                             await _botClient.SendTextMessageAsync(rawMessage.Chat.Id, CommandAnswerLocalizationDefs.UserOperationIsNotPermitted);
                             break;
                         }
-
-                        // rawMessage.From.Username
-                        if (rawMessage != null && rawMessage.Text != null)
+                        
+                        commandParams = GetCommandParams(rawMessage);
+                        
+                        if (_incompleteMessages.ContainsKey(rawMessage.From.Id))
                         {
-                            string trimmedMessage = rawMessage.Text.Trim(new[] {' '});
-                            string[] messageParts = trimmedMessage.Split(new char[] {' '});
-                            // 0 is cmd 
-                            if (messageParts.Length < 1)
+                            // Item2 int (/getSpectrumInfo, /getSpectrumFiles) 
+                            bool isIncompleteCommand = int.TryParse(commandParams.Item2, out int spectrumId);
+                            if (isIncompleteCommand)
                             {
-                                _logger.LogError($"An error occurred during command detecting: number of parts can't be less then 1, message text: \"{rawMessage.Text}\"");
+                                string command = _incompleteMessages[rawMessage.From.Id].Command;
+                                _incompleteMessages.Remove(rawMessage.From.Id);
+                                List<string> parameters = new List<string>() {commandParams.Item2};
+                                if (commandParams.Item3.Any())
+                                {
+                                    parameters.AddRange(commandParams.Item3);
+                                }
+
+                                commandParams = new Tuple<bool, string, string[]>(true, command, parameters.ToArray());
                             }
 
-                            string[] parameters = messageParts.Skip(1).Select(p => p).ToArray();
-                            CommandContext context = CreateContext(messageParts[0], rawMessage);
-                            ICommand command = CommandFactory.Create(context);
-                            if (command == null)
-                            {
-                                await _botClient.SendTextMessageAsync(rawMessage.Chat.Id, "Пока не реализовано, в процессе разработки", 
-                                    cancellationToken: _cancellationTokenSource.Token);
-                                return;
-                            }
-
-                            await command.ExecuteAsync(parameters);
                         }
+
+                        if (!commandParams.Item1)
+                            break;
+                        await BuildAndExecuteCmd(rawMessage, commandParams.Item2, commandParams.Item3);
+                        
                         break;
                     case UpdateType.CallbackQuery:
-                        Message callbackMessage = update.Message;
-                        bool shouldProcessCallback = await ShouldProcessCommand(callbackMessage);
+                        rawMessage = update.CallbackQuery.Message;
+                        rawMessage.Text = update.CallbackQuery.Data;
+                        rawMessage.From = update.CallbackQuery.From;
+                        bool shouldProcessCallback = await ShouldProcessCommand(rawMessage);
                         if (!shouldProcessCallback)
                         {
-                            await _botClient.SendTextMessageAsync(callbackMessage.Chat.Id, CommandAnswerLocalizationDefs.UserOperationIsNotPermitted);
+                            await _botClient.SendTextMessageAsync(rawMessage.Chat.Id, CommandAnswerLocalizationDefs.UserOperationIsNotPermitted);
                             break;
                         }
+                        commandParams = GetCommandParams(rawMessage);
+                        if (!commandParams.Item1)
+                            break;
+                        // todo(UMV):ProcessIncompleteCmd
+                        if (commandParams.Item2 == CommandAnswerLocalizationDefs.GetSpectrumInfoCmd ||
+                            commandParams.Item2 == CommandAnswerLocalizationDefs.GetSpectrumFilesCmd)
+                        {
+                            _incompleteMessages[rawMessage.From.Id] = new IncompleteMessage()
+                            {
+                                Command = commandParams.Item2,
+                                Time = DateTimeOffset.UtcNow
+                            };
+                            await _botClient.SendTextMessageAsync(rawMessage.Chat.Id, CommandAnswerLocalizationDefs.RequestRequiredParameters);
+                            break;
+                        }
+
+                        await BuildAndExecuteCmd(rawMessage, commandParams.Item2, commandParams.Item3);
                         break;
                 }
             }
@@ -172,13 +204,44 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
                 return false;
             }
         }
+        
+        private Tuple<bool, string, string[]> GetCommandParams(Message message)
+        {
+            if (message == null || message.Text == null)
+                return  new Tuple<bool, string, string[]>(false, String.Empty, new string[] { });
+            string trimmedMessage = message.Text.Trim(new[] {' '});
+            string[] messageParts = trimmedMessage.Split(new char[] {' '});
+            // 0 is cmd 
+            if (messageParts.Length < 1)
+            {
+                _logger.LogError($"An error occurred during command detecting: number of parts can't be less then 1, message text: \"{message.Text}\"");
+                return new Tuple<bool, string, string[]>(false, String.Empty, new string[] { });
+            }
+
+            string[] parameters = messageParts.Skip(1).Select(p => p).ToArray();
+            return new Tuple<bool, string, string[]>(true, messageParts[0], parameters);
+        }
 
         private CommandContext CreateContext(string command, Message rawMessage)
         {
             return new CommandContext(command, _botClient, _modelContext, _fileStore, rawMessage, _config,
                 _cancellationTokenSource.Token, _loggerFactory);
         }
-        
+
+        private async Task BuildAndExecuteCmd(Message message, string cmd, string[] parameters)
+        {
+            CommandContext context = CreateContext(cmd, message);
+            ICommand command = CommandFactory.Create(context);
+            if (command == null)
+            {
+                await _botClient.SendTextMessageAsync(message.Chat.Id, CommandAnswerLocalizationDefs.NotSupportedYetDevelopmentInProgress, 
+                    cancellationToken: _cancellationTokenSource.Token);
+                return;
+            }
+
+            await command.ExecuteAsync(parameters);
+        }
+
         private readonly ModelContext _modelContext;
         private readonly IFileStoreService _fileStore;
         private readonly ReceiverOptions _receiverOptions;
@@ -187,5 +250,6 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Processors
         private readonly ILogger<CommandProcessorService> _logger;
         private readonly CancellationTokenSource _cancellationTokenSource;
         private readonly ApplicationConfig _config;
+        private readonly IDictionary<long, IncompleteMessage> _incompleteMessages = new ConcurrentDictionary<long, IncompleteMessage>();
     }
 }
