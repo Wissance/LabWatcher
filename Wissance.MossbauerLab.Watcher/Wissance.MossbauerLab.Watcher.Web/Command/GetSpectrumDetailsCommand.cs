@@ -64,7 +64,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
                 StringBuilder sb = new StringBuilder();
                 sb.Append("```");
                 sb.Append(string.Format(AnswerTemplate, spectrumId, spectrum.Data.Name, 
-                    spectrumId,
+                    GetChannelSymbol(spectrum.Data.Name),
                     spectrum.Data.MeasureStartDate.ToString("yyyy-MM-dd HH:mm:ss"),
                     spectrum.Data.First.HasValue ? spectrum.Data.First?.ToString("yyyy-MM-dd HH:mm:ss") : "",
                     spectrum.Data.Last.HasValue ? spectrum.Data.Last?.ToString("yyyy-MM-dd HH:mm:ss") : "",
@@ -86,6 +86,11 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
                 _logger.LogError($"An error occurred during the handling {_context.Command} command, {e.Message}");
                 return false;
             }
+        }
+
+        private string GetChannelSymbol(string name)
+        {
+            return name.Substring(0, 1);
         }
 
         private const string AnswerTemplate = "* id спетра : {0}\n   " +
