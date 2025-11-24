@@ -65,7 +65,9 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
                 sb.Append("```");
                 sb.Append(string.Format(AnswerTemplate, spectrumId, spectrum.Data.Name, 
                     GetChannelSymbol(spectrum.Data.Name),
-                    spectrum.Data.MeasureStartDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                    // spectrum.Data.MeasureStartDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                    // todo(UMV) temporarily made MeasureStart = First until i found why we got here zeroes
+                    spectrum.Data.First.HasValue ? spectrum.Data.First?.ToString("yyyy-MM-dd HH:mm:ss") : "",
                     spectrum.Data.First.HasValue ? spectrum.Data.First?.ToString("yyyy-MM-dd HH:mm:ss") : "",
                     spectrum.Data.Last.HasValue ? spectrum.Data.Last?.ToString("yyyy-MM-dd HH:mm:ss") : "",
                     CommandAnswerLocalizationDefs.GetArchivedCaption(spectrum.Data.IsArchived)
@@ -73,7 +75,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
                 int n = 1;
                 foreach (string sample in spectrumSamples.Data.Samples)
                 {
-                    sb.Append($"  - {n}. {sample}");
+                    sb.Append($"  - {n}. {sample}{Environment.NewLine}");
                     n++;
                 }
                 sb.Append("```");

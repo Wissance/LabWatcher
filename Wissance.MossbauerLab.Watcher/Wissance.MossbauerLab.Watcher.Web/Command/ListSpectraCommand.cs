@@ -30,21 +30,37 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
                     new WindowsShareStoreService(_context.Config.Sm2201SpectraStoreSettings, _context.LoggerFactory), _context.Config);
                 OperationResultDto<Tuple<IList<SpectrumInfoDto>,long>> result = await manager.GetAsync(1, 100000, 
                     new SortOption("MeasureStartDate", "desc"));
-                StringBuilder sb = new StringBuilder();
-                sb.Append("```");
-                sb.Append($"  id   имя   начало измерений   окончание измерений   статус{Environment.NewLine}");
-                if (!result.Success)
+                int pages = (int)Math.Ceiling((double) result.Data.Item2 / 20);
+                if (pages == 0)
                 {
-                    await _context.BotClient.SendTextMessageAsync(_context.RawMessage.Chat.Id, CommandAnswerLocalizationDefs.UnknownError);
-                    return false;
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append("```");
+                    sb.Append($"  id   имя   начало измерений   окончание измерений   статус{Environment.NewLine}");
+                    sb.Append($"   нет данных{Environment.NewLine}");
+                    sb.Append("```");
                 }
-                
-                foreach (SpectrumInfoDto spectrum in result.Data.Item1)
+
+                for (int i = 0; i < pages; i++)
                 {
-                    sb.Append($"  {spectrum.Id}    {spectrum.Name} {spectrum.MeasureStartDate:yyyy-MM-dd HH:mm:ss} {spectrum.Last:yyyy-MM-dd HH:mm:ss}   архивный");
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append("```");
+                    sb.Append($"  страница №  *{i}*{Environment.NewLine}");
+                    sb.Append($"  id   имя   начало измерений   окончание измерений   статус{Environment.NewLine}");
+                    if (!result.Success)
+                    {
+                        await _context.BotClient.SendTextMessageAsync(_context.RawMessage.Chat.Id, CommandAnswerLocalizationDefs.UnknownError);
+                        return false;
+                    }
+
+                    foreach (SpectrumInfoDto spectrum in result.Data.Item1)
+                    {
+                        sb.Append($"  {spectrum.Id}    {spectrum.Name} {spectrum.MeasureStartDate:yyyy-MM-dd HH:mm:ss} {spectrum.Last:yyyy-MM-dd HH:mm:ss}   архивный");
+                    }
+
+                    sb.Append("```");
+                    await _context.BotClient.SendTextMessageAsync(_context.RawMessage.Chat.Id, sb.ToString(), ParseMode.Markdown);
                 }
-                sb.Append("```");
-                await _context.BotClient.SendTextMessageAsync(_context.RawMessage.Chat.Id, sb.ToString(), ParseMode.Markdown);
+
                 return true;
             }
             catch (Exception e)

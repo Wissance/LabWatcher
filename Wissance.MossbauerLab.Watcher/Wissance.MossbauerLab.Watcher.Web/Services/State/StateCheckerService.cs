@@ -79,8 +79,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.State
                 bool success = false;
                 using (Ping pingChecker = new Ping())
                 {
-                    PingReply response = await pingChecker.SendPingAsync(_config.Sm2201SpectraStoreSettings.Address, 
-                        TimeSpan.FromSeconds(1).Milliseconds);
+                    PingReply response = await pingChecker.SendPingAsync(_config.LaboratoryComputer, PingTimeout);
                     success = response.Status == IPStatus.Success;
                 }
 
@@ -108,8 +107,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.State
                 bool success = false;
                 using (Ping pingChecker = new Ping())
                 {
-                    PingReply response = await pingChecker.SendPingAsync(_config.FtpArchSettings.FtpSettings.Host, 
-                        TimeSpan.FromSeconds(1).Milliseconds);
+                    PingReply response = await pingChecker.SendPingAsync(_config.FtpArchSettings.FtpSettings.Host, PingTimeout);
                     success = response.Status == IPStatus.Success;
                 }
                 
@@ -148,6 +146,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.State
             }
         }
 
+        private const int PingTimeout = 1000;
         private readonly ModelContext _context;
         private readonly IFileStoreService _storeService;
         private readonly ApplicationConfig _config;
