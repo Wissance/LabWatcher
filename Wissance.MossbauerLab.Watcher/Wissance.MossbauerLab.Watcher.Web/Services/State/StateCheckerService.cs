@@ -86,7 +86,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.State
                 return new ControllingItem(ControllingItemType.SpectrometerControllingComputer,
                     ControlDefs.SpectrometerControllingComputerItemName, success,
                     string.Format(ControlDefs.SpectrometerControllingComputerStateMessageTemplate,
-                        _config.Sm2201SpectraStoreSettings.Domain, _config.Sm2201SpectraStoreSettings.Address,
+                        _config.Sm2201SpectraStoreSettings.Domain, _config.LaboratoryComputer,
                         success ? ControlDefs.AccessibleMessage : ControlDefs.NotAccessibleMessage));
             
             }

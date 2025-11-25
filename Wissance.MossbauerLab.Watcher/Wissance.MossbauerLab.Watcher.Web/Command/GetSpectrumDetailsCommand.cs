@@ -102,7 +102,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
                                               "* первый сохраненный файл : `{4}`\n   " +
                                               "* дата окончания измерения : `{5}`\n   " +
                                               "* статус : {6}\n   " +
-                                              "* список файлов:";
+                                              "* список файлов:\n";
         
         private readonly CommandContext _context;
         private readonly ILogger< GetSpectrumDetailsCommand> _logger;
