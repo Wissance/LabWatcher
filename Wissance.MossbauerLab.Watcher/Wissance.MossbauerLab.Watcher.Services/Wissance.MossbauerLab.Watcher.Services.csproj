@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <None Include="Notification/Templates/**" CopyToOutputDirectory="PreserveNewest"  LinkBase="Templates/"/>
+    <None Include="Notification/Commands/**" CopyToOutputDirectory="PreserveNewest"  LinkBase="Commands/"/>
   </ItemGroup>
 
 </Project>

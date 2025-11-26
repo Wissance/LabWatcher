@@ -1,28 +1,25 @@
 {
+  "profiles": {
+    "Wissance.MossbauerLab.Watcher.Web": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:7890"
+    },
+    "Kestrel": {
+      "commandName": "Executable",
+      "executablePath": "Wissance.MossbauerLab.Watcher.Web.exe",
+      "commandLineArgs": "--environment=Development"
+    }
+  },
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
       "applicationUrl": "http://localhost:19318",
       "sslPort": 0
-    }
-  },
-  "profiles": {
-    "IIS Express": {
-      "commandName": "Project",
-      "commandLineArgs": "--environment=Development",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "Wissance.MossbauerLab.Watcher": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "http://localhost:5000"
     }
   }
 }

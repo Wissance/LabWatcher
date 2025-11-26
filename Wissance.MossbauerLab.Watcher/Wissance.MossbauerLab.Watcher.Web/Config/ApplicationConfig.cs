@@ -8,14 +8,18 @@ namespace Wissance.MossbauerLab.Watcher.Web.Config
 
         }
 
-        public ApplicationConfig(JobsConfig defaultJobsSettings, SpectraStoreConfig sm2201SpectraStoreSettings, NotificationConfig notificationSettings, FtpArchConfig ftpArchSettings, string connStr)
+        public ApplicationConfig(string laboratoryComputer, JobsConfig defaultJobsSettings, SpectraStoreConfig sm2201SpectraStoreSettings, 
+            NotificationConfig notificationSettings, FtpArchConfig ftpArchSettings, string connStr)
         {
+            LaboratoryComputer = laboratoryComputer;
             DefaultJobsSettings = defaultJobsSettings;
             Sm2201SpectraStoreSettings = sm2201SpectraStoreSettings;
             NotificationSettings = notificationSettings;
+            FtpArchSettings = ftpArchSettings;
             ConnStr = connStr;
         }
 
+        public string LaboratoryComputer { get; set; }
         public JobsConfig DefaultJobsSettings { get; set; }
         public SpectraStoreConfig Sm2201SpectraStoreSettings { get; set; }
         public NotificationConfig NotificationSettings { get; set; }

@@ -20,6 +20,8 @@ using Wissance.MossbauerLab.Watcher.Services.Store;
 using Wissance.MossbauerLab.Watcher.Web.Config;
 using Wissance.MossbauerLab.Watcher.Web.Managers;
 using Wissance.MossbauerLab.Watcher.Web.Services.Jobs;
+using Wissance.MossbauerLab.Watcher.Web.Services.Processors;
+using Wissance.MossbauerLab.Watcher.Web.Services.State;
 using Wissance.MossbauerLab.Watcher.Web.Services.Store;
 
 namespace Wissance.MossbauerLab.Watcher.Web
@@ -49,6 +51,12 @@ namespace Wissance.MossbauerLab.Watcher.Web
             {
                 app.UseDeveloperExceptionPage();
             }
+            
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", AppName);
+            });
 
             app.UseRouting();
 
@@ -75,20 +83,29 @@ namespace Wissance.MossbauerLab.Watcher.Web
         private void ConfigureAppServices(IServiceCollection services)
         {
             // config 
-            services.AddSingleton<ApplicationConfig>(x => Configuration.GetSection(ApplicationConfigSectionName).Get<ApplicationConfig>());
+            ConfigureConfiguration(services);
             // Access to shared folder
             ConfigureSharedFolderAccess(services);
+            // special service (state checker, ...)
+            ConfigureSpecialServices(services);
             // regular jobs (watch)
             ConfigureRegularJobs(services);
             // notifications
             ConfigureNotificationServices(services);
+            // command processor
+            ConfigureLongWorkingBackgroundService(services);
+        }
+
+        private void ConfigureConfiguration(IServiceCollection services)
+        {
+            services.AddSingleton(x => Configuration.GetSection(ApplicationConfigSectionName).Get<ApplicationConfig>());
         }
 
         private void ConfigureWebApi(IServiceCollection services)
         {
-            services.AddControllers();
-
+            services.AddSwaggerGen();
             services.AddScoped<SpectrumManager>();
+            services.AddControllers();
         }
 
         private void ConfigureNotificationServices(IServiceCollection services)
@@ -119,6 +136,20 @@ namespace Wissance.MossbauerLab.Watcher.Web
             {
                 return new WindowsShareStoreService(_config.Sm2201SpectraStoreSettings, x.GetRequiredService<ILoggerFactory>());
                 //return new Smb1Service(_config.Sm2201SpectraStoreSettings, x.GetRequiredService<ILoggerFactory>());
+            });
+        }
+
+        private void ConfigureLongWorkingBackgroundService(IServiceCollection services)
+        {
+            services.AddHostedService<CommandProcessorService>(x =>
+            {
+                DbContextOptionsBuilder<ModelContext> optionsBuilder = new DbContextOptionsBuilder<ModelContext>();
+                optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll)
+                              .UseSqlite(_config.ConnStr)
+                              .UseLazyLoadingProxies();
+                ModelContext context = new ModelContext(optionsBuilder.Options);
+                IFileStoreService fileStore = new WindowsShareStoreService(_config.Sm2201SpectraStoreSettings, x.GetRequiredService<ILoggerFactory>());
+                return new CommandProcessorService(context, fileStore, _config, x.GetRequiredService<ILoggerFactory>());
             });
         }
 
@@ -155,10 +186,18 @@ namespace Wissance.MossbauerLab.Watcher.Web
             });
         }
 
+        private void ConfigureSpecialServices(IServiceCollection services)
+        {
+            services.AddScoped<StateCheckerService>(x =>
+                new StateCheckerService(x.GetRequiredService<ModelContext>(),
+                    x.GetRequiredService<IFileStoreService>(), _config, x.GetRequiredService<ILoggerFactory>()));
+        }
+
         private IConfiguration Configuration { get; }
         private IWebHostEnvironment Environment { get; }
 
         private const string ApplicationConfigSectionName = "Application";
+        private const string AppName = "Wissance.MossbauerLab.Watcher.Web";
 
         private readonly ApplicationConfig _config;
     }

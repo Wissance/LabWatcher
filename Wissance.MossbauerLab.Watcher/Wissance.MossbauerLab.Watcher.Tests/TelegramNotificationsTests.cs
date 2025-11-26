@@ -20,11 +20,11 @@ namespace Wissance.MossbauerLab.Watcher.Services.Tests
         [TestInitialize]
         public void Init()
         {
-            _bin = Convert.FromBase64String("NjI1MzUyNzMxNjpBQUYzWGZuSnE2azlTMnFldTc2bmd6SHhEU29id3BMcm50SQ==");
+            _bin = Convert.FromBase64String("ODEzOTAwNDE4MjpBQUhuaUdnNTlRenVQYmVKOWR4WU45S1plX1FpRlVERkt5NA==");
             _key = Encoding.UTF8.GetString(_bin);
             _templates = new Dictionary<SpectrometerEvent, MessageTemplate>();
             _templates[SpectrometerEvent.SpectrumSaved] = new MessageTemplate(true, @"Templates\testTelegramMessageTemplate.txt", @"Templates\testEmptySpectraTemplate.txt");
-            _tgRequisites = new TelegramSendRequisites(_key, -1001520411610, null);
+            _tgRequisites = new TelegramSendRequisites(_key, -1003459790726, "@WissanceIfaceTestGroup");
             _telegramNotifier = new TelegramNotifier(_tgRequisites, new TemplateManager(_templates), new LoggerFactory());
         }
         
