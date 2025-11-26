@@ -45,7 +45,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
                 {
                     StringBuilder sb = new StringBuilder();
                     sb.Append("```");
-                    sb.Append($"  страница №  *{i+1}*{Environment.NewLine}");
+                    sb.Append($"  страница N  *{i+1}*{Environment.NewLine}");
                     sb.Append($"  id   имя   начало измерений   окончание измерений   статус{Environment.NewLine}");
                     for (int s = 0; s < NumSpectraPerPage; s++)
                     {
@@ -56,7 +56,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
                         }
 
                         SpectrumInfoDto spectrum = result.Data.Item1[s+i*NumSpectraPerPage];
-                        sb.Append($"  {spectrum.Id}    {spectrum.Name} {spectrum.MeasureStartDate:yyyy-MM-dd HH:mm:ss} {spectrum.Last:yyyy-MM-dd HH:mm:ss}   {CommandAnswerLocalizationDefs.GetArchivedCaption(spectrum.IsArchived)}");
+                        sb.Append($"  {spectrum.Id}    {spectrum.Name} {spectrum.MeasureStartDate:yyyy-MM-dd HH:mm:ss} {spectrum.Last:yyyy-MM-dd HH:mm:ss}   {CommandAnswerLocalizationDefs.GetArchivedCaption(spectrum.IsArchived)} {Environment.NewLine}");
                         
                     }
                     sb.Append("```");
@@ -73,7 +73,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Command
             }
         }
 
-        private const int NumSpectraPerPage = 10;
+        private const int NumSpectraPerPage = 20;
 
         private readonly CommandContext _context;
         private readonly ILogger<ListSpectraCommand> _logger;
