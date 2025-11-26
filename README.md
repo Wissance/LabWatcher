@@ -2,6 +2,7 @@
 A set of tools that helps to **automate measure/control processes of any Scientific / Industrial Lab**. Current solution is using for:
 * **collect** measurements **data** produced by **another our software** working over existing scientific equipment (`mossbauer spectrometer`);
 * **notify** about **measurements state** and send **data** itself over multiple channels (`e-mail`, `Telegram`)
+* manage lab with telegram bot commands
 * **watch events and notify** about possible issues;
 * **provides Web interface** to obtain stored spectra even any intermediate;
 * **run an AI tools** with computer vision (if future versions).
@@ -11,7 +12,7 @@ This software **is a laboratory specific** and made as example **if you would li
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/wissance/LabWatcher?style=plastic) 
 ![GitHub issues](https://img.shields.io/github/issues/wissance/LabWatcher?style=plastic)
 ![GitHub Release Date](https://img.shields.io/github/release-date/wissance/LabWatcher) 
-![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/LabWatcher/v1.2.1/total?style=plastic)
+![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/LabWatcher/v1.3/total?style=plastic)
 
 ![LabWatcher: is automated Mossbauer laboratory control toolset](/docs/img/labwatcher.jpg)
 
@@ -147,8 +148,16 @@ There are following endpoints to receive/manage state from browser or other clie
 * `GET /api/Spectrum/{id}/samples` - return spectrum data including list of all intermediate measurements;
 * `GET /api/Spectrum/{id}/samples/{sampleName}/spectrum` - return spectrum with file name = `{sampleName}`
   ![Get spectrum](/docs/img/api/get_spectrum_itself.jpg)
+  
+## 6. Telegram commands
 
-## 6. Contributors
+There are the following commands:
+* `listSpectra` to get all spectra
+* `getSpectrumInfo {id}` to get spectrum detailed info, assume passing required parameter - {id}, i.e. `getSpectrumInfo 5`
+* `getSpectrumFiles` to get spectrum files , NOT Implemented yet
+* `checkSpectrum` to check hardware state
+
+## 7. Contributors
 
 <a href="https://github.com/Wissance/LabWatcher/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=Wissance/LabWatcher" />
