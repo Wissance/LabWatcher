@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -104,12 +105,20 @@ namespace Wissance.MossbauerLab.Watcher.Web
         private void ConfigureWebApi(IServiceCollection services)
         {
             services.AddSwaggerGen();
-            services.AddScoped<SpectrumManager>();
+            ConfigureWebApiManagers(services);
             services.AddControllers();
+        }
+        
+        private void ConfigureWebApiManagers(IServiceCollection services)
+        {
+            services.AddScoped<SpectrumManager>();
+            services.AddScoped<ServiceManager>();
         }
 
         private void ConfigureNotificationServices(IServiceCollection services)
         {
+            // this ignore SSL Validation error
+            ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
             services.AddScoped<EmailNotifier>(x =>
             {
                 return new EmailNotifier(_config.NotificationSettings.MailSettings,

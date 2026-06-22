@@ -34,6 +34,7 @@ namespace Wissance.MossbauerLab.Watcher.Web.Services.Jobs
             _logger.LogInformation("*********** Spectra notification job started ***********");
             try
             {
+                // TODO(UMV): make service Layer to get actual spectra
                 // 1. Get spectra that we updated today last.Date() == Now.Date()
                 // IList<SpectrumEntity> allSpectra = _context.Spectra.ToList();
                 IList<SpectrumEntity> actualSpectra = await _context.Spectra.Where(s => s.Last != null && s.Last.Value.Date == DateTime.Now.Date).ToListAsync();
