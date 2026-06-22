@@ -104,8 +104,13 @@ namespace Wissance.MossbauerLab.Watcher.Web
         private void ConfigureWebApi(IServiceCollection services)
         {
             services.AddSwaggerGen();
-            services.AddScoped<SpectrumManager>();
+            ConfigureWebApiManagers(services);
             services.AddControllers();
+        }
+        
+        private void ConfigureWebApiManagers(IServiceCollection services)
+        {
+            services.AddScoped<SpectrumManager>();
         }
 
         private void ConfigureNotificationServices(IServiceCollection services)
