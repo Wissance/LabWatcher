@@ -12,9 +12,9 @@ This software **is a laboratory specific** and made as example **if you would li
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/wissance/LabWatcher?style=plastic) 
 ![GitHub issues](https://img.shields.io/github/issues/wissance/LabWatcher?style=plastic)
 ![GitHub Release Date](https://img.shields.io/github/release-date/wissance/LabWatcher) 
-![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/LabWatcher/v1.3/total?style=plastic)
+![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/LabWatcher/v1.4/total?style=plastic)
 
-![LabWatcher: is automated Mossbauer laboratory control toolset](/docs/img/labwatcher.jpg)
+![LabWatcher: is automated Mossbauer laboratory control toolset](./docs/img/labwatcher.jpg)
 
 Mossbauer laboratory automation tool controls spectra measurements from `SM2201 Mossbauer spectrometer` and watches state of other equipment.
 
@@ -142,12 +142,15 @@ there are many solutions but for me helpful was adding `sleep 20s` in `.sh` scri
 
 There are following endpoints to receive/manage state from browser or other clients:
 
-* `GET /api/Spectrum` - list all spectra from database;
+* `GET ~/api/Spectrum` - list all spectra from database;
   ![Get indexed spectra](/docs/img/api/get_all.jpg)
-* `GET /api/Spectrum/{id}` - return one spectrum by its id;
-* `GET /api/Spectrum/{id}/samples` - return spectrum data including list of all intermediate measurements;
-* `GET /api/Spectrum/{id}/samples/{sampleName}/spectrum` - return spectrum with file name = `{sampleName}`
-  ![Get spectrum](/docs/img/api/get_spectrum_itself.jpg)
+* `GET ~/api/Spectrum/{id}` - return one spectrum by its id;
+* `GET ~/api/Spectrum/{id}/samples` - return spectrum data including list of all intermediate measurements;
+* `GET ~/api/Spectrum/{id}/samples/{sampleName}/spectrum` - return spectrum with file name = `{sampleName}`
+* `GET ~/api/Service/send/email/last` - send last actual spectra to e-mail list
+
+Example of getting spectra list:
+![Get spectrum](./docs/img/api/get_spectrum_itself.jpg)
   
 ## 6. Telegram commands
 
